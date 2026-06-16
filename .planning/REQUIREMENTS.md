@@ -140,10 +140,10 @@ Features deferred until v1 ships and real usage validates direction.
 | CWS-01–05 | Phase 10 | Pending |
 
 **Coverage:**
-- v1 requirements: 46 total
-- Mapped to phases: 46
+- v1 requirements: 49 total
+- Mapped to phases: 49
 - Unmapped: 0 ✓
 
 ---
 *Requirements defined: 2026-06-16*
-*Last updated: 2026-06-16 after initial definition*
+*Last updated: 2026-06-16 — traceability confirmed, coverage corrected to 49*

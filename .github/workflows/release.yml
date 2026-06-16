@@ -1,0 +1,45 @@
+# .github/workflows/release.yml
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Lint & type-check
+        run: npm run ci
+
+      - name: Build (production)
+        run: npm run build
+
+      - name: Dist safety checks
+        run: npm run ci:check-dist
+
+      - name: Zip dist/
+        run: zip -r extension.zip dist/
+
+      - name: Upload to Chrome Web Store
+        env:
+          EXTENSION_ID: ${{ vars.EXTENSION_ID }}
+        run: |
+          npx chrome-webstore-upload-cli upload \
+            --source extension.zip \
+            --extension-id ${{ env.EXTENSION_ID }} \
+            --client-id ${{ secrets.CWS_CLIENT_ID }} \
+            --client-secret ${{ secrets.CWS_CLIENT_SECRET }} \
+            --refresh-token ${{ secrets.CWS_REFRESH_TOKEN }}

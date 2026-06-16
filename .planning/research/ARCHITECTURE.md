@@ -1,0 +1,770 @@
+# Architecture Research
+
+**Domain:** Chrome MV3 extension — full-page React/TS/Vite app, no backend, no content scripts, `chrome.storage.local` persistence
+**Researched:** 2026-06-16
+**Confidence:** HIGH (MV3 manifest, action API, chrome.storage, Vite-React project shape are all stable and well-documented; the prototype `stack-checklist.html` is the behavioral spec on disk)
+
+## Standard Architecture
+
+### System Overview
+
+```
+┌─────────────────────────────────────────────────────────────────────┐
+│                        Chrome Browser Process                       │
+├─────────────────────────────────────────────────────────────────────┤
+│                                                                     │
+│   ┌──────────────────────┐         ┌──────────────────────────┐     │
+│   │  Toolbar Action      │  click  │  Background Service      │     │
+│   │  (chrome.action)     ├────────►│  Worker (event-driven)   │     │
+│   │  icon + title        │         │  - onClicked → open tab  │     │
+│   └──────────────────────┘         │  - onInstalled (optional)│     │
+│                                    └────────────┬─────────────┘     │
+│                                                 │ chrome.tabs.create│
+│                                                 ▼                   │
+│   ┌───────────────────────────────────────────────────────────┐     │
+│   │              Extension Tab — app.html                     │     │
+│   │  ┌───────────────────────────────────────────────────┐    │     │
+│   │  │              React App Root (src/main.tsx)        │    │     │
+│   │  │  ┌───────────┐  ┌──────────────────────────────┐  │    │     │
+│   │  │  │ Sidebar   │  │       Content Area           │  │    │     │
+│   │  │  │ - Search  │  │  Groups → Topics → Questions │  │    │     │
+│   │  │  │ - Levels  │  │  (virtualized if needed)     │  │    │     │
+│   │  │  │ - Sections│  │                              │  │    │     │
+│   │  │  │ - Actions │  │                              │  │    │     │
+│   │  │  └───────────┘  └──────────────────────────────┘  │    │     │
+│   │  │  ┌─────────────────────────────────────────────┐  │    │     │
+│   │  │  │ Modals: AI Prompt · Candidate · Reset ·     │  │    │     │
+│   │  │  │         Session Switcher                    │  │    │     │
+│   │  │  └─────────────────────────────────────────────┘  │    │     │
+│   │  └───────────────────────────────────────────────────┘    │     │
+│   │           ▲                                               │     │
+│   │           │ subscribe / dispatch                          │     │
+│   │  ┌────────┴─────────────────────────────────────────┐     │     │
+│   │  │  Zustand Store (UI state + active session view)  │     │     │
+│   │  │  - slices: bank, scores, notes, candidate,       │     │     │
+│   │  │    custom, ui, sessions, schemaVersion           │     │     │
+│   │  └────────┬─────────────────────────────────────────┘     │     │
+│   │           │ persist middleware (debounced)                │     │
+│   │  ┌────────▼─────────────────────────────────────────┐     │     │
+│   │  │  Storage Adapter (chrome.storage.local wrapper)  │     │     │
+│   │  │  - get/set with key sharding                     │     │     │
+│   │  │  - migrate(payload) pipeline on load             │     │     │
+│   │  │  - legacy localStorage fallback (read once)      │     │     │
+│   │  └────────┬─────────────────────────────────────────┘     │     │
+│   └───────────┼───────────────────────────────────────────────┘     │
+│               ▼                                                     │
+│        chrome.storage.local (per-extension, ~10MB default)          │
+│        keys: schemaVersion · activeSessionId · session:<id>         │
+└─────────────────────────────────────────────────────────────────────┘
+```
+
+Boundaries to keep crisp:
+
+- **Service worker** never owns app state. It is a 10-line event router whose only job is `chrome.action.onClicked → chrome.tabs.create`. The tab is the source of truth at runtime.
+- **The React app** never talks to `chrome.storage.local` directly from components — only through the storage adapter.
+- **The question bank** is a build-time constant module, not state. The only "bank" that lives in state is the *imported* structural override (legacy YAML), which can replace the default bank pointer.
+
+### Component Responsibilities
+
+| Component | Responsibility | Typical Implementation |
+|-----------|----------------|------------------------|
+| Manifest (`manifest.json`) | Declares MV3 surface: `action`, `background.service_worker`, `permissions: ["storage"]`, `web_accessible_resources` for `app.html` (only if linked from web pages — not needed here) | Static JSON generated by `vite-plugin-web-extension` or hand-authored and copied via `public/` |
+| Background SW (`src/background/index.ts`) | Single listener: open `app.html` in new tab on action click; optional `onInstalled` to seed defaults | Plain TS, no React, ≤30 LOC |
+| App entry (`src/main.tsx` → `app.html`) | Mount React root; bootstrap storage load + migration before first render | `createRoot` + `Suspense` for boot |
+| Bank module (`src/bank/`) | Static default question bank; pure data + types | TS module exporting `DEFAULT_SECTIONS: Section[]` |
+| Store (`src/store/`) | All runtime state; slices + selectors; persist middleware | Zustand with `subscribeWithSelector` and custom `chrome.storage` persister |
+| Storage adapter (`src/storage/`) | Read/write chrome.storage.local; debounce; migrate; legacy import | Promise-wrapped `chrome.storage.local.get/set`; pure `migrate(payload)` fn |
+| Sessions service (`src/sessions/`) | CRUD on session slots, switch active, rename, duplicate, delete | Thin module over the store |
+| YAML codec (`src/yaml/`) | Pure encode/decode for structural + legacy progress formats; versioned schemas | `js-yaml` + Zod (or hand-rolled) validators |
+| Scoring engine (`src/scoring/`) | Pure functions: question score → topic mark (weighted), group mark (mean), overall mark (mean) | Pure TS, fully unit-testable |
+| AI prompt builder (`src/ai/`) | Pure function: `(candidate, sections, scores, notes) → string` | Plain TS module, no React |
+| UI components (`src/components/`) | Presentational + container split; sidebar, content tree, modals | React function components + Tailwind/CSS modules |
+| Hooks (`src/hooks/`) | Memoized selectors, derived state, debounced inputs, keyboard shortcuts | Custom hooks composing Zustand selectors |
+| Print stylesheet (`src/styles/print.css`) | `@media print` rules: expand all, hide sidebar/controls | One global CSS file imported once in `main.tsx` |
+
+## Recommended Project Structure
+
+```
+interviewer-checklist/
+├── public/
+│   ├── manifest.json              # MV3 manifest (or generated by plugin)
+│   └── icons/
+│       ├── icon-16.png
+│       ├── icon-32.png
+│       ├── icon-48.png
+│       └── icon-128.png
+├── src/
+│   ├── background/
+│   │   └── index.ts               # SW entry: chrome.action.onClicked → open tab
+│   ├── app/
+│   │   ├── app.html               # HTML entry served by extension URL
+│   │   ├── main.tsx               # React root; runs bootstrap() before render
+│   │   ├── App.tsx                # Top-level layout (Sidebar + Content + Modals)
+│   │   └── bootstrap.ts           # load → migrate → hydrate store
+│   ├── bank/
+│   │   ├── index.ts               # DEFAULT_SECTIONS export
+│   │   ├── types.ts               # Section/Topic/Question types
+│   │   └── sections/              # Optional per-group split for tree-shaking
+│   │       ├── react.ts
+│   │       ├── drupal.ts
+│   │       └── ...
+│   ├── store/
+│   │   ├── index.ts               # createStore() with persist middleware
+│   │   ├── slices/
+│   │   │   ├── bankSlice.ts       # imported structure override (nullable)
+│   │   │   ├── scoresSlice.ts     # questionScore + topicOverride
+│   │   │   ├── notesSlice.ts      # cardComment + questionComment + noteOpen
+│   │   │   ├── candidateSlice.ts  # candidate details
+│   │   │   ├── customSlice.ts     # customQuestions + customSeq
+│   │   │   ├── uiSlice.ts         # filters, levels, search, hideReviewed,
+│   │   │   │                      # sidebarCollapsed, sidebarGroups, expansion,
+│   │   │   │                      # darkMode
+│   │   │   └── sessionsSlice.ts   # sessions registry + activeSessionId
+│   │   ├── selectors.ts           # filteredSections, computedTopicMark, etc.
+│   │   └── persist.ts             # chrome.storage.local Zustand persister
+│   ├── storage/
+│   │   ├── adapter.ts             # get/set/remove wrappers
+│   │   ├── keys.ts                # KEY constants + sharding scheme
+│   │   ├── migrate.ts             # migrate(payload, fromVersion) pipeline
+│   │   ├── migrations/
+│   │   │   ├── v1-to-v2.ts
+│   │   │   ├── v2-to-v3.ts
+│   │   │   ├── v3-to-v4.ts        # mirrors prototype's v4 (drops answered/reviewed)
+│   │   │   └── v4-to-v5.ts        # introduces named sessions
+│   │   └── legacy.ts              # one-shot import from localStorage v2 key
+│   ├── sessions/
+│   │   └── service.ts             # create / rename / duplicate / delete / switch
+│   ├── scoring/
+│   │   ├── weights.ts             # difficulty coefficients (1.00 / 1.25 / 1.50 / 1.75)
+│   │   ├── topic.ts               # computeTopicMark(questions, scores, override)
+│   │   ├── group.ts               # computeGroupMark(topics)
+│   │   └── overall.ts             # computeOverallMark(groups)
+│   ├── ai/
+│   │   └── promptBuilder.ts       # buildPrompt(state) → string
+│   ├── yaml/
+│   │   ├── codec.ts               # encode(state) / decode(text) → DecodedYaml
+│   │   ├── schemas/
+│   │   │   ├── structural.ts      # current full schema
+│   │   │   └── legacyProgress.ts  # old progress-only format
+│   │   └── derive.ts              # ID derivation + de-dup
+│   ├── components/
+│   │   ├── shell/
+│   │   │   ├── Shell.tsx
+│   │   │   ├── Sidebar.tsx
+│   │   │   ├── ContentArea.tsx
+│   │   │   └── ToolbarBar.tsx
+│   │   ├── sidebar/
+│   │   │   ├── SearchGroup.tsx
+│   │   │   ├── DifficultyGroup.tsx
+│   │   │   ├── SectionsGroup.tsx
+│   │   │   └── ActionsGroup.tsx
+│   │   ├── tree/
+│   │   │   ├── GroupCard.tsx
+│   │   │   ├── TopicCard.tsx
+│   │   │   ├── QuestionRow.tsx
+│   │   │   ├── ScoreSlider.tsx
+│   │   │   └── NoteEditor.tsx
+│   │   ├── modals/
+│   │   │   ├── ModalRoot.tsx
+│   │   │   ├── AiPromptModal.tsx
+│   │   │   ├── CandidateModal.tsx
+│   │   │   ├── ResetConfirmModal.tsx
+│   │   │   └── SessionSwitcherModal.tsx
+│   │   └── primitives/            # Button, Select, Slider, Dialog
+│   ├── hooks/
+│   │   ├── useDebounced.ts
+│   │   ├── useKeyboardShortcuts.ts
+│   │   ├── useFilteredSections.ts
+│   │   ├── useTopicMark.ts
+│   │   └── useDarkMode.ts
+│   ├── styles/
+│   │   ├── globals.css
+│   │   ├── tokens.css             # light/dark CSS variables
+│   │   └── print.css              # @media print rules
+│   └── types/
+│       └── index.ts               # SessionState, Candidate, ScoreMap, etc.
+├── vite.config.ts                 # uses @crxjs/vite-plugin or vite-plugin-web-extension
+├── tsconfig.json
+├── package.json
+└── .planning/
+```
+
+### Structure Rationale
+
+- **`src/background/` isolated** — the SW has a completely different runtime (no DOM, no React, restarts on idle). Keeping its source distinct prevents accidental import of DOM-only code that would crash the worker on instantiation.
+- **`src/storage/` separate from `src/store/`** — `storage/` is platform-coupled (chrome.* APIs); `store/` is platform-agnostic React state. The boundary lets the store be exercised in tests with an in-memory adapter and lets the chrome adapter be mocked.
+- **`src/scoring/`, `src/ai/`, `src/yaml/` are pure modules** — these are the highest-value targets for unit tests because their correctness defines product semantics. Pulling them out of React means they can be tested without `@testing-library`.
+- **Slices over a single mega-store** — the prototype's flat state in `state` (`questionScore`, `topicOverride`, `cardComment`, `customQuestions`, etc.) maps 1:1 to slices. Sliced Zustand keeps each slice's selectors local and avoids needless re-renders.
+- **`components/tree/` separated from `components/sidebar/`** — the tree is the perf-critical surface (hundreds of question rows, score sliders). Isolating it makes it the obvious target for memoization, and later for virtualization without touching the sidebar.
+- **`public/manifest.json` checked-in** — a hand-authored manifest is auditable for CWS review; generators are fine but a static file makes the permissions diff visible in code review.
+
+## Architectural Patterns
+
+### Pattern 1: Event-driven background service worker (no state)
+
+**What:** The SW registers handlers at top-level and does nothing else. No globals, no caches, no in-memory state. When fired, it performs one API call (`chrome.tabs.create`) and exits.
+
+**When to use:** Always for MV3 extensions whose surface is "open something." MV3 workers are suspended after ~30s of idle; persisting state in worker globals is broken by design.
+
+**Trade-offs:**
+- Pro: Survives suspension; passes CWS review easily; zero state-sync bugs.
+- Con: Cannot cache between clicks — but this app has no need for that.
+
+**Example:**
+
+```ts
+// src/background/index.ts
+chrome.action.onClicked.addListener(async () => {
+  const url = chrome.runtime.getURL('src/app/app.html');
+  // Focus existing tab if one is already open, else create.
+  const [existing] = await chrome.tabs.query({ url });
+  if (existing?.id != null) {
+    await chrome.tabs.update(existing.id, { active: true });
+    if (existing.windowId != null) {
+      await chrome.windows.update(existing.windowId, { focused: true });
+    }
+  } else {
+    await chrome.tabs.create({ url });
+  }
+});
+
+chrome.runtime.onInstalled.addListener(() => {
+  // Optional: open the tab on first install to onboard.
+});
+```
+
+### Pattern 2: Bootstrap-before-render with migration
+
+**What:** Before `createRoot().render()`, `await` a `bootstrap()` that (1) reads `chrome.storage.local`, (2) imports legacy `localStorage` if found, (3) runs the migration pipeline, (4) hydrates the Zustand store synchronously. The store ships with a "ready" flag the root reads.
+
+**When to use:** Whenever storage is async (chrome.storage is) and state shape may have changed across versions. Avoids flash-of-unmigrated-data and avoids racing the first user click against the persist write.
+
+**Trade-offs:**
+- Pro: One deterministic load path; no "skeleton during hydration" hack; migrations run exactly once.
+- Con: First paint blocked on storage read (~5–20ms typical, irrelevant for an extension tab).
+
+**Example:**
+
+```ts
+// src/app/bootstrap.ts
+export async function bootstrap() {
+  const raw = await storage.getAll();
+  const legacy = raw == null ? await legacyAdapter.readOnce() : null;
+  const source = raw ?? legacy ?? null;
+  const migrated = migrate(source);          // pure, deterministic
+  await storage.writeAll(migrated);          // persist post-migration shape
+  store.getState().__hydrate(migrated);      // synchronous hydrate
+}
+
+// src/app/main.tsx
+bootstrap().then(() => {
+  createRoot(document.getElementById('root')!).render(<App />);
+});
+```
+
+### Pattern 3: Versioned migration pipeline (sequential, idempotent)
+
+**What:** Each migration is a pure function `(state) => state` that bumps the version by exactly one. `migrate(payload)` reads `payload.version` and applies each step in order. The current `SCHEMA_VERSION` lives next to the migrations array so adding a migration is a single PR diff.
+
+**When to use:** Any persistent app whose shape evolves. Prototype already does this informally (v4); formalize it.
+
+**Trade-offs:**
+- Pro: Each step is unit-testable in isolation; rollback is "stop at version N"; new devs see the full history.
+- Con: You can never delete an old migration without invalidating users frozen on that version. Plan to keep the chain forever.
+
+**Example:**
+
+```ts
+// src/storage/migrate.ts
+import { v1_to_v2 } from './migrations/v1-to-v2';
+import { v2_to_v3 } from './migrations/v2-to-v3';
+import { v3_to_v4 } from './migrations/v3-to-v4';
+import { v4_to_v5 } from './migrations/v4-to-v5';
+
+const MIGRATIONS = [v1_to_v2, v2_to_v3, v3_to_v4, v4_to_v5];
+export const SCHEMA_VERSION = MIGRATIONS.length + 1; // 5
+
+export function migrate(raw: unknown): PersistedState {
+  if (raw == null) return defaultState();
+  let s = raw as any;
+  const from = typeof s.version === 'number' ? s.version : 1;
+  for (let v = from; v < SCHEMA_VERSION; v++) {
+    s = MIGRATIONS[v - 1](s);
+  }
+  s.version = SCHEMA_VERSION;
+  return s;
+}
+```
+
+### Pattern 4: Sharded storage keys for sessions
+
+**What:** Rather than one giant `state` blob, write each session to its own `chrome.storage.local` key (`session:<id>`) plus a small `manifest` key (`{ activeSessionId, sessionIds[], schemaVersion }`). A debounced writer flushes only the dirty session.
+
+**When to use:** When you have multiple independent "documents" and writes are frequent. The interview-session use case fits.
+
+**Trade-offs:**
+- Pro: Writing one session doesn't rewrite the others (chrome.storage.local writes are key-granular); the manifest is tiny and cheap to read on boot.
+- Con: Slightly more bookkeeping; you must read the manifest first to know which keys to fetch. Easy to enforce in the adapter.
+
+**Example:**
+
+```ts
+// src/storage/keys.ts
+export const K_MANIFEST = 'manifest';
+export const K_SESSION  = (id: string) => `session:${id}`;
+
+// src/storage/adapter.ts
+export async function loadActiveSession() {
+  const { manifest } = await chrome.storage.local.get(K_MANIFEST);
+  if (!manifest?.activeSessionId) return null;
+  const key = K_SESSION(manifest.activeSessionId);
+  const got = await chrome.storage.local.get(key);
+  return { manifest, session: got[key] as SessionState | undefined };
+}
+
+export const debouncedSaveSession = debounce(async (id: string, s: SessionState) => {
+  await chrome.storage.local.set({ [K_SESSION(id)]: s });
+}, 300);
+```
+
+### Pattern 5: Pure scoring + derived state via memoized selectors
+
+**What:** Scoring is a pure function in `src/scoring/`. The store exposes raw inputs (`questionScore`, `topicOverride`, active `sections`). Components subscribe to memoized selectors (`useTopicMark(itemId)`, `useGroupMark(groupId)`, `useOverallMark()`) that call the pure functions.
+
+**When to use:** Whenever derived state would otherwise be duplicated or stored. The prototype recomputes inline in `renderAll`; React equivalent is selectors + memo.
+
+**Trade-offs:**
+- Pro: Single source of truth (the raw scores); zero risk of drift; selectors are trivially testable.
+- Con: Naive selectors re-fire on any score change. Use `useShallow` / per-topic subscriptions to scope updates.
+
+**Example:**
+
+```ts
+// src/scoring/topic.ts — pure
+export function computeTopicMark(
+  questions: Question[],
+  questionScore: Record<string, number>,
+  override?: number,
+): { mark: number | null; weight: number } {
+  if (override != null) return { mark: override, weight: 1 };
+  let num = 0, den = 0;
+  for (const q of questions) {
+    const s = questionScore[q.id];
+    if (s == null) continue;
+    const w = WEIGHTS[q.level]; // 1.00 / 1.25 / 1.50 / 1.75
+    num += s * w; den += w;
+  }
+  return { mark: den ? num / den : null, weight: den };
+}
+
+// src/hooks/useTopicMark.ts
+export function useTopicMark(itemId: string) {
+  return useStore(useShallow((s) => {
+    const topic = selectTopic(s, itemId);
+    return computeTopicMark(
+      [...topic.questions, ...(s.customQuestions[itemId] ?? [])],
+      s.questionScore,
+      s.topicOverride[itemId],
+    );
+  }));
+}
+```
+
+### Pattern 6: Pure YAML codec with explicit schemas
+
+**What:** `encode(state) → string` and `decode(text) → DecodedYaml` are pure. Each supported YAML shape (current structural, legacy progress-only) has an explicit schema (Zod or hand-rolled validator). Decode tries schemas in order and returns a tagged union: `{ kind: 'structural', data } | { kind: 'legacy', data } | { kind: 'error', issues }`.
+
+**When to use:** Whenever import surface accepts multiple historical formats, as this app must.
+
+**Trade-offs:**
+- Pro: Clear error reporting; format support evolves by adding a schema, not by mutating decode logic; encode and decode are unit-testable without React or storage.
+- Con: Slightly more verbose than `yaml.load` + duck-typing.
+
+## Data Flow
+
+### Request Flow (user interactions)
+
+```
+[User adjusts question slider]
+        ↓
+[QuestionRow]──onChange──►[scoresSlice.setQuestionScore(id, value)]
+        ↓                                ↓
+   (re-render)                  [persist middleware queues write]
+        ↓                                ↓
+[useTopicMark(itemId)]            [debounced 300ms]
+        ↓                                ↓
+[computeTopicMark()]              [chrome.storage.local.set({ session:<id>: ... })]
+        ↓
+[TopicCard re-renders with new mark]
+        ↓
+[GroupCard re-renders aggregate]
+        ↓
+[ToolbarBar re-renders overall]
+```
+
+### State Management
+
+```
+                         ┌─────────────────────────┐
+                         │   Zustand store         │
+                         │  (slices + selectors)   │
+                         └──────────┬──────────────┘
+                                    │ subscribe
+        ┌───────────────────────────┼───────────────────────────┐
+        ▼                           ▼                           ▼
+[Sidebar components]      [Tree components]          [Modal components]
+        │                           │                           │
+        │ dispatch                  │ dispatch                  │ dispatch
+        ▼                           ▼                           ▼
+   uiSlice actions          scoresSlice/notesSlice    candidateSlice/sessionsSlice
+                                    │
+                                    ▼
+                         ┌─────────────────────────┐
+                         │ persist middleware      │
+                         │ - filters slice subset  │
+                         │ - debounces 300ms       │
+                         │ - writes session:<id>   │
+                         └──────────┬──────────────┘
+                                    ▼
+                            chrome.storage.local
+```
+
+### Key Data Flows
+
+1. **Boot:** `bootstrap()` reads manifest key → reads active session key → runs `migrate()` → hydrates store → React mounts. Legacy `localStorage[STORE_KEY]` is read once and folded into manifest+session shape during migration v4→v5; the legacy key is then deleted to make the import idempotent.
+2. **Score change:** `QuestionRow.onChange` → `scoresSlice.setQuestionScore(qid, value)` → store re-renders subscribed components → persist middleware schedules write to `session:<activeId>` only.
+3. **Filter / search:** Input writes to `uiSlice`. `useFilteredSections()` selector memoizes on `(search, levels, filters, hideReviewed, sections, scores)` and returns the visible tree. The tree maps over the memoized result; no filter logic in render.
+4. **Session switch:** `SessionSwitcherModal` calls `sessions.switchTo(id)` → flushes pending writes for old session → reads `session:<id>` → re-hydrates session-scoped slices (scores, notes, candidate, custom, ui-filters). The bank slice (imported structure) is per-session. UI prefs (sidebar collapsed, dark mode) are global, stored under `manifest`.
+5. **YAML import:** File picker → text → `yaml.decode()` → tagged union dispatched to `sessions.applyImport(active, decoded)`. If `kind === 'structural'`, replaces `bankSlice.sections`; if `kind === 'legacy'`, applies progress-only into `scoresSlice`/`notesSlice`/`candidateSlice` against the *current* bank, deriving IDs by `slugify(group)+slugify(topic)+hash(question)` to align with old exports.
+6. **YAML export:** `yaml.encode(activeSession)` runs synchronously off the store; downloaded via `<a download>` or `URL.createObjectURL`.
+7. **AI prompt:** `buildPrompt(activeSession)` runs synchronously when the modal opens; result is the modal's initial `value`. The modal can edit before copy.
+8. **Reset all:** Confirm modal → `sessions.resetActive()` → writes default session shape under same id → triggers full re-render via store mutation.
+
+### Filter ↔ tree interaction
+
+The tree is rendered from a single memoized `visibleTree` selector:
+
+```ts
+visibleTree = sections
+  .map(group => ({
+    ...group,
+    topics: group.topics
+      .filter(t => matchesSearch(t, search))
+      .filter(t => matchesLevels(t, levels))   // any question matches
+      .filter(t => !hideReviewed || !isReviewed(t, scores, overrides))
+  }))
+  .filter(g => filters.length === 0 || filters.includes(g.id))
+  .filter(g => g.topics.length > 0)
+```
+
+This runs once per relevant store change, not per row. Per-row computations (topic mark, badge counts) come from per-row hooks that subscribe with `useShallow` to the minimum slice they need.
+
+## Scaling Considerations
+
+This is a single-user, browser-local tool. "Scale" means user content growth, not concurrent users.
+
+| Scale | Architecture Adjustments |
+|-------|--------------------------|
+| 1 session, ~1000 questions (today) | Plain Zustand + memoized selectors. No virtualization. |
+| 10 sessions × ~1000 questions | Sharded keys (already designed in). No change needed; per-session writes stay small. |
+| 50+ sessions or imported banks ≫ 1000 questions | Virtualize the tree (`@tanstack/react-virtual`). Lazy-load non-active sessions (read manifest only, fetch session blob on switch). |
+| Storage approaches `chrome.storage.local`'s ~10MB quota | Add an in-app "archive session" action that exports to YAML and clears the slot. Surface a quota warning. |
+
+### Scaling Priorities
+
+1. **First bottleneck:** Per-keystroke re-render of the whole tree on search input. Mitigation: debounced search input (~150ms) + memoized `visibleTree` selector + `React.memo` on `TopicCard`/`QuestionRow`.
+2. **Second bottleneck:** Storage write amplification when sliding a score (slider fires `onChange` rapidly). Mitigation: 300ms debounce on the persist middleware (matches prototype), and per-session sharding so a write touches only `session:<id>`.
+3. **Third bottleneck:** Boot read time if a user imports a massive bank. Mitigation: read manifest synchronously, render skeleton, then stream the session payload. Not needed for v1 but cheap to add.
+
+## Anti-Patterns
+
+### Anti-Pattern 1: Storing app state in service worker globals
+
+**What people do:** Cache `state` in a `let state = ...` at the top of `background.ts`, expecting it to persist between clicks.
+**Why it's wrong:** MV3 workers are suspended after idle; the next click instantiates a fresh worker, globals are gone, and bugs are non-deterministic.
+**Do this instead:** SW reads/writes through `chrome.storage` if it needs anything at all. For this app, the SW should not touch state — just open the tab.
+
+### Anti-Pattern 2: Putting `chrome.storage.local.set` in component event handlers
+
+**What people do:** `onChange={(v) => { setScore(v); chrome.storage.local.set({ state: {...} }); }}`
+**Why it's wrong:** Couples UI to platform API; breaks unit tests; fires on every keystroke; can race with the migration on boot.
+**Do this instead:** Components dispatch to the store; the store's persist middleware owns all writes and debounces them.
+
+### Anti-Pattern 3: Treating the bank as state
+
+**What people do:** Load `DEFAULT_SECTIONS` into the store and persist it.
+**Why it's wrong:** Bloats every storage write by ~100KB+, makes migrations expensive, defeats tree-shaking, and means updating the built-in bank in a release requires a migration.
+**Do this instead:** `DEFAULT_SECTIONS` is a build-time constant import. State stores only `sections: Section[] | null` — when null, the UI reads `DEFAULT_SECTIONS`. Imported structures override.
+
+### Anti-Pattern 4: Single mega-write of the full state on every change
+
+**What people do:** One `chrome.storage.local.set({ state })` for everything.
+**Why it's wrong:** Every score change rewrites the entire payload (including bank if it ended up there). Slow, hits quota faster, blocks SW work.
+**Do this instead:** Sharded keys (`session:<id>`), per-key debounce, dirty-set tracking.
+
+### Anti-Pattern 5: Hand-coding ad-hoc migrations inline in `loadState`
+
+**What people do:** A growing `if (!s.foo) s.foo = ...` block — exactly what the prototype's `migrate()` started doing.
+**Why it's wrong:** Untestable, drift-prone, indistinguishable from default-merging, can't represent destructive changes (renames, deletions).
+**Do this instead:** Ordered, versioned `vN_to_vN1` functions; each unit-tested with fixtures from real prior payloads.
+
+### Anti-Pattern 6: Using `default_popup` to "open a tab"
+
+**What people do:** Set `action.default_popup` to an HTML file that immediately does `chrome.tabs.create` and `window.close()`.
+**Why it's wrong:** Causes a visible popup flash; requires popup-sized window registration; fragile across Chrome versions; can fail silently if user pref blocks the popup. Also unnecessary: `chrome.action.onClicked` exists precisely for this case (and only fires when `default_popup` is absent).
+**Do this instead:** Omit `default_popup`. Use the SW's `chrome.action.onClicked`. This is the canonical MV3 pattern for action-opens-tab.
+
+### Anti-Pattern 7: Print rules scattered across component CSS
+
+**What people do:** Add `@media print { display: none; }` to each component file.
+**Why it's wrong:** Print behavior is global, not per-component; rules collide, are hard to audit, and break when components are renamed.
+**Do this instead:** One global `print.css` imported once. Use stable utility classes (`.no-print`, `.print-expand`) on shells. Verify with `Ctrl+P` in the loaded extension as part of v1 acceptance.
+
+## Integration Points
+
+### External Services
+
+| Service | Integration Pattern | Notes |
+|---------|---------------------|-------|
+| Chrome Web Store | Static `manifest.json`, packaged `.zip` from `dist/`; review submission | Permissions must be justified: `storage` is the only one needed. No `host_permissions`, no `tabs` (the `chrome.tabs.create` call needs no permission), no `activeTab`. Minimal permission set ⇒ fastest review. |
+| `chrome.storage.local` | Promise-wrapped adapter; ~10MB quota | Quota is per-extension. Bank stays out of storage to keep writes small. |
+| `chrome.action` | Declared in manifest; `onClicked` in SW | Fires only when `default_popup` is absent. |
+| `chrome.tabs` | `chrome.tabs.create` from SW | Does *not* require the `tabs` permission for create/update with our own URL. Querying tabs to focus an existing one also works without `tabs` permission when matching by URL inside the extension origin. |
+| `chrome.runtime` | `getURL('src/app/app.html')` to build the tab URL | Works without permission. |
+
+### Internal Boundaries
+
+| Boundary | Communication | Notes |
+|----------|---------------|-------|
+| SW ↔ Tab | None at runtime (after `chrome.tabs.create`). | Deliberate — no message passing simplifies architecture and reduces attack surface. |
+| Components ↔ Store | Hooks (`useStore`, `useShallow` selectors); dispatch via slice actions. | No prop drilling for global state; props for local UI concerns only. |
+| Store ↔ Storage | Persist middleware only. Components never import the storage adapter. | Enforced by ESLint rule restricting imports of `src/storage/*` to `src/store/persist.ts` and `src/app/bootstrap.ts`. |
+| YAML codec ↔ Store | Adapter functions in `src/sessions/service.ts`. The codec is pure; the service mediates side effects (storage write, store mutation). | Keeps the codec testable with plain fixtures. |
+| Scoring ↔ everything | Pure imports only. | Scoring imports nothing from React, store, or storage. |
+| AI prompt ↔ Store | Service reads a snapshot via `store.getState()` and passes a plain object to the pure builder. | No subscription; modal renders the resulting string. |
+
+## Manifest Layout (concrete decision)
+
+```json
+{
+  "manifest_version": 3,
+  "name": "Interviewer Checklist",
+  "version": "1.0.0",
+  "description": "Weighted tech-stack interview scoring, notes, and YAML export — fully local.",
+  "icons": {
+    "16": "icons/icon-16.png",
+    "32": "icons/icon-32.png",
+    "48": "icons/icon-48.png",
+    "128": "icons/icon-128.png"
+  },
+  "action": {
+    "default_title": "Open Interviewer Checklist",
+    "default_icon": {
+      "16": "icons/icon-16.png",
+      "32": "icons/icon-32.png"
+    }
+  },
+  "background": {
+    "service_worker": "background.js",
+    "type": "module"
+  },
+  "permissions": ["storage"],
+  "minimum_chrome_version": "116"
+}
+```
+
+**Strictly required for our pattern:** `manifest_version`, `name`, `version`, `action` (without `default_popup`), `background.service_worker`. `permissions: ["storage"]` is required because we use `chrome.storage.local`.
+
+**Permissions cost in CWS review terms:**
+
+| Permission | Used? | Review cost |
+|------------|-------|-------------|
+| `storage` | YES | Trivial — universally granted; no justification beyond "persist user data locally." |
+| `tabs` | NO — avoid | Triggers a "read browsing activity" warning on install and a manual review step. We don't need it: `chrome.tabs.create({url})` for our own extension URL and `chrome.tabs.query({url: chrome.runtime.getURL(...)})` work without it. |
+| `activeTab` | NO | Not relevant — no interaction with arbitrary pages. |
+| `host_permissions` | NO | Any entry triggers expanded review and a scary install warning. We have none. |
+| `scripting` | NO | Not needed; no content scripts. |
+| `notifications`, `alarms`, `clipboardWrite` | NO | Clipboard copy in the AI prompt modal uses the standard `navigator.clipboard.writeText` API in a focused document — no permission needed. |
+
+**`web_accessible_resources`:** not required. `app.html` is opened by our own SW via `chrome.runtime.getURL`; it does not need to be reachable from arbitrary web pages. Omitting it tightens the security posture and shortens review.
+
+## Background Service Worker (concrete decision)
+
+**Decision: USE a minimal event-driven service worker. Do NOT use `default_popup`.**
+
+Comparison of the two approaches the question raised:
+
+| Approach | Pros | Cons | Verdict |
+|----------|------|------|---------|
+| **SW with `chrome.action.onClicked` → `chrome.tabs.create`** | Canonical MV3 pattern; no popup flash; can focus existing tab; trivial code (~20 LOC); no extra permissions | Adds a service-worker file to the build; CWS reviewers expect it (a non-issue) | **Chosen.** |
+| **`action.default_popup` → 1×1 page that calls `chrome.tabs.create` and `window.close()`** | No SW file | Visible popup flash; relies on the popup actually loading before `tabs.create` resolves; `chrome.action.onClicked` does not fire when `default_popup` is set (so there's no fallback); awkward in CWS screenshots | Rejected. |
+
+The SW is event-driven only. No persistent state, no message passing, no caches, no alarms. It exists to do exactly one thing.
+
+## Storage Layer (concrete decision)
+
+**Library choice: Zustand with a custom `chrome.storage.local` persister.**
+
+Comparison:
+
+| Option | Pros | Cons | Verdict |
+|--------|------|------|---------|
+| **Zustand + custom persist** | Tiny (~1KB); ergonomic slices; well-documented `persist` middleware that already supports custom storage with `getItem/setItem/removeItem`; trivial to debounce | One dependency to learn | **Chosen.** |
+| Jotai + custom storage | Atom-level granularity is nice; fine for derived state | Persisting many atoms to chrome.storage requires per-atom plumbing or `atomWithStorage`; sharding sessions across atoms is awkward | Rejected — more overhead for this state shape. |
+| Plain `useReducer` + storage adapter | Zero deps; transparent | Re-renders are coarse; selectors need hand-rolled `useSyncExternalStore`; sliced state is awkward; we'd reinvent Zustand poorly | Rejected. |
+| Redux Toolkit + redux-persist | Familiar; mature | ~4x bigger; ceremony per slice; chrome.storage adapter needs a custom transform | Rejected — overkill for a single-user tool. |
+
+**Schema versioning pattern (formalized):**
+
+1. Single source of truth for the current version: `SCHEMA_VERSION` in `src/storage/migrate.ts`.
+2. Each migration is `(prev: unknown) => next` in its own file under `src/storage/migrations/`. No migration ever mutates its input.
+3. Migrations form an ordered array; `migrate()` walks `from → SCHEMA_VERSION - 1`.
+4. Every migration ships with a fixture test (`vN-to-vN1.test.ts`) that pins the input shape.
+5. Legacy `localStorage[STORE_KEY = 'tech-stack-checklist-v2']` is handled by the `v4 → v5` migration: it reads the legacy blob (if present), wraps it as session `default`, sets `activeSessionId = 'default'`, writes the new manifest, and `localStorage.removeItem(STORE_KEY)` to prevent reimport.
+6. Per-session shards live at `session:<id>`; the manifest at key `manifest` carries `{ schemaVersion, activeSessionId, sessions: { [id]: { name, createdAt, updatedAt } } }`.
+
+**Atomic writes (debounced):**
+
+- Zustand `subscribe` fires after every state change; the persister batches via a 300ms trailing debounce per shard.
+- On `beforeunload`, the persister flushes synchronously by issuing the queued `chrome.storage.local.set` and not awaiting (browser will complete the IPC; this is the standard MV3 pattern). This is the only flush hook needed because the tab is the only writer.
+- The persister also exposes `flushPending()` which `sessions.switchTo(id)` calls before swapping the active session, so no write to old-session-id leaks into new-session-id.
+
+## Component Boundaries (concrete)
+
+```
+App.tsx
+└── Shell
+    ├── Sidebar
+    │   ├── SearchGroup            (uiSlice.search)
+    │   ├── DifficultyGroup        (uiSlice.levels)        ─── shows live counts per level
+    │   ├── SectionsGroup          (uiSlice.filters)       ─── shows per-group mark
+    │   └── ActionsGroup           (sessions, candidate,
+    │                                YAML, AI prompt, reset)
+    ├── ContentArea
+    │   └── visibleTree.map(group =>
+    │         GroupCard
+    │           └── group.topics.map(topic =>
+    │                 TopicCard
+    │                   ├── TopicHeader (mark, override input, notes toggle)
+    │                   ├── NoteEditor   (notesSlice.cardComment)
+    │                   └── topic.questions.map(q =>
+    │                         QuestionRow
+    │                           ├── ScoreSlider     (scoresSlice.questionScore)
+    │                           ├── DifficultyBadge
+    │                           ├── NoteEditor      (notesSlice.questionComment)
+    │                           └── DeleteCustomBtn (customSlice.removeQuestion))
+    └── ModalRoot
+        ├── AiPromptModal          (reads snapshot, pure builder)
+        ├── CandidateModal         (candidateSlice)
+        ├── ResetConfirmModal      (sessions.resetActive)
+        └── SessionSwitcherModal   (sessionsSlice)
+```
+
+**Boundary rules:**
+
+- `Shell` and `Sidebar` know the slices exist; `TopicCard` / `QuestionRow` only know their hooks (`useTopicMark`, `useQuestionScore`). Containers vs. presentational is enforced by directory: anything in `tree/` is a leaf that talks via hooks only.
+- Modals are rendered by `ModalRoot`, which reads `uiSlice.openModal` and switches. Only one modal at a time.
+- The print stylesheet adds `.print-expand` to `GroupCard`/`TopicCard` and `.no-print` to `Sidebar`, `ToolbarBar`, and modal close buttons. No component imports `print.css` directly; it's imported once in `main.tsx`.
+
+## AI Prompt Generator (concrete)
+
+**Pure function in `src/ai/promptBuilder.ts`.**
+
+```ts
+export function buildPrompt(input: {
+  candidate: Candidate;
+  sections: Section[];
+  questionScore: Record<string, number>;
+  topicOverride: Record<string, number>;
+  notes: { topic: Record<string, string>; question: Record<string, string> };
+  weights: typeof WEIGHTS;
+}): string { /* ... */ }
+```
+
+Lives outside React. The `AiPromptModal` calls it once on open with a snapshot from `store.getState()`. The returned string is editable text in a `<textarea>`. Copy uses `navigator.clipboard.writeText` with a manual-select fallback (the `<textarea>` is already selected on open).
+
+Why a function and not a hook: the prompt is recomputed only on modal open, not on each store change. A hook would either over-subscribe (recomputing on every score slide while the modal is closed) or under-subscribe (stale on open). Snapshot-on-open is the right model.
+
+## YAML Layer (concrete)
+
+**One pure module `src/yaml/codec.ts` plus per-format schemas.**
+
+```ts
+type Decoded =
+  | { kind: 'structural'; data: StructuralYaml }
+  | { kind: 'legacyProgress'; data: LegacyProgressYaml }
+  | { kind: 'error'; issues: string[] };
+
+export function decode(text: string): Decoded;
+export function encode(session: SessionState): string;
+```
+
+Stability across schema migrations:
+
+- The YAML schema is *not* coupled to the storage schema. Storage migrations change internal shape; YAML schemas change only when we deliberately add fields.
+- `encode` always emits the current `StructuralYaml` shape. Internal field renames are handled by mapping in `encode`/`decode`, not by mutating YAML.
+- A `yamlVersion` field at the top of each export pins the schema; `decode` selects the right parser by version (defaulting to "legacy progress-only" if `yamlVersion` is absent — matches existing exports).
+- New YAML fields are additive: parsers tolerate unknown keys, and `decode` fills missing keys with defaults.
+- ID derivation (`deriveId(group, topic, question)`) is a pure helper in `src/yaml/derive.ts`, used by both encode and decode so import-then-export is a fixed point.
+
+## Print Stylesheet (concrete)
+
+`src/styles/print.css` — one file, imported once in `main.tsx`:
+
+```css
+@media print {
+  .no-print { display: none !important; }
+  body, html { background: white !important; color: black !important; }
+  .group-card, .topic-card { break-inside: avoid; }
+  .topic-card[data-collapsed="true"] .topic-body { display: block !important; }
+  .question-row[data-hidden="true"] { display: flex !important; }
+  details:not([open]) > * { display: revert !important; }
+  textarea { border: 1px solid #ccc; overflow: visible; height: auto !important; }
+}
+```
+
+Components mark themselves with stable selectors (`.no-print` on sidebar/toolbar/modal-close, `.group-card`/`.topic-card` on shells, `data-collapsed`/`data-hidden` attributes that print can override). No per-component print rules; one global file owns the print contract.
+
+## Suggested Build Order (vertical-slice for Phase 1)
+
+Minimum viable extension surface, in dependency order:
+
+1. **Vite + crxjs scaffolding** (vite.config.ts, manifest.json, icons, empty SW, empty `app.html` → "Hello").
+   *Acceptance:* extension loads unpacked; clicking the toolbar icon opens a tab with "Hello."
+2. **Bank module** (`src/bank/`) — port `DEFAULT_SECTIONS` from the prototype to typed TS. Pure data, no UI.
+   *Acceptance:* `import { DEFAULT_SECTIONS } from './bank'` returns the expected groups/topics/questions.
+3. **Scoring engine** (`src/scoring/`) — pure functions with unit tests, including weights.
+   *Acceptance:* tests for topic mark (weighted), group mark (mean), overall mark (mean), override behavior.
+4. **Storage adapter + migrate pipeline** (`src/storage/`) — Promise wrappers, key constants, `migrate()` with v1→current chain, legacy `localStorage` reader.
+   *Acceptance:* given a legacy v4 fixture in `localStorage`, `bootstrap()` produces the new manifest + session-default shape and the legacy key is gone.
+5. **Zustand store + persist middleware** (`src/store/`) — slices for ui, scores, notes, candidate, custom, bank, sessions, schemaVersion. Custom persister talking to the storage adapter.
+   *Acceptance:* mutating a slice triggers a debounced `chrome.storage.local.set` to the right shard.
+6. **Shell + Sidebar (filters + actions) + ContentArea (read-only tree)** — render the visible tree from selectors. No scoring inputs yet.
+   *Acceptance:* the prototype's content tree appears, search/levels/sections filters work, dark mode toggles, sidebar collapse persists.
+7. **Score sliders + topic marks live** — wire `QuestionRow.ScoreSlider` and per-topic mark display. Override input on topic header.
+   *Acceptance:* moving a slider updates topic mark immediately and persists.
+8. **Notes (topic + question), candidate modal, custom questions** — round out the data model.
+   *Acceptance:* feature parity for state changes vs. prototype.
+9. **YAML import/export** — codec, schemas, ID derivation; UI from the Actions group.
+   *Acceptance:* round-trip a prototype's YAML export (both structural and legacy progress-only).
+10. **AI prompt modal** — pure builder + modal UI + copy.
+    *Acceptance:* prompt matches prototype output for an identical state fixture.
+11. **Multiple sessions + switcher modal** — sessions registry, switch/duplicate/rename/delete.
+    *Acceptance:* two independent sessions persist independently; YAML export is per-active-session.
+12. **Print stylesheet + keyboard shortcuts + accessibility polish** — final.
+    *Acceptance:* `Ctrl+P` produces a clean printable layout; `/`, `\`, `Esc` shortcuts; ARIA on all controls.
+13. **CWS submission prep** — privacy policy page, screenshots, store listing copy, `dist.zip`.
+
+Steps 1–5 are infrastructure with no UI value; steps 6–7 are the smallest vertical slice that visibly *is* the product. If we want an earlier user-facing milestone, ship 1+2+6 (read-only tree with no scoring) as an internal preview before committing to the storage shape.
+
+## Sources
+
+- Prototype `stack-checklist.html` (lines 1949–2017: `STORE_KEY`, `SCHEMA_VERSION`, `defaultState`, `saveStateDebounced`, `migrate`, `loadState`) — behavioral source of truth for state shape, migration intent, and 300ms debounce.
+- `.planning/PROJECT.md` — surface decision (action → full tab), permissions posture (`storage` only), `chrome.storage.local`-only constraint, multi-session requirement.
+- Chrome Extensions MV3 reference (developer.chrome.com): `chrome.action`, `chrome.tabs.create`, `chrome.storage.local`, service worker lifecycle — confirms `onClicked` fires only when `default_popup` is absent and SWs are event-driven with no persistent globals.
+- Zustand `persist` middleware docs — confirms custom storage shape `{ getItem, setItem, removeItem }` and partialize for per-slice persistence.
+- `@crxjs/vite-plugin` — standard Vite + MV3 build path for React extensions.
+
+---
+*Architecture research for: Chrome MV3 + React/TS/Vite extension (interviewer-checklist)*
+*Researched: 2026-06-16*

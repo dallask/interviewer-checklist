@@ -37,7 +37,12 @@ Decimal phases appear between their surrounding integers in numeric order.
   3. The built `dist/manifest.json` declares only `"permissions": ["storage"]` with no `default_popup`, `host_permissions`, or `scripting`
   4. CI rejects any build whose `dist/` contains `eval`, `unsafe-eval`, inline scripts, or `localhost`/`vite-hmr` references
   5. The GH Actions release workflow can publish the extension zip via `chrome-webstore-upload-cli`
-**Plans**: TBD
+**Plans**: 3 plans
+
+Plans:
+- [ ] 01-01-PLAN.md — Project init: npm install, TypeScript + Biome + Vitest configuration
+- [ ] 01-02-PLAN.md — Extension core: manifest, Vite config, app scaffold, service worker + smoke test
+- [ ] 01-03-PLAN.md — Safety + CI: dist check script, GH Actions workflows, Chrome smoke test
 
 ### Phase 2: Question Bank & Scoring Engine
 **Goal**: The complete built-in question bank and scoring engine exist as pure, tested modules that define the behavioral contract for all downstream UI
@@ -152,7 +157,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 →
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Foundation & Scaffolding | 0/? | Not started | - |
+| 1. Foundation & Scaffolding | 0/3 | Not started | - |
 | 2. Question Bank & Scoring Engine | 0/? | Not started | - |
 | 3. Storage Layer, Migration & Bootstrap | 0/? | Not started | - |
 | 4. Shell, Sidebar & Read-Only Content Tree | 0/? | Not started | - |

@@ -1,11 +1,11 @@
 // scripts/check-dist.js
 // Runs after `npm run build`; called by `npm run ci:check-dist`
-import { readdirSync, readFileSync } from 'node:fs';
+import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 
 const DIST = 'dist';
 const FORBIDDEN_PATTERNS = [/eval\(/, /new Function\(/, /unsafe-eval/, /<script[^>]*>[^<]/];
-const DEV_PATTERNS = [/localhost/, /127\.0\.0\.1/, /vite-hmr/, /@vite\/client/, /5173/];
+const DEV_PATTERNS = [/localhost/, /127\.0\.0\.1/, /vite-hmr/, /@vite\/client/, /localhost:5173/];
 
 function checkFile(filepath) {
   const content = readFileSync(filepath, 'utf-8');
@@ -29,6 +29,12 @@ function walk(dir) {
     if (entry.isDirectory()) walk(path);
     else if (/\.(js|html)$/.test(entry.name)) checkFile(path);
   }
+}
+
+// Guard: dist/ must exist before any reads
+if (!existsSync(DIST)) {
+  console.error(`FAIL: dist/ directory not found. Run \`npm run build\` first.`);
+  process.exit(1);
 }
 
 // Check manifest permissions

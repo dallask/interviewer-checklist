@@ -7,11 +7,11 @@
 
 ### Foundation (FOUND)
 
-- [ ] **FOUND-01**: Chrome MV3 extension scaffold (CRXJS 2.6 + Vite 8 + React 19 + TypeScript + Biome 2.3) builds cleanly for production
-- [ ] **FOUND-02**: `manifest.json` declares only `"permissions": ["storage"]`, no `default_popup`, no `host_permissions`, no `scripting`
-- [ ] **FOUND-03**: Service worker (≤30 LOC, event-driven, stateless) opens a full-page tab (`chrome.tabs.create`) on toolbar action click
-- [ ] **FOUND-04**: CI guards reject builds containing `eval`, `unsafe-eval`, inline scripts, or `localhost`/`vite-hmr` references in `dist/`
-- [ ] **FOUND-05**: GH Actions release workflow publishes the extension zip via `chrome-webstore-upload-cli`
+- [x] **FOUND-01**: Chrome MV3 extension scaffold (CRXJS 2.6 + Vite 8 + React 19 + TypeScript + Biome 2.3) builds cleanly for production
+- [x] **FOUND-02**: `manifest.json` declares only `"permissions": ["storage"]`, no `default_popup`, no `host_permissions`, no `scripting`
+- [x] **FOUND-03**: Service worker (≤30 LOC, event-driven, stateless) opens a full-page tab (`chrome.tabs.create`) on toolbar action click
+- [x] **FOUND-04**: CI guards reject builds containing `eval`, `unsafe-eval`, inline scripts, or `localhost`/`vite-hmr` references in `dist/`
+- [x] **FOUND-05**: GH Actions release workflow publishes the extension zip via `chrome-webstore-upload-cli`
 
 ### Question Bank & Scoring (BANK)
 
@@ -140,6 +140,7 @@ Features deferred until v1 ships and real usage validates direction.
 | CWS-01–05 | Phase 10 | Pending |
 
 **Coverage:**
+
 - v1 requirements: 49 total
 - Mapped to phases: 49
 - Unmapped: 0 ✓

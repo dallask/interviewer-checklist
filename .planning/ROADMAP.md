@@ -45,7 +45,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 Plans:
 **Wave 1**
 
-- [ ] 01-01-PLAN.md — Project init: npm install, TypeScript + Biome + Vitest configuration
+- [x] 01-01-PLAN.md — Project init: npm install, TypeScript + Biome + Vitest configuration
 
 **Wave 2** *(blocked on Wave 1 completion)*
 
@@ -195,7 +195,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 →
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Foundation & Scaffolding | 0/3 | Not started | - |
+| 1. Foundation & Scaffolding | 1/3 | In Progress|  |
 | 2. Question Bank & Scoring Engine | 0/? | Not started | - |
 | 3. Storage Layer, Migration & Bootstrap | 0/? | Not started | - |
 | 4. Shell, Sidebar & Read-Only Content Tree | 0/? | Not started | - |

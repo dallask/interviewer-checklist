@@ -1,0 +1,25 @@
+# Build output
+dist/
+*.zip
+
+# Dependencies
+node_modules/
+
+# Local env / secrets
+.env
+.env.local
+.env.*.local
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editors
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Chrome extension signing key (CRITICAL: never commit — loss is unrecoverable)
+*.pem
+key.pem

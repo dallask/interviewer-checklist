@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest';
+import { describe, expect, it } from 'vitest';
 import { DEFAULT_SECTIONS } from './index.js';
 
 const VALID_LEVELS = new Set(['novice', 'intermediate', 'advanced', 'expert']);

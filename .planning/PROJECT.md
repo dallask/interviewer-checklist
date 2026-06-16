@@ -1,5 +1,21 @@
 # Interviewer Checklist — Chrome Extension
 
+## Current Milestone: v1.0 Chrome Extension Launch
+
+**Goal:** Build and ship the complete Interviewer Checklist Chrome MV3 extension — full feature parity with the stack-checklist.html prototype — to the public Chrome Web Store.
+
+**Target features:**
+- Foundation & CI scaffold (CRXJS + Vite + React + TS + Biome)
+- Question bank (9 groups / ~86 topics / 1000+ questions) + scoring engine
+- Storage layer with schema migration, auto-snapshot, debounced flush
+- Shell, sidebar, dark mode, accessibility, search/filter UI
+- Scoring UI, notes, candidate details modal, custom questions
+- Multiple named sessions with switcher
+- YAML export/import (structural + legacy formats)
+- AI candidate-feedback prompt builder
+- Polish: print, keyboard shortcuts, welcome/onboarding, update banner
+- Chrome Web Store submission (privacy policy, screenshots, listing)
+
 ## What This Is
 
 A Chrome Manifest V3 extension that opens a full-page "Tech Stack — Interview Checklist" tab when the user clicks the toolbar icon. It is a React + TypeScript rebuild of the existing single-file prototype `stack-checklist.html` (3,053 lines), distributed via the Chrome Web Store and used by two audiences with the same UI: interviewers scoring SWE candidates against a weighted tech-stack rubric, and candidates self-assessing while prepping for interviews.
@@ -101,4 +117,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-06-16 after initialization*
+*Last updated: 2026-06-16 after milestone v1.0 started*

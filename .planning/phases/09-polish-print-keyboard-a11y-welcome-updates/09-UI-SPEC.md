@@ -45,7 +45,7 @@ Declared values (must be multiples of 4):
 Exceptions:
 - Update banner vertical padding: 8px top + 8px bottom (py-2) — matches UndoToast pattern
 - Dismiss button touch target: minimum 44px height on welcome page CTAs
-- Welcome page CTA buttons: py-3 px-6 (12px / 24px) for prominent tap target
+- Welcome page CTA buttons: py-4 px-6 (16px / 24px) for prominent tap target — 32px vertical padding plus text height exceeds 44px touch target minimum
 
 Source: ActionsGroup.tsx (px-3 py-2), UndoToast.tsx (py-2 px-4), ResetConfirmDialog.tsx (p-6), StorageToast.tsx (px-4 py-3).
 
@@ -62,7 +62,7 @@ Source: ActionsGroup.tsx (px-3 py-2), UndoToast.tsx (py-2 px-4), ResetConfirmDia
 
 Notes:
 - Body (14px/400) is the established app default, used in all existing buttons and paragraph text — source: ResetConfirmDialog.tsx (`text-sm font-normal`), ActionsGroup.tsx (`text-sm`).
-- Label (12px/400) used for metadata text — source: ActionsGroup.tsx active session name (`text-xs font-normal`), UndoToast.tsx (`text-xs font-normal`).
+- Label (12px/400) used for metadata text — source: ActionsGroup.tsx active session name (`text-xs font-normal`), UndoToast.tsx (`text-xs font-normal`). To reinforce the 2px size distinction from body (14px), label text must also use `text-gray-400 dark:text-gray-500` color differentiation, not body's `text-gray-700 dark:text-gray-300`.
 - Heading (16px/600) used for modal titles — source: ResetConfirmDialog.tsx (`text-base font-semibold`).
 - Display (20px/600) used for welcome page section headings only. Default — no existing precedent at this size, but consistent with 4-step type scale.
 
@@ -137,7 +137,7 @@ A standalone full-page tab. React or static HTML — Claude's discretion based o
 
 **CTA:**
 - Primary button — "Open the extension" (opens the extension tab via `chrome.tabs.create`):
-  `bg-blue-600 text-white text-base font-semibold px-6 py-3 rounded hover:bg-blue-700 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none`
+  `bg-blue-600 text-white text-base font-semibold px-6 py-4 rounded hover:bg-blue-700 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none`
 - Secondary link — "View demo session" (switches to the seeded demo session already in storage):
   `text-blue-600 dark:text-blue-400 text-base font-normal underline` below or beside the primary CTA
 

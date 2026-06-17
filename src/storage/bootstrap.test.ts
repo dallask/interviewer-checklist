@@ -369,8 +369,7 @@ describe('bootstrap() — Scenario B: V3 session round-trip', () => {
 
   // Verify the V3 fixture is valid per schema
   const _v3Check = v.safeParse(V3SessionSchema, VALID_V3_SESSION);
-  if (!_v3Check.success)
-    throw new Error('VALID_V3_SESSION fixture is invalid');
+  if (!_v3Check.success) throw new Error('VALID_V3_SESSION fixture is invalid');
 
   it('returns V3 session intact (scores preserved) when a V3 session is stored under a valid V2 manifest', async () => {
     chrome.storage.local.get.mockImplementation((keys, callback) => {
@@ -390,7 +389,9 @@ describe('bootstrap() — Scenario B: V3 session round-trip', () => {
 
     expect(result.sessions[SESSION_ID]).toBeDefined();
     // V3 session must be returned intact — scores must NOT be empty default
-    const session = result.sessions[SESSION_ID] as unknown as typeof VALID_V3_SESSION;
+    const session = result.sessions[
+      SESSION_ID
+    ] as unknown as typeof VALID_V3_SESSION;
     expect(session.scores).toEqual({ 't1-0': 8 });
   });
 
@@ -436,6 +437,8 @@ describe('bootstrap() — Scenario B: V3 session round-trip', () => {
     expect(result.sessions[SESSION_ID]).toBeDefined();
     expect(result.sessions[SESSION_ID].version).toBe(2);
     expect(result.sessions[SESSION_ID].id).toBe(SESSION_ID);
-    expect(result.sessions[SESSION_ID].questionScore).toEqual(defaultSession.questionScore);
+    expect(result.sessions[SESSION_ID].questionScore).toEqual(
+      defaultSession.questionScore,
+    );
   });
 });

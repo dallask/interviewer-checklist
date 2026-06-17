@@ -41,7 +41,9 @@ useAppStore.setState({
 // Hydrate scoring state from the active session — Phase 5 (notes/scores/customQuestions persist)
 if (activeSessionId) {
   const sessionRaw = await storageAdapter.read([`session:${activeSessionId}`]);
-  const session = sessionRaw[`session:${activeSessionId}`] as V3Session | undefined;
+  const session = sessionRaw[`session:${activeSessionId}`] as
+    | V3Session
+    | undefined;
   if (session) {
     useAppStore.setState({
       scores: session.scores ?? {},

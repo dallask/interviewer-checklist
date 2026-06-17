@@ -256,9 +256,13 @@ export function parseStructural(
 
   // Build canonical ID set from sections param for counting
   const topicIdSet = new Set<string>();
+  // CR-02: also build a per-topic question count map so we can reject out-of-bounds
+  // indices (e.g. index 9999 on a topic with 12 questions) before they reach storage.
+  const topicQuestionCount = new Map<string, number>();
   for (const section of sections) {
     for (const topic of section.items) {
       topicIdSet.add(topic.id);
+      topicQuestionCount.set(topic.id, topic.questions.length);
     }
   }
 
@@ -377,6 +381,12 @@ export function parseStructural(
               ? q.index
               : null;
           if (index === null) continue;
+
+          // CR-02: reject indices that exceed the canonical question count for this
+          // topic — a crafted YAML with index 9999 would otherwise write an orphan
+          // key that is never rendered and never cleaned up by resetAll().
+          const maxIndex = topicQuestionCount.get(topicId) ?? 0;
+          if (index >= maxIndex) continue;
 
           const questionKey = `${topicId}-${index}`;
           const score =

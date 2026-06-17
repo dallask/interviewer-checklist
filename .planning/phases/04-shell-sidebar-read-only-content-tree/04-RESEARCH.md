@@ -759,7 +759,7 @@ useEffect(() => () => {
 
 ---
 
-## Open Questions
+## Open Questions (RESOLVED)
 
 1. **Does CRXJS auto-bundle `theme.ts` when referenced in `app.html` as a `<script type="module">` entry?**
    - What we know: CRXJS uses Vite's multi-entry build system and already bundles `main.tsx` from `app.html`.

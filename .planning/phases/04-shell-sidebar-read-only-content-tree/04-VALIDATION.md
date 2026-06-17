@@ -3,7 +3,7 @@ phase: 4
 slug: shell-sidebar-read-only-content-tree
 status: draft
 nyquist_compliant: false
-wave_0_complete: false
+wave_0_complete: true
 created: 2026-06-17
 ---
 
@@ -34,10 +34,10 @@ created: 2026-06-17
 
 | Task ID | Plan | Wave | Requirement | Test Type | Automated Command | File Exists | Status |
 |---------|------|------|-------------|-----------|-------------------|-------------|--------|
-| 04-01-T1 | 04-01 | 1 | UI-06 | unit | `npx vitest run src/store/app.test.ts` | ❌ Wave 0 | ⬜ pending |
-| 04-01-T2 | 04-01 | 1 | UI-06 | unit | `npx vitest run src/utils/theme.test.ts` | ❌ Wave 0 | ⬜ pending |
-| 04-02-T1 | 04-02 | 2 | UI-01, UI-07 | unit+visual | `npx vitest run src/components/` | ❌ Wave 0 | ⬜ pending |
-| 04-02-T2 | 04-02 | 2 | UI-02, UI-03, UI-04, UI-05 | unit+visual | `npx vitest run src/components/` | ❌ Wave 0 | ⬜ pending |
+| 04-01-T1 | 04-01 | 1 | UI-06 | unit | `npx vitest run src/app/` | ❌ Wave 0 | ⬜ pending |
+| 04-01-T2 | 04-01 | 1 | UI-02, UI-03, UI-04, UI-05, UI-06 | unit | `npx vitest run src/store/ src/utils/` | ❌ Wave 0 | ⬜ pending |
+| 04-02-T1 | 04-02 | 2 | UI-01, UI-02, UI-03, UI-04, UI-05, UI-07, UI-08 | unit+visual | `npx vitest run src/components/` | ❌ Wave 0 | ⬜ pending |
+| 04-02-T2 | 04-02 | 2 | STORE-06 (ContentTree + StorageToast) | unit+visual | `npx vitest run src/components/` | ❌ Wave 0 | ⬜ pending |
 | 04-03-T1 | 04-03 | 3 | UI-01–UI-08 | visual | human + `npm run build` | ❌ Wave 0 | ⬜ pending |
 
 ---

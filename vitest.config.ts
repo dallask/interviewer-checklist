@@ -1,6 +1,15 @@
 import { defineConfig } from 'vitest/config';
+import path from 'node:path';
 
 export default defineConfig({
+  resolve: {
+    alias: {
+      // vitest-chrome ships a CJS main; force Vitest to use the ESM build instead.
+      'vitest-chrome': path.resolve(
+        'node_modules/vitest-chrome/lib/index.esm.js',
+      ),
+    },
+  },
   test: {
     environment: 'happy-dom',
     globals: true,
@@ -8,7 +17,7 @@ export default defineConfig({
     passWithNoTests: true,
     coverage: {
       provider: 'v8',
-      include: ['src/scoring/**'],
+      include: ['src/scoring/**', 'src/storage/**'],
       exclude: ['src/data/bank/**'],
       thresholds: {
         lines: 100,

@@ -1,4 +1,7 @@
+import { useRef } from 'react';
 import { useAppStore } from '../store/app.js';
+import { CandidateModal } from './CandidateModal.js';
+import { ResetConfirmDialog } from './ResetConfirmDialog.js';
 
 export function ActionsGroup() {
   const expandAll = useAppStore((s) => s.expandAll);
@@ -7,6 +10,9 @@ export function ActionsGroup() {
   const setHideMarked = useAppStore((s) => s.setHideMarked);
   const darkMode = useAppStore((s) => s.darkMode);
   const setDarkMode = useAppStore((s) => s.setDarkMode);
+
+  const candidateDialogRef = useRef<HTMLDialogElement>(null);
+  const resetDialogRef = useRef<HTMLDialogElement>(null);
 
   return (
     <div className="flex flex-col gap-2">
@@ -26,7 +32,7 @@ export function ActionsGroup() {
       </button>
       <button
         type="button"
-        aria-pressed={false}
+        aria-pressed={hideMarked}
         onClick={() => setHideMarked(!hideMarked)}
         className="w-full text-sm px-3 py-2 text-left text-gray-900 dark:text-gray-100 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none"
       >
@@ -40,6 +46,24 @@ export function ActionsGroup() {
       >
         {darkMode ? 'Light mode' : 'Dark mode'}
       </button>
+      <button
+        type="button"
+        id="open-candidate-modal"
+        onClick={() => candidateDialogRef.current?.showModal()}
+        className="w-full text-sm px-3 py-2 text-left text-gray-900 dark:text-gray-100 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none"
+      >
+        Candidate details
+      </button>
+      <button
+        type="button"
+        id="open-reset-dialog"
+        onClick={() => resetDialogRef.current?.showModal()}
+        className="w-full text-sm px-3 py-2 text-left text-red-600 dark:text-red-400 bg-gray-100 dark:bg-gray-700 hover:bg-red-50 dark:hover:bg-red-900/20 rounded focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none"
+      >
+        Reset all
+      </button>
+      <CandidateModal dialogRef={candidateDialogRef} />
+      <ResetConfirmDialog dialogRef={resetDialogRef} />
     </div>
   );
 }

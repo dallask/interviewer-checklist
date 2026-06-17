@@ -130,7 +130,9 @@ describe('TopicRow', () => {
     render(<TopicRow row={mockRow} />);
     const toggleBtn = screen.getByRole('button', { name: /add topic notes/i });
     fireEvent.click(toggleBtn);
-    const expandedBtn = screen.getByRole('button', { name: /hide topic notes/i });
+    const expandedBtn = screen.getByRole('button', {
+      name: /hide topic notes/i,
+    });
     expect(expandedBtn).toHaveAttribute('aria-expanded', 'true');
   });
 
@@ -162,6 +164,8 @@ describe('TopicRow', () => {
     fireEvent.click(addBtn);
     expect(screen.getByTestId('custom-question-form')).toBeInTheDocument();
     fireEvent.click(screen.getByRole('button', { name: 'Dismiss' }));
-    expect(screen.queryByTestId('custom-question-form')).not.toBeInTheDocument();
+    expect(
+      screen.queryByTestId('custom-question-form'),
+    ).not.toBeInTheDocument();
   });
 });

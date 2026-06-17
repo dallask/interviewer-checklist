@@ -1,7 +1,6 @@
-import { render, screen } from '@testing-library/react';
-import { fireEvent } from '@testing-library/react';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { fireEvent, render, screen } from '@testing-library/react';
 import { createRef } from 'react';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { ResetConfirmDialog } from './ResetConfirmDialog.js';
 
 vi.mock('../store/app.js', () => ({
@@ -14,8 +13,8 @@ vi.mock('../storage/index.js', () => ({
   },
 }));
 
-import { useAppStore } from '../store/app.js';
 import { storageAdapter } from '../storage/index.js';
+import { useAppStore } from '../store/app.js';
 
 const mockUseAppStore = useAppStore as unknown as ReturnType<typeof vi.fn>;
 const mockSnapshot = storageAdapter.snapshot as ReturnType<typeof vi.fn>;
@@ -97,7 +96,13 @@ describe('ResetConfirmDialog', () => {
   it('renders Keep scores and Reset buttons', () => {
     const ref = createRef<HTMLDialogElement>();
     render(<ResetConfirmDialog dialogRef={ref} />);
-    expect(screen.getByRole('button', { name: /keep scores/i })).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: /^reset$/i })).toBeInTheDocument();
+    // Dialog must be open for accessibility tree to expose buttons inside it
+    ref.current?.showModal();
+    expect(
+      screen.getByRole('button', { name: /keep scores/i }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: /^reset$/i }),
+    ).toBeInTheDocument();
   });
 });

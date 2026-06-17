@@ -46,7 +46,7 @@ describe('ActionsGroup', () => {
     expect(collapseAll).toHaveBeenCalledTimes(1);
   });
 
-  it('Hide marked topics button has aria-pressed="false" always in Phase 4', () => {
+  it('Hide marked topics button has aria-pressed reflecting hideMarked state', () => {
     render(<ActionsGroup />);
     const btn = screen.getByRole('button', { name: /hide marked topics/i });
     expect(btn).toHaveAttribute('aria-pressed', 'false');

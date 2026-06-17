@@ -1,6 +1,6 @@
 import { fireEvent, render, screen } from '@testing-library/react';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { createRef } from 'react';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { CandidateModal } from './CandidateModal.js';
 
 vi.mock('../store/app.js', () => ({
@@ -71,12 +71,24 @@ describe('CandidateModal', () => {
     render(<CandidateModal dialogRef={ref} />);
     ref.current?.showModal();
 
-    fireEvent.change(screen.getByLabelText('Name'), { target: { value: 'Alice' } });
-    fireEvent.change(screen.getByLabelText('Email'), { target: { value: 'alice@example.com' } });
-    fireEvent.change(screen.getByLabelText('Role'), { target: { value: 'Engineer' } });
-    fireEvent.change(screen.getByLabelText('Date'), { target: { value: '2026-06-17' } });
-    fireEvent.change(screen.getByLabelText('Interviewer'), { target: { value: 'Bob' } });
-    fireEvent.change(screen.getByLabelText('Details'), { target: { value: 'Great candidate' } });
+    fireEvent.change(screen.getByLabelText('Name'), {
+      target: { value: 'Alice' },
+    });
+    fireEvent.change(screen.getByLabelText('Email'), {
+      target: { value: 'alice@example.com' },
+    });
+    fireEvent.change(screen.getByLabelText('Role'), {
+      target: { value: 'Engineer' },
+    });
+    fireEvent.change(screen.getByLabelText('Date'), {
+      target: { value: '2026-06-17' },
+    });
+    fireEvent.change(screen.getByLabelText('Interviewer'), {
+      target: { value: 'Bob' },
+    });
+    fireEvent.change(screen.getByLabelText('Details'), {
+      target: { value: 'Great candidate' },
+    });
 
     fireEvent.click(screen.getByRole('button', { name: /save details/i }));
 
@@ -95,7 +107,9 @@ describe('CandidateModal', () => {
     render(<CandidateModal dialogRef={ref} />);
     ref.current?.showModal();
 
-    fireEvent.change(screen.getByLabelText('Name'), { target: { value: 'Alice' } });
+    fireEvent.change(screen.getByLabelText('Name'), {
+      target: { value: 'Alice' },
+    });
     fireEvent.click(screen.getByRole('button', { name: /discard changes/i }));
 
     expect(setCandidate).not.toHaveBeenCalled();
@@ -106,10 +120,17 @@ describe('CandidateModal', () => {
     render(<CandidateModal dialogRef={ref} />);
     ref.current?.showModal();
 
-    fireEvent.change(screen.getByLabelText('Name'), { target: { value: 'Alice' } });
-    fireEvent.change(screen.getByLabelText('Email'), { target: { value: 'alice@example.com' } });
+    fireEvent.change(screen.getByLabelText('Name'), {
+      target: { value: 'Alice' },
+    });
+    fireEvent.change(screen.getByLabelText('Email'), {
+      target: { value: 'alice@example.com' },
+    });
 
-    fireEvent.click(screen.getByRole('button', { name: /reset details/i }));
+    // Button has aria-label="Reset candidate details"
+    fireEvent.click(
+      screen.getByRole('button', { name: /reset candidate details/i }),
+    );
 
     expect(setCandidate).toHaveBeenCalledWith(null);
     expect((screen.getByLabelText('Name') as HTMLInputElement).value).toBe('');
@@ -132,16 +153,28 @@ describe('CandidateModal', () => {
     );
     const ref = createRef<HTMLDialogElement>();
     render(<CandidateModal dialogRef={ref} />);
-    expect((screen.getByLabelText('Name') as HTMLInputElement).value).toBe('Jane');
-    expect((screen.getByLabelText('Email') as HTMLInputElement).value).toBe('jane@example.com');
-    expect((screen.getByLabelText('Role') as HTMLInputElement).value).toBe('Designer');
-    expect((screen.getByLabelText('Interviewer') as HTMLInputElement).value).toBe('Carol');
-    expect((screen.getByLabelText('Details') as HTMLTextAreaElement).value).toBe('Creative');
+    expect((screen.getByLabelText('Name') as HTMLInputElement).value).toBe(
+      'Jane',
+    );
+    expect((screen.getByLabelText('Email') as HTMLInputElement).value).toBe(
+      'jane@example.com',
+    );
+    expect((screen.getByLabelText('Role') as HTMLInputElement).value).toBe(
+      'Designer',
+    );
+    expect(
+      (screen.getByLabelText('Interviewer') as HTMLInputElement).value,
+    ).toBe('Carol');
+    expect(
+      (screen.getByLabelText('Details') as HTMLTextAreaElement).value,
+    ).toBe('Creative');
   });
 
   it('Save details renders a button with type="submit"', () => {
     const ref = createRef<HTMLDialogElement>();
     render(<CandidateModal dialogRef={ref} />);
+    // Dialog must be open for accessibility tree to expose buttons inside it
+    ref.current?.showModal();
     const saveBtn = screen.getByRole('button', { name: /save details/i });
     expect(saveBtn).toHaveAttribute('type', 'submit');
   });

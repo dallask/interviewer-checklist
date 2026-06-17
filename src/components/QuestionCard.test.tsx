@@ -172,7 +172,9 @@ describe('QuestionCard', () => {
     render(<QuestionCard row={mockRow} />);
     const toggleBtn = screen.getByRole('button', { name: /add notes/i });
     fireEvent.click(toggleBtn);
-    expect(screen.getByRole('button', { name: /hide notes/i })).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: /hide notes/i }),
+    ).toBeInTheDocument();
   });
 
   it('notes toggle button has aria-expanded=true after click', () => {
@@ -212,14 +214,20 @@ describe('QuestionCard', () => {
 
   it('renders delete button with aria-label "Delete custom question" for custom questions', () => {
     render(<QuestionCard row={mockCustomRow} />);
-    const deleteBtn = screen.getByRole('button', { name: 'Delete custom question' });
+    const deleteBtn = screen.getByRole('button', {
+      name: 'Delete custom question',
+    });
     expect(deleteBtn).toBeInTheDocument();
   });
 
   it('delete button calls deleteCustomQuestion with customId on click', () => {
     render(<QuestionCard row={mockCustomRow} />);
-    const deleteBtn = screen.getByRole('button', { name: 'Delete custom question' });
+    const deleteBtn = screen.getByRole('button', {
+      name: 'Delete custom question',
+    });
     fireEvent.click(deleteBtn);
-    expect(deleteCustomQuestion).toHaveBeenCalledWith('custom-react-1234567890');
+    expect(deleteCustomQuestion).toHaveBeenCalledWith(
+      'custom-react-1234567890',
+    );
   });
 });

@@ -221,12 +221,12 @@ describe('useAppStore — ScoringActions', () => {
 
   it('setOverride stores a numeric override', () => {
     useAppStore.getState().setOverride('topic1', 7.5);
-    expect(useAppStore.getState().overrides['topic1']).toBe(7.5);
+    expect(useAppStore.getState().overrides.topic1).toBe(7.5);
   });
 
   it('setOverride stores null override', () => {
     useAppStore.getState().setOverride('topic1', null);
-    expect(useAppStore.getState().overrides['topic1']).toBeNull();
+    expect(useAppStore.getState().overrides.topic1).toBeNull();
   });
 
   it('setNote stores a note string', () => {
@@ -236,7 +236,7 @@ describe('useAppStore — ScoringActions', () => {
 
   it('setTopicNote stores a topic note string', () => {
     useAppStore.getState().setTopicNote('topic1', 'topic note');
-    expect(useAppStore.getState().topicNotes['topic1']).toBe('topic note');
+    expect(useAppStore.getState().topicNotes.topic1).toBe('topic note');
   });
 
   it('addCustomQuestion adds a new CustomQuestion to the array', () => {

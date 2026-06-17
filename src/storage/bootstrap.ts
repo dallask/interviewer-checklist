@@ -12,6 +12,7 @@ import {
   createDefaultSession,
   V2ManifestSchema,
   V2SessionSchema,
+  V3SessionSchema,
 } from './types.js';
 
 /** Returns a fresh default state and writes it to storage. */
@@ -125,10 +126,16 @@ export async function bootstrap(): Promise<{
   const sessions: Record<string, V2Session> = {};
   for (const s of manifest.sessions) {
     const key = `session:${s.id}`;
-    const sessionParseResult = v.safeParse(V2SessionSchema, sessionData[key]);
-    sessions[s.id] = sessionParseResult.success
-      ? sessionParseResult.output
-      : createDefaultSession(s.id);
+    const rawSession = sessionData[key];
+    const v3Result = v.safeParse(V3SessionSchema, rawSession);
+    if (v3Result.success) {
+      sessions[s.id] = v3Result.output as unknown as V2Session;
+    } else {
+      const v2Result = v.safeParse(V2SessionSchema, rawSession);
+      sessions[s.id] = v2Result.success
+        ? v2Result.output
+        : createDefaultSession(s.id);
+    }
   }
 
   return { manifest, sessions };

@@ -218,6 +218,89 @@ describe('StorageAdapter.flushPending', () => {
 });
 
 // ---------------------------------------------------------------------------
+// StorageAdapter.remove
+// ---------------------------------------------------------------------------
+
+describe('StorageAdapter.remove', () => {
+  beforeEach(() => {
+    vi.useFakeTimers();
+    vi.clearAllMocks();
+
+    chrome.storage.local.getBytesInUse.mockImplementation(
+      (_keys: unknown, callback?: (result: number) => void) => {
+        callback?.(0);
+        return Promise.resolve(0);
+      },
+    );
+    chrome.storage.local.remove.mockImplementation(
+      (_keys: unknown, callback?: () => void) => {
+        callback?.();
+        return Promise.resolve();
+      },
+    );
+  });
+
+  afterEach(() => {
+    vi.useRealTimers();
+  });
+
+  it('flushes pending writes before removing and then calls chrome.storage.local.remove', async () => {
+    chrome.storage.local.set.mockImplementation(
+      (_items: unknown, callback?: () => void) => {
+        callback?.();
+        return Promise.resolve();
+      },
+    );
+
+    const adapter = new StorageAdapter();
+    adapter.write({ pendingKey: 'pendingValue' });
+
+    await adapter.remove(['pendingKey']);
+
+    expect(chrome.storage.local.set).toHaveBeenCalledWith({
+      pendingKey: 'pendingValue',
+    });
+    expect(chrome.storage.local.remove).toHaveBeenCalledWith(['pendingKey']);
+  });
+
+  it('throws when flush fails (dirty remains true after flush), and does NOT call chrome.storage.local.remove', async () => {
+    // Simulate chrome.storage.local.set failure so #flush restores dirty state
+    chrome.storage.local.set.mockImplementation(() => {
+      return Promise.reject(new Error('quota exceeded'));
+    });
+
+    const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+    const adapter = new StorageAdapter();
+    adapter.write({ importantKey: 'value' });
+
+    await expect(adapter.remove(['importantKey'])).rejects.toThrow(
+      'StorageAdapter.remove: pending writes could not be flushed',
+    );
+
+    // Must NOT proceed to remove when flush left data dirty
+    expect(chrome.storage.local.remove).not.toHaveBeenCalled();
+    consoleSpy.mockRestore();
+  });
+
+  it('skips flush and calls remove directly when there are no pending writes', async () => {
+    chrome.storage.local.set.mockImplementation(
+      (_items: unknown, callback?: () => void) => {
+        callback?.();
+        return Promise.resolve();
+      },
+    );
+
+    const adapter = new StorageAdapter();
+    // No write() call — nothing pending
+
+    await adapter.remove(['someKey']);
+
+    expect(chrome.storage.local.set).not.toHaveBeenCalled();
+    expect(chrome.storage.local.remove).toHaveBeenCalledWith(['someKey']);
+  });
+});
+
+// ---------------------------------------------------------------------------
 // StorageAdapter quota check
 // ---------------------------------------------------------------------------
 

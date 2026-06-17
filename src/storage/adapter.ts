@@ -110,6 +110,11 @@ export class StorageAdapter {
         this.#debounceTimer = null;
       }
       await this.#flush();
+      if (this.#dirty) {
+        throw new Error(
+          'StorageAdapter.remove: pending writes could not be flushed',
+        );
+      }
     }
     await chrome.storage.local.remove(keys);
   }

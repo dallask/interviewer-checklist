@@ -208,7 +208,17 @@ Plans:
   1. Opening the AI prompt modal generates a tool-agnostic editable prompt embedding candidate details, all scored marks, per-topic detail, difficulty weighting explanation, and a structured task spec
   2. Clicking the copy button copies the full prompt text to the clipboard synchronously; if the Clipboard API is unavailable, the textarea is pre-selected for manual copy
 
-**Plans**: TBD
+**Plans**: 2 plans
+
+Plans:
+**Wave 1**
+
+- [ ] 08-01-PLAN.md — buildAiPrompt pure utility (TDD): prompt string builder from V3Session
+
+**Wave 2** *(blocked on Wave 1 completion)*
+
+- [ ] 08-02-PLAN.md — AiPromptModal component + ActionsGroup wiring + tests
+
 **UI hint**: yes
 
 ### Phase 9: Polish — Print, Keyboard, A11y, Welcome & Updates
@@ -256,6 +266,6 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 →
 | 5. Scoring UI, Notes, Candidate & Custom Questions | 5/5 | Complete   | 2026-06-17 |
 | 6. Multiple Named Sessions & Switcher | 3/3 | Complete   | 2026-06-17 |
 | 7. YAML Import & Export | 2/2 | Complete    | 2026-06-17 |
-| 8. AI Prompt Modal | 0/? | Not started | - |
+| 8. AI Prompt Modal | 0/2 | Not started | - |
 | 9. Polish — Print, Keyboard, A11y, Welcome & Updates | 0/? | Not started | - |
 | 10. Chrome Web Store Submission | 0/? | Not started | - |

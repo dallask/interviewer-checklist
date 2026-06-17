@@ -170,8 +170,20 @@ Plans:
   3. Switching sessions does not corrupt either session's data (pending writes are flushed synchronously before `activeSessionId` changes)
   4. Each session is stored as an independent `session:<id>` key in `chrome.storage.local` alongside a `manifest` key listing all session metadata
 
-**Plans**: TBD
-**UI hint**: yes
+**Plans**: 3 plans
+Plans:
+
+**Wave 1**
+
+- [ ] 06-01-PLAN.md — Session store extension (TDD): UndoBuffer type, manifest/undoBuffer state, createSession/renameSession/duplicateSession/deleteSession/switchSession/undoDeleteSession actions, subscribe manifest write (SESS-01, SESS-04)
+
+**Wave 2** *(blocked on Wave 1 completion)*
+
+- [ ] 06-02-PLAN.md — New UI components (TDD): SessionSwitcherModal, SessionRow, DeleteSessionConfirmDialog, UndoToast with full test coverage (SESS-02, SESS-03)
+
+**Wave 3** *(blocked on Wave 2 completion)*
+
+- [ ] 06-03-PLAN.md — Wiring: ActionsGroup session label + trigger, UndoToast root mount in App.tsx, manifest hydration in main.tsx, styles.css slide-up keyframe, human smoke test (SESS-01, SESS-02, SESS-03, SESS-04)
 
 ### Phase 7: YAML Import & Export
 

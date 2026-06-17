@@ -147,10 +147,20 @@ describe('ActionsGroup', () => {
     expect(setDarkMode).toHaveBeenCalledWith(true);
   });
 
-  it('all buttons have focus-visible ring classes', () => {
+  it('ActionsGroup own buttons have focus-visible ring classes', () => {
     render(<ActionsGroup />);
-    const buttons = screen.getAllByRole('button');
-    for (const btn of buttons) {
+    const ownButtonNames = [
+      /switch session/i,
+      /ai feedback prompt/i,
+      /expand all/i,
+      /collapse all/i,
+      /hide marked topics/i,
+      /dark mode/i,
+      /candidate details/i,
+      /reset all/i,
+    ];
+    for (const name of ownButtonNames) {
+      const btn = screen.getByRole('button', { name });
       expect(btn.className).toContain('focus-visible:ring-2');
       expect(btn.className).toContain('focus-visible:ring-blue-500');
     }

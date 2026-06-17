@@ -531,11 +531,23 @@ export const useAppStore = create<AppState & AppActions>()((set) => ({
     // STORE-05: snapshot MUST be called first — before any set() or createSession()
     await storageAdapter.snapshot(activeSessionId);
 
+    // CR-01: clamp imported scores/overrides to [0, 10] — importSession bypasses
+    // setScore/setOverride which normally enforce clamping. Null values pass through.
+    function clampScore(v: number | null): number | null {
+      return v !== null ? Math.min(10, Math.max(0, v)) : null;
+    }
+    const clampedScores = Object.fromEntries(
+      Object.entries(data.scores).map(([k, v]) => [k, clampScore(v)]),
+    );
+    const clampedOverrides = Object.fromEntries(
+      Object.entries(data.overrides).map(([k, v]) => [k, clampScore(v)]),
+    );
+
     if (overwriteActive) {
       // Apply scores/notes/candidate directly to the active session
       set({
-        scores: data.scores,
-        overrides: data.overrides,
+        scores: clampedScores,
+        overrides: clampedOverrides,
         notes: data.notes,
         topicNotes: data.topicNotes,
         customQuestions: data.customQuestions,
@@ -550,8 +562,8 @@ export const useAppStore = create<AppState & AppActions>()((set) => ({
       }
       // Apply import data to the new session
       set({
-        scores: data.scores,
-        overrides: data.overrides,
+        scores: clampedScores,
+        overrides: clampedOverrides,
         notes: data.notes,
         topicNotes: data.topicNotes,
         customQuestions: data.customQuestions,

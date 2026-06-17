@@ -288,7 +288,7 @@ export const cicdSection: Section = {
         },
         { q: 'Where are patches declared in a project?', level: 'novice' },
         {
-          q: 'How do you generate a patch from a git diff?',
+          q: 'How do you apply a patch with git apply versus patch -p1?',
           level: 'intermediate',
         },
         {

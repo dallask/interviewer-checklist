@@ -110,6 +110,11 @@ describe('buildAiPrompt — candidate handling', () => {
     const result = buildAiPrompt(sessionWithCandidateDetails, DEFAULT_SECTIONS);
     expect(result).toContain('Notes: Very enthusiastic candidate.');
   });
+
+  it('does NOT emit "Notes:" line when candidate.details is empty string', () => {
+    const result = buildAiPrompt(sessionWithCandidate, DEFAULT_SECTIONS);
+    expect(result).not.toContain('Notes:');
+  });
 });
 
 describe('buildAiPrompt — empty session / no scores', () => {

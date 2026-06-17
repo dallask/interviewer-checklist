@@ -90,6 +90,16 @@ describe('ActionsGroup', () => {
         setHideMarked,
         darkMode: true,
         setDarkMode,
+        manifest: MANIFEST,
+        activeSessionId: SESSION_ID,
+        scores: {},
+        overrides: {},
+        notes: {},
+        topicNotes: {},
+        customQuestions: [],
+        candidate: null,
+        resetAll: vi.fn(),
+        setCandidate: vi.fn(),
       }),
     );
     render(<ActionsGroup />);
@@ -113,6 +123,16 @@ describe('ActionsGroup', () => {
         setHideMarked,
         darkMode: true,
         setDarkMode,
+        manifest: MANIFEST,
+        activeSessionId: SESSION_ID,
+        scores: {},
+        overrides: {},
+        notes: {},
+        topicNotes: {},
+        customQuestions: [],
+        candidate: null,
+        resetAll: vi.fn(),
+        setCandidate: vi.fn(),
       }),
     );
     render(<ActionsGroup />);

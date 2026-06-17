@@ -16,10 +16,25 @@
       "32": "public/icons/icon-32.png"
     }
   },
+  "commands": {
+    "_execute_action": {
+      "suggested_key": {
+        "default": "Alt+Shift+I",
+        "mac": "Command+Shift+I"
+      },
+      "description": "Open Interviewer Checklist"
+    }
+  },
   "background": {
     "service_worker": "src/background/index.ts",
     "type": "module"
   },
   "permissions": ["storage"],
-  "minimum_chrome_version": "116"
+  "minimum_chrome_version": "116",
+  "web_accessible_resources": [
+    {
+      "resources": ["src/app/welcome.html"],
+      "matches": ["<all_urls>"]
+    }
+  ]
 }

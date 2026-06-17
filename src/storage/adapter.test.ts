@@ -1,7 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { chrome } from 'vitest-chrome';
-import type { V2Session } from './types.js';
 import { StorageAdapter, storageAdapter } from './adapter.js';
+import type { V2Session } from './types.js';
 
 // ---------------------------------------------------------------------------
 // StorageAdapter.read
@@ -13,11 +13,18 @@ describe('StorageAdapter.read', () => {
   });
 
   it('calls chrome.storage.local.get with the provided keys and returns the result', async () => {
-    const mockResult = { manifest: { version: 2, activeSessionId: 'abc', sessions: [] } };
-    chrome.storage.local.get.mockImplementation((_keys: unknown, callback?: (result: Record<string, unknown>) => void) => {
-      callback?.(mockResult);
-      return Promise.resolve(mockResult);
-    });
+    const mockResult = {
+      manifest: { version: 2, activeSessionId: 'abc', sessions: [] },
+    };
+    chrome.storage.local.get.mockImplementation(
+      (
+        _keys: unknown,
+        callback?: (result: Record<string, unknown>) => void,
+      ) => {
+        callback?.(mockResult);
+        return Promise.resolve(mockResult);
+      },
+    );
 
     const adapter = new StorageAdapter();
     const result = await adapter.read(['manifest']);
@@ -243,7 +250,9 @@ describe('StorageAdapter quota check', () => {
     );
 
     const events: CustomEvent[] = [];
-    const handler = (e: Event) => { events.push(e as CustomEvent); };
+    const handler = (e: Event) => {
+      events.push(e as CustomEvent);
+    };
     window.addEventListener('storage-quota-warning', handler);
 
     const adapter = new StorageAdapter();
@@ -269,7 +278,9 @@ describe('StorageAdapter quota check', () => {
     );
 
     const events: CustomEvent[] = [];
-    const handler = (e: Event) => { events.push(e as CustomEvent); };
+    const handler = (e: Event) => {
+      events.push(e as CustomEvent);
+    };
     window.addEventListener('storage-quota-warning', handler);
 
     const adapter = new StorageAdapter();
@@ -320,7 +331,7 @@ describe('StorageAdapter.snapshot + FIFO trim', () => {
     const sessionData: V2Session = {
       version: 2,
       id: sessionId,
-      questionScore: { 'q1': 8 },
+      questionScore: { q1: 8 },
       topicOverride: {},
       cardComment: {},
       questionComment: {},
@@ -354,7 +365,8 @@ describe('StorageAdapter.snapshot + FIFO trim', () => {
     await adapter.snapshot(sessionId);
     const nowAfter = Date.now();
 
-    const setCall = (chrome.storage.local.set as ReturnType<typeof vi.fn>).mock.calls[0][0] as Record<string, unknown>;
+    const setCall = (chrome.storage.local.set as ReturnType<typeof vi.fn>).mock
+      .calls[0][0] as Record<string, unknown>;
     const snapshotKey = Object.keys(setCall)[0];
 
     expect(snapshotKey).toMatch(/^snapshot:test-session-abc:\d+$/);
@@ -412,7 +424,9 @@ describe('StorageAdapter.snapshot + FIFO trim', () => {
 
     // After writing a 5th snapshot, oldest (snapshot:trim-session:1000) should be removed
     expect(chrome.storage.local.remove).toHaveBeenCalledTimes(1);
-    const removedKeys = (chrome.storage.local.remove as ReturnType<typeof vi.fn>).mock.calls[0][0] as string[];
+    const removedKeys = (
+      chrome.storage.local.remove as ReturnType<typeof vi.fn>
+    ).mock.calls[0][0] as string[];
     expect(removedKeys).toContain(`snapshot:${sessionId}:1000`);
     expect(removedKeys).not.toContain(`snapshot:${sessionId}:4000`);
   });
@@ -421,7 +435,10 @@ describe('StorageAdapter.snapshot + FIFO trim', () => {
     const sessionId = 'empty-session';
 
     chrome.storage.local.get.mockImplementation(
-      (_keys: unknown, callback?: (result: Record<string, unknown>) => void) => {
+      (
+        _keys: unknown,
+        callback?: (result: Record<string, unknown>) => void,
+      ) => {
         callback?.({});
         return Promise.resolve({});
       },

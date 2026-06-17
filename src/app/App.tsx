@@ -1,4 +1,5 @@
 import './styles.css';
+import { useMemo } from 'react';
 import { ContentTree } from '../components/ContentTree.js';
 import { Sidebar } from '../components/Sidebar.js';
 import { StorageToast } from '../components/StorageToast.js';
@@ -14,11 +15,31 @@ export function App() {
   const searchQuery = useAppStore((s) => s.searchQuery);
   const selectedDifficulties = useAppStore((s) => s.selectedDifficulties);
   const selectedSections = useAppStore((s) => s.selectedSections);
+  const scores = useAppStore((s) => s.scores);
+  const hideMarked = useAppStore((s) => s.hideMarked);
+
+  // Compute set of topic IDs that have at least one scored question.
+  // A topic is "marked" when it has a score != null — used by hideMarked toggle.
+  const markedTopicIds = useMemo(() => {
+    const marked = new Set<string>();
+    for (const section of DEFAULT_SECTIONS) {
+      for (const topic of section.items) {
+        const hasScore = topic.questions.some((_, i) => {
+          const key = `${topic.id}-${i}`;
+          return scores[key] !== null && scores[key] !== undefined;
+        });
+        if (hasScore) marked.add(topic.id);
+      }
+    }
+    return marked;
+  }, [scores]);
 
   const rows = buildFlatRows(DEFAULT_SECTIONS, topicOpen, sectionOpen, {
     searchQuery,
     selectedDifficulties,
     selectedSections,
+    hideMarked,
+    markedTopicIds,
   });
 
   return (

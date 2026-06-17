@@ -213,7 +213,7 @@ Plans:
 Plans:
 **Wave 1**
 
-- [ ] 08-01-PLAN.md — buildAiPrompt pure utility (TDD): prompt string builder from V3Session
+- [x] 08-01-PLAN.md — buildAiPrompt pure utility (TDD): prompt string builder from V3Session
 
 **Wave 2** *(blocked on Wave 1 completion)*
 
@@ -266,6 +266,6 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 →
 | 5. Scoring UI, Notes, Candidate & Custom Questions | 5/5 | Complete   | 2026-06-17 |
 | 6. Multiple Named Sessions & Switcher | 3/3 | Complete   | 2026-06-17 |
 | 7. YAML Import & Export | 2/2 | Complete    | 2026-06-17 |
-| 8. AI Prompt Modal | 0/2 | Not started | - |
+| 8. AI Prompt Modal | 1/2 | In Progress|  |
 | 9. Polish — Print, Keyboard, A11y, Welcome & Updates | 0/? | Not started | - |
 | 10. Chrome Web Store Submission | 0/? | Not started | - |

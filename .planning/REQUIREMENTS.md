@@ -63,8 +63,8 @@
 
 ### AI Prompt Builder (AI)
 
-- [ ] **AI-01**: AI candidate-feedback prompt modal — generates a tool-agnostic, editable prompt embedding candidate details, all scored marks, per-topic detail, difficulty weighting explanation, and a structured task spec
-- [ ] **AI-02**: Copy-to-clipboard via `navigator.clipboard.writeText` called synchronously in click handler; falls back to pre-selecting the textarea for manual copy
+- [x] **AI-01**: AI candidate-feedback prompt modal — generates a tool-agnostic, editable prompt embedding candidate details, all scored marks, per-topic detail, difficulty weighting explanation, and a structured task spec
+- [x] **AI-02**: Copy-to-clipboard via `navigator.clipboard.writeText` called synchronously in click handler; falls back to pre-selecting the textarea for manual copy
 
 ### Polish & Onboarding (POLISH)
 

@@ -1,0 +1,34 @@
+{
+  "version": 4,
+  "sections": null,
+  "sectionOpen": { "javascript": true, "typescript": false },
+  "cardOpen": { "js-async": true },
+  "topicOverride": { "js-async": 7 },
+  "questionScore": { "js-async-0": 8, "js-async-1": 6, "js-async-2": 9 },
+  "cardComment": { "js-async": "Strong understanding of Promises" },
+  "questionComment": { "js-async-0": "Explained event loop well" },
+  "questionNoteOpen": { "js-async": false },
+  "candidate": {
+    "name": "Test Candidate",
+    "email": "test@example.com",
+    "role": "Frontend Engineer",
+    "date": "2026-01-15",
+    "interviewer": "Reviewer A",
+    "details": "Strong candidate overall"
+  },
+  "customQuestions": {
+    "js-async": [{ "id": 1, "text": "Custom async question", "level": "intermediate" }]
+  },
+  "customSeq": 1,
+  "filters": ["javascript"],
+  "levels": ["intermediate", "advanced"],
+  "search": "",
+  "hideReviewed": false,
+  "sidebarCollapsed": false,
+  "sidebarGroups": {
+    "search": true,
+    "difficulty": true,
+    "sections": true,
+    "actions": false
+  }
+}

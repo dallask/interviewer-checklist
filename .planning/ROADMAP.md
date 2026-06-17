@@ -94,7 +94,7 @@ Plans:
 Plans:
 **Wave 1**
 
-- [ ] 03-01-PLAN.md — Install vitest-chrome/zustand/valibot, extend vitest harness, define V1/V2 types and valibot schemas, v1-to-v2 migration (TDD)
+- [x] 03-01-PLAN.md — Install vitest-chrome/zustand/valibot, extend vitest harness, define V1/V2 types and valibot schemas, v1-to-v2 migration (TDD)
 
 **Wave 2** *(blocked on Wave 1 completion)*
 
@@ -217,7 +217,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 →
 |-------|----------------|--------|-----------|
 | 1. Foundation & Scaffolding | 3/3 | Complete    | 2026-06-16 |
 | 2. Question Bank & Scoring Engine | 2/2 | Complete    | 2026-06-17 |
-| 3. Storage Layer, Migration & Bootstrap | 0/3 | In progress | - |
+| 3. Storage Layer, Migration & Bootstrap | 1/3 | In Progress|  |
 | 4. Shell, Sidebar & Read-Only Content Tree | 0/? | Not started | - |
 | 5. Scoring UI, Notes, Candidate & Custom Questions | 0/? | Not started | - |
 | 6. Multiple Named Sessions & Switcher | 0/? | Not started | - |

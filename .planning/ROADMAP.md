@@ -144,8 +144,19 @@ Plans:
   4. Filling and saving the candidate details modal persists name, email, role, date, interviewer, and free-text details with the session
   5. Adding a custom question to a topic assigns it a "custom" badge, includes it in scoring and filtering, and allows deletion; Reset all (confirmed) clears all scores, notes, custom questions, candidate details, and filters
 
-**Plans**: TBD
-**UI hint**: yes
+**Plans**: 3 plans
+Plans:
+**Wave 1**
+
+- [ ] 05-01-PLAN.md — V3 schema + v2-to-v3 migration (TDD), store ScoringActions extension, buildFlatRows index fix, main.tsx uiState hydration fix
+
+**Wave 2** *(blocked on Wave 1 completion)*
+
+- [ ] 05-02-PLAN.md — QuestionCard scoring extensions (slider + notes + custom badge/delete), TopicMarkDisplay, TopicRow live mark + topic notes, CustomQuestionForm, SectionFilter live marks
+
+**Wave 3** *(blocked on Wave 2 completion)*
+
+- [ ] 05-03-PLAN.md — CandidateModal + ResetConfirmDialog (native <dialog> with focus traps), ActionsGroup trigger wiring, App.tsx hideMarked activation, human smoke test
 
 ### Phase 6: Multiple Named Sessions & Switcher
 
@@ -215,7 +226,7 @@ Plans:
   2. The CWS developer dashboard contains a written permissions-justification for the `storage` permission
   3. At least 3 screenshots at 1280x800 exist showing the populated scoring view, sidebar with filters, and AI prompt modal (none showing empty state)
   4. The extension loads cleanly in a fresh Chrome profile (not the dev profile) and passes all manual checks
-  5. The public Chrome Web Store listing is live with accurate description, all screenshots, and the linked privacy policy
+  5. The public Chrome Web Store listing is live with accurate description, screenshots, and linked privacy policy
 
 **Plans**: TBD
 
@@ -230,7 +241,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 →
 | 2. Question Bank & Scoring Engine | 2/2 | Complete    | 2026-06-17 |
 | 3. Storage Layer, Migration & Bootstrap | 3/3 | Complete    | 2026-06-17 |
 | 4. Shell, Sidebar & Read-Only Content Tree | 3/3 | Complete    | 2026-06-17 |
-| 5. Scoring UI, Notes, Candidate & Custom Questions | 0/? | Not started | - |
+| 5. Scoring UI, Notes, Candidate & Custom Questions | 0/3 | Not started | - |
 | 6. Multiple Named Sessions & Switcher | 0/? | Not started | - |
 | 7. YAML Import & Export | 0/? | Not started | - |
 | 8. AI Prompt Modal | 0/? | Not started | - |

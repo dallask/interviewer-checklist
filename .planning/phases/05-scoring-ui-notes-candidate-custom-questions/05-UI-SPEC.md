@@ -189,7 +189,7 @@ Phase 4 `QuestionCard.tsx` is a read-only display. Phase 5 extends it with:
 **"custom" badge** (shown on question cards for user-added questions only):
 
 ```
-<span class="text-xs font-normal px-1.5 py-0.5 rounded bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400">
+<span class="text-xs font-normal px-2 py-1 rounded bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400">
   custom
 </span>
 ```
@@ -338,10 +338,10 @@ Inline form rendered below the topic notes area when "Add question" button is ac
     </button>
     <button
       type="button"
-      aria-label="Cancel adding question"
+      aria-label="Discard question"
       class="text-sm font-normal px-3 py-2 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none"
     >
-      Cancel
+      Discard question
     </button>
   </div>
 </form>
@@ -434,13 +434,13 @@ Native `<dialog>` element with 6 fields. No third-party modal library. Source: C
           value="cancel"
           class="text-sm font-normal px-4 py-2 text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none"
         >
-          Cancel
+          Discard changes
         </button>
         <button
           type="submit"
           class="text-sm font-normal px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none"
         >
-          Save
+          Save details
         </button>
       </div>
     </div>
@@ -461,8 +461,8 @@ Native `<dialog>` element with 6 fields. No third-party modal library. Source: C
 
 - All fields optional — no `required` attribute. Source: SCORE-04.
 - "Reset details" button (destructive, red text, no background) clears all 6 fields in the form and updates Zustand `candidate: null`. Not a close action — dialog remains open.
-- "Cancel" dismisses dialog via `dialog.close()` without saving; does not clear in-progress edits.
-- "Save" submits form, updates Zustand `candidate` record, closes dialog.
+- "Discard changes" dismisses dialog via `dialog.close()` without saving; does not clear in-progress edits.
+- "Save details" submits form, updates Zustand `candidate` record, closes dialog.
 - Focus trap: manual Tab/Shift+Tab cycle within `<dialog>` (all focusable children). On `Escape` key: `dialog.close()` (native behavior). On close: return focus to trigger button (`document.getElementById('open-candidate-modal')`). Source: CONTEXT.md, SCORE-04.
 - Dialog backdrop: `dialog::backdrop { background: rgba(0, 0, 0, 0.5); }` — via CSS in `styles.css`.
 
@@ -493,7 +493,7 @@ Minimal `<dialog>` for Reset all confirmation. Source: CONTEXT.md decision.
       type="button"
       class="text-sm font-normal px-4 py-2 text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none"
     >
-      Cancel
+      Keep scores
     </button>
     <button
       type="button"
@@ -562,11 +562,11 @@ Minimal `<dialog>` for Reset all confirmation. Source: CONTEXT.md decision.
 1. User clicks "Candidate details" in Actions group.
 2. `dialog.showModal()` called → dialog becomes visible with backdrop.
 3. Focus moves to first focusable field (Name input).
-4. Tab cycles through: Name → Email → Role → Date → Interviewer → Details → Reset details → Cancel → Save → (wraps to Name).
+4. Tab cycles through: Name → Email → Role → Date → Interviewer → Details → Reset details → Discard changes → Save details → (wraps to Name).
 5. Shift+Tab reverses cycle.
 6. Escape: `dialog.close()` (native) → focus returns to "Candidate details" trigger button.
-7. Cancel button: `dialog.close()` → no state change → focus returns to trigger.
-8. Save button: read form values → dispatch `setCandidate(candidateDetails)` to Zustand → `dialog.close()` → focus returns to trigger.
+7. "Discard changes" button: `dialog.close()` → no state change → focus returns to trigger.
+8. "Save details" button: read form values → dispatch `setCandidate(candidateDetails)` to Zustand → `dialog.close()` → focus returns to trigger.
 9. Reset details button: clear all form inputs → dispatch `setCandidate(null)` to Zustand. Dialog remains open.
 10. If candidate already saved: pre-populate all fields from Zustand `candidate` record on `dialog.showModal()`.
 
@@ -574,10 +574,10 @@ Minimal `<dialog>` for Reset all confirmation. Source: CONTEXT.md decision.
 
 1. User clicks "Reset all" in Actions group.
 2. `dialog.showModal()` called.
-3. Focus moves to "Cancel" button (safe default — not the destructive action).
-4. Tab cycles: Cancel → Reset → (wraps to Cancel).
+3. Focus moves to "Keep scores" button (safe default — not the destructive action).
+4. Tab cycles: Keep scores → Reset → (wraps to Keep scores).
 5. Escape: `dialog.close()` → no state change → focus returns to "Reset all" trigger.
-6. Cancel: `dialog.close()` → no state change.
+6. "Keep scores": `dialog.close()` → no state change.
 7. Reset: call `storageAdapter.snapshot()` → dispatch `resetAll()` to Zustand (clears scores, overrides, notes, topicNotes, customQuestions, candidate, filters) → `dialog.close()` → focus returns to trigger.
 
 ### Custom Question Add
@@ -587,7 +587,7 @@ Minimal `<dialog>` for Reset all confirmation. Source: CONTEXT.md decision.
 3. Focus moves to question text input.
 4. User fills question text, selects difficulty, clicks "Add question".
 5. On submit (and non-empty text): `addCustomQuestion({ id: custom-${topicId}-${Date.now()}, topicId, text, level })` → Zustand update → question appears in topic list with "custom" badge and a difficulty pill matching the selected level.
-6. Cancel button: collapse form, no state change.
+6. "Discard question" button: collapse form, no state change.
 7. Custom question participates in scoring (included in `computeTopicMark`), filtering, and future YAML export. Source: SCORE-05.
 
 ### Custom Question Delete
@@ -634,7 +634,7 @@ Inherits Phase 4 contract. Phase 5 additions:
 
 | Element | Copy | Source |
 |---------|------|--------|
-| Primary CTA | "Save" (candidate modal save button) | SCORE-04 |
+| Primary CTA | "Save details" (candidate modal save button) | SCORE-04 |
 | Score display (unscored) | "— / 10" | CONTEXT.md (null = unscored) |
 | Score display (scored zero) | "0 / 10" | CONTEXT.md (0 is valid) |
 | Notes toggle (closed) | "Add notes" | SCORE-03 |
@@ -644,8 +644,8 @@ Inherits Phase 4 contract. Phase 5 additions:
 | Notes textarea placeholder | "Question notes…" | Standard UX pattern |
 | Topic notes textarea placeholder | "Topic notes…" | Standard UX pattern |
 | Candidate modal title | "Candidate Details" | SCORE-04 |
-| Candidate modal save | "Save" | SCORE-04 |
-| Candidate modal cancel | "Cancel" | SCORE-04 |
+| Candidate modal save | "Save details" | SCORE-04 |
+| Candidate modal cancel | "Discard changes" | SCORE-04 |
 | Candidate modal reset | "Reset details" | SCORE-04 |
 | Candidate field: Name | Label: "Name" | SCORE-04 |
 | Candidate field: Email | Label: "Email" | SCORE-04 |
@@ -658,12 +658,12 @@ Inherits Phase 4 contract. Phase 5 additions:
 | Actions sidebar: reset button | "Reset all" | SCORE-06 |
 | Reset confirm title | "Reset all scores?" | SCORE-06 |
 | Reset confirm body | "This will clear all scores, notes, overrides, custom questions, candidate details, and active filters. This cannot be undone." | SCORE-06 |
-| Reset confirm: cancel | "Cancel" | SCORE-06 |
+| Reset confirm: cancel | "Keep scores" | SCORE-06 |
 | Reset confirm: destructive | "Reset" | SCORE-06 |
 | Add custom question trigger | "+ Add question" | SCORE-05 |
 | Custom question input placeholder | "Enter question…" | SCORE-05 |
 | Custom question submit | "Add question" | SCORE-05 |
-| Custom question cancel | "Cancel" | SCORE-05 |
+| Custom question cancel | "Discard question" | SCORE-05 |
 | "custom" badge text | "custom" | SCORE-05 |
 | Custom question delete | Screen reader: "Delete custom question" | SCORE-05 |
 | Override input placeholder | "override" | SCORE-02 |
@@ -676,7 +676,7 @@ Inherits Phase 4 contract. Phase 5 additions:
 
 | Action | Trigger copy | Dialog title | Dialog body | Confirm button | Cancel button |
 |--------|-------------|--------------|-------------|----------------|---------------|
-| Reset all | "Reset all" | "Reset all scores?" | "This will clear all scores, notes, overrides, custom questions, candidate details, and active filters. This cannot be undone." | "Reset" (red) | "Cancel" |
+| Reset all | "Reset all" | "Reset all scores?" | "This will clear all scores, notes, overrides, custom questions, candidate details, and active filters. This cannot be undone." | "Reset" (red) | "Keep scores" |
 | Delete custom question | × button on card | No dialog — immediate | n/a | n/a | n/a |
 | Reset candidate details | "Reset details" (in modal) | No separate dialog — button inside existing modal | n/a | n/a | n/a |
 
@@ -702,4 +702,4 @@ No third-party component registries. All UI is hand-built with Tailwind v4 utili
 - [ ] Dimension 5 Spacing: PASS
 - [ ] Dimension 6 Registry Safety: PASS
 
-**Approval:** pending — created 2026-06-17
+**Approval:** pending — created 2026-06-17, revised 2026-06-17 (checker blocks resolved: copywriting specificity, badge spacing)

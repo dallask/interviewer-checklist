@@ -32,6 +32,10 @@ export type QuestionRow = {
   question: Question;
   /** Original index within topic.questions — used for score key in Phase 5 */
   index: number;
+  /** True for user-created custom questions (not in the built-in bank) */
+  isCustom?: boolean;
+  /** The custom question's storage id (e.g. 'custom-${topicId}-${seq}') */
+  customId?: string;
 };
 
 export type VirtualRow = SectionRow | TopicRow | QuestionRow;
@@ -59,6 +63,10 @@ export function buildFlatRows(
     searchQuery: string;
     selectedDifficulties: Set<Difficulty>;
     selectedSections: Set<string>;
+    /** When true, topics whose id is in markedTopicIds are omitted from output */
+    hideMarked?: boolean;
+    /** Set of topic ids that have been fully marked / reviewed */
+    markedTopicIds?: Set<string>;
   },
 ): VirtualRow[] {
   const rows: VirtualRow[] = [];
@@ -97,6 +105,13 @@ export function buildFlatRows(
       });
 
       if (filteredQuestions.length > 0) {
+        // hideMarked: skip topics that are fully marked when the filter is active
+        if (
+          filters.hideMarked === true &&
+          filters.markedTopicIds?.has(topic.id)
+        ) {
+          continue;
+        }
         visibleTopics.push({ ...topic, filteredQuestions });
       }
     }
@@ -134,7 +149,11 @@ export function buildFlatRows(
       // Topic collapsed: skip questions
       if (!isOpen) continue;
 
-      topic.filteredQuestions.forEach((question, index) => {
+      // Index fix: use indexOf to get the original position in topic.questions
+      // (not the filtered-subset position). This ensures score keys are stable
+      // regardless of which difficulty filter is active. Phase 5 requirement.
+      for (const question of topic.filteredQuestions) {
+        const index = topic.questions.indexOf(question);
         rows.push({
           type: 'question',
           sectionId: section.id,
@@ -142,7 +161,7 @@ export function buildFlatRows(
           question,
           index,
         });
-      });
+      }
     }
   }
 

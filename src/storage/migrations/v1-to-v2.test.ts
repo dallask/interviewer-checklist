@@ -76,12 +76,31 @@ describe('runMigrations', () => {
     delete raw.version;
     const result = runMigrations(raw);
     expect(result).not.toBeNull();
-    expect(result?.manifest.version).toBe(2);
-    expect(result?.session.version).toBe(2);
+    // V1→V2 migration returns {manifest, session} shape
+    if (result !== null && 'manifest' in result && 'session' in result) {
+      expect(result.manifest.version).toBe(2);
+      expect(result.session.version).toBe(2);
+    } else {
+      throw new Error(
+        'Expected {manifest, session} shape from v1→v2 migration',
+      );
+    }
   });
 
-  it('returns null when raw.version === 2 (already migrated)', () => {
+  it('returns V3Session when raw.version === 2 (migrates v2 → v3)', () => {
+    // v2 data is now migrated to v3 by the v2→v3 pipeline entry.
+    // Return null only for v3 (already current).
     const raw = { version: 2 };
+    const result = runMigrations(raw);
+    // Should return a V3Session (not null), since v2 now needs migration.
+    expect(result).not.toBeNull();
+    if (result !== null && 'version' in result) {
+      expect((result as { version: number }).version).toBe(3);
+    }
+  });
+
+  it('returns null when raw.version === 3 (already at latest)', () => {
+    const raw = { version: 3 };
     const result = runMigrations(raw);
     expect(result).toBeNull();
   });

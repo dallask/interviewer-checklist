@@ -89,11 +89,68 @@ export const V2ManifestSchema = v.object({
 });
 
 // ---------------------------------------------------------------------------
+// valibot schemas for V3 types
+// ---------------------------------------------------------------------------
+
+/**
+ * CandidateDetails schema — all 6 required string fields for a scored interview.
+ * Used by V3SessionSchema. V2 used optional fields (CandidateSchema above is kept
+ * for migration compatibility).
+ */
+export const CandidateDetailsSchema = v.object({
+  name: v.string(),
+  email: v.string(),
+  role: v.string(),
+  date: v.string(),
+  interviewer: v.string(),
+  details: v.string(),
+});
+
+/**
+ * CustomQuestion schema — a user-created question attached to a topic.
+ * id follows the pattern: custom-${topicId}-${sequenceNumber}
+ */
+export const CustomQuestionSchema = v.object({
+  id: v.string(),
+  topicId: v.string(),
+  text: v.string(),
+  level: v.union([
+    v.literal('novice'),
+    v.literal('intermediate'),
+    v.literal('advanced'),
+    v.literal('expert'),
+  ]),
+});
+
+/**
+ * V3Session schema — the scoring-aware session format introduced in Phase 5.
+ * Field renames from V2: questionScore→scores, topicOverride→overrides,
+ * questionComment→notes, cardComment→topicNotes.
+ * customQuestions is now a flat array (was Record<string, Array<...>>).
+ * candidate is nullable (null when no candidate info has been entered).
+ */
+export const V3SessionSchema = v.object({
+  version: v.literal(3),
+  id: v.string(),
+  scores: v.record(v.string(), v.nullable(v.number())),
+  overrides: v.record(v.string(), v.nullable(v.number())),
+  notes: v.record(v.string(), v.string()),
+  topicNotes: v.record(v.string(), v.string()),
+  customQuestions: v.array(CustomQuestionSchema),
+  candidate: v.nullable(CandidateDetailsSchema),
+});
+
+// ---------------------------------------------------------------------------
 // Derived TypeScript types (valibot v1 InferOutput API)
 // ---------------------------------------------------------------------------
 
 export type V2Session = v.InferOutput<typeof V2SessionSchema>;
 export type V2Manifest = v.InferOutput<typeof V2ManifestSchema>;
+
+// V3 types
+export type CandidateDetails = v.InferOutput<typeof CandidateDetailsSchema>;
+export type CustomQuestion = v.InferOutput<typeof CustomQuestionSchema>;
+export type V3Session = v.InferOutput<typeof V3SessionSchema>;
 
 // ---------------------------------------------------------------------------
 // Factory functions — produce valid default V2 state
@@ -128,5 +185,22 @@ export function createDefaultSession(id: string): V2Session {
     candidate: {},
     customQuestions: {},
     customSeq: 0,
+  };
+}
+
+/**
+ * Creates an empty V3Session for the given session ID.
+ * All record fields are empty objects; customQuestions is an empty array; candidate is null.
+ */
+export function createDefaultV3Session(id: string): V3Session {
+  return {
+    version: 3,
+    id,
+    scores: {},
+    overrides: {},
+    notes: {},
+    topicNotes: {},
+    customQuestions: [],
+    candidate: null,
   };
 }

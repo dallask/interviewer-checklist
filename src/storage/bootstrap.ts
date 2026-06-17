@@ -70,7 +70,13 @@ export async function bootstrap(): Promise<{
   if (typeof version === 'number' && version < 2) {
     try {
       const migrated = runMigrations(rawManifest);
-      if (migrated !== null) {
+      // runMigrations returns {manifest, session} for v1→v2; V3Session for v2→v3.
+      // For version < 2 (v1 data), the v1→v2 migration returns {manifest, session}.
+      if (
+        migrated !== null &&
+        'manifest' in migrated &&
+        'session' in migrated
+      ) {
         await chrome.storage.local.set({
           manifest: migrated.manifest,
           [`session:${migrated.session.id}`]: migrated.session,

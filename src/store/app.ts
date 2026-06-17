@@ -3,6 +3,32 @@ import { DEFAULT_SECTIONS } from '../data/bank/index.js';
 import type { Difficulty } from '../data/bank/types.js';
 import { storageAdapter } from '../storage/index.js';
 
+// ---------------------------------------------------------------------------
+// Scoring domain types (Phase 5)
+// ---------------------------------------------------------------------------
+
+/** Candidate details for the scored interview session. */
+export interface CandidateDetails {
+  name: string;
+  email: string;
+  role: string;
+  date: string;
+  interviewer: string;
+  details: string;
+}
+
+/** A user-created question attached to a topic. */
+export interface CustomQuestion {
+  id: string;
+  topicId: string;
+  text: string;
+  level: Difficulty;
+}
+
+// ---------------------------------------------------------------------------
+// AppState and AppActions
+// ---------------------------------------------------------------------------
+
 export interface AppState {
   /** Sidebar visibility */
   sidebarOpen: boolean;
@@ -22,6 +48,21 @@ export interface AppState {
   hideMarked: boolean;
   /** Dark mode enabled */
   darkMode: boolean;
+  // --- ScoringState (Phase 5) ---
+  /** Per-question scores (questionId → score | null); key: "${topicId}-${questionIndex}" */
+  scores: Record<string, number | null>;
+  /** Per-topic score overrides (topicId → override | null) */
+  overrides: Record<string, number | null>;
+  /** Per-question notes (questionId → note text) */
+  notes: Record<string, string>;
+  /** Per-topic notes (topicId → note text) */
+  topicNotes: Record<string, string>;
+  /** User-created custom questions */
+  customQuestions: CustomQuestion[];
+  /** Candidate details for the current session; null when not yet entered */
+  candidate: CandidateDetails | null;
+  /** ID of the currently active session (from manifest.activeSessionId) */
+  activeSessionId: string;
 }
 
 export interface AppActions {
@@ -36,6 +77,23 @@ export interface AppActions {
   toggleSection: (id: string) => void;
   setHideMarked: (v: boolean) => void;
   setDarkMode: (dark: boolean) => void;
+  // --- ScoringActions (Phase 5) ---
+  /** Set a question score (clamped to [0, 10]; null clears the score). T-05-01-02 */
+  setScore: (questionId: string, score: number | null) => void;
+  /** Set a topic score override (clamped to [0, 10]; null clears). T-05-01-03 */
+  setOverride: (topicId: string, override: number | null) => void;
+  /** Set a per-question note. */
+  setNote: (questionId: string, note: string) => void;
+  /** Set a per-topic note. */
+  setTopicNote: (topicId: string, note: string) => void;
+  /** Add a custom question to the list. */
+  addCustomQuestion: (q: CustomQuestion) => void;
+  /** Remove a custom question by id. */
+  deleteCustomQuestion: (id: string) => void;
+  /** Update candidate details for the current session. */
+  setCandidate: (candidate: CandidateDetails | null) => void;
+  /** Clear all scoring data for the current session (preserves activeSessionId and uiState). */
+  resetAll: () => void;
 }
 
 export const DEFAULT_STATE: AppState = {
@@ -48,6 +106,14 @@ export const DEFAULT_STATE: AppState = {
   selectedSections: new Set<string>(),
   hideMarked: false,
   darkMode: false,
+  // ScoringState defaults
+  scores: {},
+  overrides: {},
+  notes: {},
+  topicNotes: {},
+  customQuestions: [],
+  candidate: null,
+  activeSessionId: '',
 };
 
 export const useAppStore = create<AppState & AppActions>()((set) => ({
@@ -128,6 +194,54 @@ export const useAppStore = create<AppState & AppActions>()((set) => ({
     document.documentElement.classList.toggle('dark', dark);
     set({ darkMode: dark });
   },
+
+  // ScoringActions — Phase 5
+
+  // T-05-01-02: clamp to [0, 10] to mitigate keyboard input bypass of slider min/max
+  setScore: (questionId, score) =>
+    set((s) => ({
+      scores: {
+        ...s.scores,
+        [questionId]: score !== null ? Math.min(10, Math.max(0, score)) : null,
+      },
+    })),
+
+  // T-05-01-03: clamp to [0, 10] in action body; UI also enforces on blur
+  setOverride: (topicId, override) =>
+    set((s) => ({
+      overrides: {
+        ...s.overrides,
+        [topicId]:
+          override !== null ? Math.min(10, Math.max(0, override)) : null,
+      },
+    })),
+
+  setNote: (questionId, note) =>
+    set((s) => ({ notes: { ...s.notes, [questionId]: note } })),
+
+  setTopicNote: (topicId, note) =>
+    set((s) => ({ topicNotes: { ...s.topicNotes, [topicId]: note } })),
+
+  addCustomQuestion: (q) =>
+    set((s) => ({ customQuestions: [...s.customQuestions, q] })),
+
+  deleteCustomQuestion: (id) =>
+    set((s) => ({
+      customQuestions: s.customQuestions.filter((cq) => cq.id !== id),
+    })),
+
+  setCandidate: (candidate) => set({ candidate }),
+
+  resetAll: () =>
+    set({
+      scores: {},
+      overrides: {},
+      notes: {},
+      topicNotes: {},
+      customQuestions: [],
+      candidate: null,
+      // activeSessionId is NOT reset — session identity must persist across resets
+    }),
 }));
 
 // Module-level subscribe: fires after every mutation.
@@ -147,4 +261,21 @@ useAppStore.subscribe((state) => {
       darkMode: state.darkMode,
     },
   });
+
+  // Session persistence: write scoring state under session:<id> key when a session is active.
+  // Guard: only write when activeSessionId is non-empty to avoid orphaned session keys.
+  if (state.activeSessionId) {
+    storageAdapter.write({
+      [`session:${state.activeSessionId}`]: {
+        version: 3,
+        id: state.activeSessionId,
+        scores: state.scores,
+        overrides: state.overrides,
+        notes: state.notes,
+        topicNotes: state.topicNotes,
+        customQuestions: state.customQuestions,
+        candidate: state.candidate,
+      },
+    });
+  }
 });

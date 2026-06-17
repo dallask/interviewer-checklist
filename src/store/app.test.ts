@@ -309,6 +309,21 @@ describe('useAppStore — ScoringActions', () => {
     expect(state.candidate).toBeNull();
   });
 
+  it('resetAll clears selectedDifficulties, selectedSections, searchQuery, and hideMarked', () => {
+    useAppStore.setState({
+      selectedDifficulties: new Set(['expert']),
+      selectedSections: new Set(['be']),
+      searchQuery: 'foo',
+      hideMarked: true,
+    });
+    useAppStore.getState().resetAll();
+    const state = useAppStore.getState();
+    expect(state.selectedDifficulties).toEqual(new Set());
+    expect(state.selectedSections).toEqual(new Set());
+    expect(state.searchQuery).toBe('');
+    expect(state.hideMarked).toBe(false);
+  });
+
   it('resetAll preserves activeSessionId', () => {
     useAppStore.setState({ activeSessionId: 'session-abc' });
     useAppStore.getState().resetAll();

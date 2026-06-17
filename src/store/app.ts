@@ -240,6 +240,10 @@ export const useAppStore = create<AppState & AppActions>()((set) => ({
       topicNotes: {},
       customQuestions: [],
       candidate: null,
+      selectedDifficulties: new Set(),
+      selectedSections: new Set(),
+      searchQuery: '',
+      hideMarked: false,
       // activeSessionId is NOT reset — session identity must persist across resets
     }),
 }));

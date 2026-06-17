@@ -15,6 +15,7 @@ export function AiPromptModal({ dialogRef, prompt, onClose }: Props) {
   const [copied, setCopied] = useState(false);
   const [showFallback, setShowFallback] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const copyTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // Reset editable content whenever the prompt prop changes (on each modal open)
   useEffect(() => {
@@ -23,6 +24,14 @@ export function AiPromptModal({ dialogRef, prompt, onClose }: Props) {
     setCopied(false);
     setShowFallback(false);
   }, [prompt]);
+
+  // Clear the copy-feedback timeout when the modal unmounts to prevent
+  // setCopied calls on an unmounted component.
+  useEffect(() => {
+    return () => {
+      if (copyTimeoutRef.current !== null) clearTimeout(copyTimeoutRef.current);
+    };
+  }, []);
 
   // Focus trap + focus restore pattern (WR-02 guard from CandidateModal.tsx)
   // Focus restore target: 'open-ai-prompt' button in ActionsGroup
@@ -69,7 +78,8 @@ export function AiPromptModal({ dialogRef, prompt, onClose }: Props) {
     try {
       await navigator.clipboard.writeText(editablePrompt);
       setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
+      if (copyTimeoutRef.current !== null) clearTimeout(copyTimeoutRef.current);
+      copyTimeoutRef.current = setTimeout(() => setCopied(false), 2000);
     } catch {
       // Clipboard API unavailable — select all text as fallback
       textareaRef.current?.select();

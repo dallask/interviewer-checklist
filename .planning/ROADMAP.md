@@ -20,7 +20,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 3: Storage Layer, Migration & Bootstrap** - Persistence, schema migration, and debounced flush before any UI write (completed 2026-06-17)
 - [x] **Phase 4: Shell, Sidebar & Read-Only Content Tree** - First visible UI: shell layout, sidebar, dark mode, accessibility (completed 2026-06-17)
 - [x] **Phase 5: Scoring UI, Notes, Candidate & Custom Questions** - Full interactive scoring loop for a single session (completed 2026-06-17)
-- [ ] **Phase 6: Multiple Named Sessions & Switcher** - Session management with safe switch, delete, and undo
+- [x] **Phase 6: Multiple Named Sessions & Switcher** - Session management with safe switch, delete, and undo (completed 2026-06-17)
 - [ ] **Phase 7: YAML Import & Export** - Structural and legacy-format portability codec with import preview
 - [ ] **Phase 8: AI Prompt Modal** - AI candidate-feedback prompt builder with copy-to-clipboard
 - [ ] **Phase 9: Polish — Print, Keyboard, A11y, Welcome & Updates** - Onboarding, shortcuts, print stylesheet, update banner
@@ -183,7 +183,7 @@ Plans:
 
 **Wave 3** *(blocked on Wave 2 completion)*
 
-- [ ] 06-03-PLAN.md — Wiring: ActionsGroup session label + trigger, UndoToast root mount in App.tsx, manifest hydration in main.tsx, styles.css slide-up keyframe, human smoke test (SESS-01, SESS-02, SESS-03, SESS-04)
+- [x] 06-03-PLAN.md — Wiring: ActionsGroup session label + trigger, UndoToast root mount in App.tsx, manifest hydration in main.tsx, styles.css slide-up keyframe, human smoke test (SESS-01, SESS-02, SESS-03, SESS-04)
 
 ### Phase 7: YAML Import & Export
 
@@ -254,7 +254,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 →
 | 3. Storage Layer, Migration & Bootstrap | 3/3 | Complete    | 2026-06-17 |
 | 4. Shell, Sidebar & Read-Only Content Tree | 3/3 | Complete    | 2026-06-17 |
 | 5. Scoring UI, Notes, Candidate & Custom Questions | 5/5 | Complete   | 2026-06-17 |
-| 6. Multiple Named Sessions & Switcher | 2/3 | In Progress|  |
+| 6. Multiple Named Sessions & Switcher | 3/3 | Complete   | 2026-06-17 |
 | 7. YAML Import & Export | 0/? | Not started | - |
 | 8. AI Prompt Modal | 0/? | Not started | - |
 | 9. Polish — Print, Keyboard, A11y, Welcome & Updates | 0/? | Not started | - |

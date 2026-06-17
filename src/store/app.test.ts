@@ -7,6 +7,7 @@ vi.mock('../storage/index.js', () => ({
     write: vi.fn(),
     read: vi.fn(),
     flushPending: vi.fn(),
+    remove: vi.fn().mockResolvedValue(undefined),
   },
 }));
 
@@ -372,8 +373,10 @@ describe('session store actions', () => {
       manifest: null,
       undoBuffer: null,
     });
-    // Reset chrome.storage.local.remove mock
+    // Reset chrome.storage.local.remove mock (still used by StorageAdapter internally)
     chrome.storage.local.remove = vi.fn();
+    // Reset storageAdapter.remove mock (deleteSession now routes through the adapter)
+    (storageAdapter.remove as ReturnType<typeof vi.fn>).mockResolvedValue(undefined);
     // Default: storageAdapter.read returns empty object
     (storageAdapter.read as ReturnType<typeof vi.fn>).mockResolvedValue({});
   });
@@ -695,9 +698,9 @@ describe('session store actions', () => {
       }
       return {};
     });
-    chrome.storage.local.remove = vi.fn(() => {
+    // deleteSession now routes through storageAdapter.remove() — track that instead
+    (storageAdapter.remove as ReturnType<typeof vi.fn>).mockImplementation(async () => {
       callOrder.push('remove');
-      return Promise.resolve();
     });
 
     await useAppStore.getState().deleteSession(SESSION_ID_1);

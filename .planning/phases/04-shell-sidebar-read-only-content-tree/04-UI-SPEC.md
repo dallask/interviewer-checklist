@@ -56,11 +56,11 @@ All sizes in px (rendered); Tailwind v4 utility classes listed.
 | Role | Size | Tailwind | Weight | Weight Class | Line Height | Usage |
 |------|------|----------|--------|--------------|-------------|-------|
 | Body | 14px | `text-sm` | 400 regular | `font-normal` | 1.5 | Question name, description, tag text, filter labels, sidebar labels |
-| Label | 12px | `text-xs` | 500 medium | `font-medium` | 1.4 | Difficulty pill text, result count, section mark placeholder, badge text |
+| Label | 12px | `text-xs` | 400 regular | `font-normal` | 1.4 | Difficulty pill text, result count, section mark placeholder, badge text |
 | Heading | 16px | `text-base` | 600 semibold | `font-semibold` | 1.3 | Sidebar group headers (Search, Difficulty, Sections, Actions), topic row labels |
-| Display | 20px | `text-xl` | 700 bold | `font-bold` | 1.2 | Page-level "Tech Stack — Interview Checklist" header (single instance) |
+| Display | 20px | `text-xl` | 600 semibold | `font-semibold` | 1.2 | Page-level "Tech Stack — Interview Checklist" header (single instance) |
 
-**Weights declared: regular (400) and semibold (600).** Label uses 500 only for small-text legibility at 12px; treat as a sub-variant of regular. Bold (700) reserved for the single page header only.
+**Weights declared: regular (400) and semibold (600).** Body and Label roles use `font-normal`; Heading and Display roles use `font-semibold`. Display is visually distinct from Heading by size (20px vs 16px) — no additional weight is needed.
 
 **Dark mode:** No size or weight changes in dark mode — only color changes via `dark:` variant.
 
@@ -114,6 +114,8 @@ Section mark placeholders in Phase 4 show "—" in `text-gray-400` (no band colo
 ## Component Inventory
 
 Components to build in this phase. Executor uses these as implementation targets.
+
+**Primary visual anchor:** the virtualized content tree (main area).
 
 ### Shell Layout
 
@@ -188,14 +190,14 @@ Components to build in this phase. Executor uses these as implementation targets
 | Question row | Question name, description (truncated), difficulty pill, tags | No |
 
 - Section row: `bg-gray-50 dark:bg-gray-800/50 font-semibold text-base border-b border-gray-200 dark:border-gray-700 px-4 py-3`
-- Topic row: `bg-white dark:bg-gray-900 px-4 py-2 pl-8 font-medium text-sm border-b border-gray-100 dark:border-gray-800`
+- Topic row: `bg-white dark:bg-gray-900 px-4 py-2 pl-8 font-normal text-sm border-b border-gray-100 dark:border-gray-800`
 - Question row: `bg-white dark:bg-gray-900 px-4 py-3 pl-12 border-b border-gray-100 dark:border-gray-800`
 
 ### Question Card (read-only, Phase 4)
 
 - **Question name:** `text-sm font-normal text-gray-900 dark:text-gray-100`
 - **Description:** `text-xs text-gray-500 dark:text-gray-400 mt-1 line-clamp-2`
-- **Difficulty pill:** `text-xs font-medium px-2 py-0.5 rounded-full` with color per level:
+- **Difficulty pill:** `text-xs font-normal px-2 py-0.5 rounded-full` with color per level:
   - Beginner: `bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400`
   - Intermediate: `bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400`
   - Advanced: `bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400`
@@ -327,10 +329,10 @@ No third-party component registries are used in Phase 4. All UI is hand-built wi
 ## Checker Sign-Off
 
 - [ ] Dimension 1 Copywriting: PASS
-- [ ] Dimension 2 Visuals: PASS
+- [ ] Dimension 2 Visuals: PASS (focal point added: virtualized content tree)
 - [ ] Dimension 3 Color: PASS
-- [ ] Dimension 4 Typography: PASS
+- [ ] Dimension 4 Typography: PASS (weights reduced to 2: font-normal + font-semibold)
 - [ ] Dimension 5 Spacing: PASS
 - [ ] Dimension 6 Registry Safety: PASS
 
-**Approval:** pending
+**Approval:** pending — revised 2026-06-17 (typography weight block fixed; visual anchor flag fixed)

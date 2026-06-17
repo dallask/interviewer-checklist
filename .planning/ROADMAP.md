@@ -234,7 +234,18 @@ Plans:
   4. Printing the page expands all collapsed content, hides the sidebar and controls, and auto-expands textarea heights
   5. After a minor+ version bump, a dismissible in-app banner informs the user of the update without opening a new tab; the app version and a CHANGELOG viewer are accessible in the footer
 
-**Plans**: TBD
+**Plans**: 3 plans
+
+Plans:
+**Wave 1**
+
+- [ ] 09-01-PLAN.md — Manifest commands key + onInstalled handler (welcome tab, demo seed, lastSeenVersion) + focus trap WR-02 guards + tests (POLISH-01, POLISH-02, POLISH-04, POLISH-07)
+
+**Wave 2** *(blocked on Wave 1 completion)*
+
+- [ ] 09-02-PLAN.md — useKeyboardShortcuts + usePrintExpansion hooks + UpdateBanner + SidebarFooter + ChangelogViewer + print CSS on controls + App/Sidebar wiring + tests (POLISH-03, POLISH-05, POLISH-06, POLISH-07)
+- [ ] 09-03-PLAN.md — Welcome page (second Vite entry: welcome.html + Welcome.tsx) + remaining print CSS on QuestionCard/TopicRow + build verification checkpoint (POLISH-01, POLISH-05)
+
 **UI hint**: yes
 
 ### Phase 10: Chrome Web Store Submission
@@ -267,5 +278,5 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 →
 | 6. Multiple Named Sessions & Switcher | 3/3 | Complete   | 2026-06-17 |
 | 7. YAML Import & Export | 2/2 | Complete    | 2026-06-17 |
 | 8. AI Prompt Modal | 2/2 | Complete    | 2026-06-17 |
-| 9. Polish — Print, Keyboard, A11y, Welcome & Updates | 0/? | Not started | - |
+| 9. Polish — Print, Keyboard, A11y, Welcome & Updates | 0/3 | Not started | - |
 | 10. Chrome Web Store Submission | 0/? | Not started | - |

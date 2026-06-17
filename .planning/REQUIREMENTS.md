@@ -57,9 +57,9 @@
 
 ### Data Portability (YAML)
 
-- [ ] **YAML-01**: YAML export of active session in full structural format — meta, candidate, sections with id/title/icon, topics, questions with scores/overrides/notes/custom flag
-- [ ] **YAML-02**: YAML import supports both full structural format and legacy progress-only format; uses stable `deriveId(group, topic, question)` with normalization for ID matching; deduplicates on re-import
-- [ ] **YAML-03**: Import shows a preview modal ("will modify N questions, add M, X unmatched") before applying; import target defaults to a new session
+- [x] **YAML-01**: YAML export of active session in full structural format — meta, candidate, sections with id/title/icon, topics, questions with scores/overrides/notes/custom flag
+- [x] **YAML-02**: YAML import supports both full structural format and legacy progress-only format; uses stable `deriveId(group, topic, question)` with normalization for ID matching; deduplicates on re-import
+- [x] **YAML-03**: Import shows a preview modal ("will modify N questions, add M, X unmatched") before applying; import target defaults to a new session
 
 ### AI Prompt Builder (AI)
 

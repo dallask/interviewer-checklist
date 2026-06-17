@@ -56,6 +56,21 @@ export class StorageAdapter {
   }
 
   /**
+   * Awaitably flushes any pending writes before returning.
+   * Use this instead of flushPending() when callers need a guarantee that
+   * chrome.storage.local.set() has completed before a subsequent read (e.g.
+   * before snapshot()). No-op when dirty=false.
+   */
+  async flushPendingAsync(): Promise<void> {
+    if (!this.#dirty || this.#pendingData === null) return;
+    if (this.#debounceTimer !== null) {
+      clearTimeout(this.#debounceTimer);
+      this.#debounceTimer = null;
+    }
+    await this.#flush();
+  }
+
+  /**
    * Captures current pending data, clears dirty state, checks quota,
    * then writes to chrome.storage.local. On write error: restores dirty state
    * and merges data back so the next write/flush can retry.

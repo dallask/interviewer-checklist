@@ -7,6 +7,7 @@ vi.mock('../storage/index.js', () => ({
     write: vi.fn(),
     read: vi.fn(),
     flushPending: vi.fn(),
+    flushPendingAsync: vi.fn().mockResolvedValue(undefined),
     remove: vi.fn().mockResolvedValue(undefined),
     snapshot: vi.fn().mockResolvedValue(undefined),
   },

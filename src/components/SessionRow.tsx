@@ -16,6 +16,10 @@ export function SessionRow({ session, isActive, onSwitch, onRename, onDuplicate,
   const [editing, setEditing] = useState(false);
   const [draft, setDraft] = useState(session.name);
   const inputRef = useRef<HTMLInputElement>(null);
+  // CR-03: track cancellation intent so the blur handler (commitRename) does
+  // not commit when Escape was pressed. The browser dispatches blur immediately
+  // after keydown, so a simple setEditing(false) in cancelRename is not enough.
+  const cancelledRef = useRef(false);
 
   function startRename() {
     setDraft(session.name);
@@ -24,6 +28,11 @@ export function SessionRow({ session, isActive, onSwitch, onRename, onDuplicate,
   }
 
   function commitRename(e: React.FocusEvent<HTMLInputElement>) {
+    // CR-03: if Escape was pressed, bail out and reset the flag.
+    if (cancelledRef.current) {
+      cancelledRef.current = false;
+      return;
+    }
     // Pitfall 5: don't commit if focus moved within the same <li>
     const li = e.currentTarget.closest('li');
     if (li?.contains(e.relatedTarget as Node)) return;
@@ -37,6 +46,7 @@ export function SessionRow({ session, isActive, onSwitch, onRename, onDuplicate,
   }
 
   function cancelRename() {
+    cancelledRef.current = true;
     setDraft(session.name);
     setEditing(false);
   }

@@ -1,11 +1,11 @@
-import { describe, it, expect } from 'vitest';
+import { describe, expect, it } from 'vitest';
+import type { TopicResult } from './index.js';
 import {
-  computeTopicMark,
-  computeSectionMark,
   computeOverallMark,
+  computeSectionMark,
+  computeTopicMark,
   getMarkBand,
 } from './index.js';
-import type { TopicResult } from './index.js';
 
 // Prototype-derived fixture: Twig topic (12 questions)
 // topic.id = 'twig', questions indexed 0..11
@@ -38,7 +38,10 @@ const EMPTY_TOPIC = {
   name: 'Empty',
   desc: '',
   tag: '',
-  questions: [] as { q: string; level: 'novice' | 'intermediate' | 'advanced' | 'expert' }[],
+  questions: [] as {
+    q: string;
+    level: 'novice' | 'intermediate' | 'advanced' | 'expert';
+  }[],
 };
 
 describe('computeTopicMark', () => {

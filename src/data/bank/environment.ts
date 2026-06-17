@@ -88,10 +88,6 @@ export const environmentSection: Section = {
         },
         { q: 'What is a container?', level: 'novice' },
         {
-          q: 'What is the difference between an image and a container?',
-          level: 'novice',
-        },
-        {
           q: 'How do you reduce image size with multi-stage builds and layer caching?',
           level: 'advanced',
         },

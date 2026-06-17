@@ -21,7 +21,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 4: Shell, Sidebar & Read-Only Content Tree** - First visible UI: shell layout, sidebar, dark mode, accessibility (completed 2026-06-17)
 - [x] **Phase 5: Scoring UI, Notes, Candidate & Custom Questions** - Full interactive scoring loop for a single session (completed 2026-06-17)
 - [x] **Phase 6: Multiple Named Sessions & Switcher** - Session management with safe switch, delete, and undo (completed 2026-06-17)
-- [ ] **Phase 7: YAML Import & Export** - Structural and legacy-format portability codec with import preview
+- [x] **Phase 7: YAML Import & Export** - Structural and legacy-format portability codec with import preview (completed 2026-06-17)
 - [ ] **Phase 8: AI Prompt Modal** - AI candidate-feedback prompt builder with copy-to-clipboard
 - [ ] **Phase 9: Polish — Print, Keyboard, A11y, Welcome & Updates** - Onboarding, shortcuts, print stylesheet, update banner
 - [ ] **Phase 10: Chrome Web Store Submission** - Privacy policy, screenshots, smoke-test, and public listing
@@ -255,7 +255,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 →
 | 4. Shell, Sidebar & Read-Only Content Tree | 3/3 | Complete    | 2026-06-17 |
 | 5. Scoring UI, Notes, Candidate & Custom Questions | 5/5 | Complete   | 2026-06-17 |
 | 6. Multiple Named Sessions & Switcher | 3/3 | Complete   | 2026-06-17 |
-| 7. YAML Import & Export | 1/2 | In Progress|  |
+| 7. YAML Import & Export | 2/2 | Complete   | 2026-06-17 |
 | 8. AI Prompt Modal | 0/? | Not started | - |
 | 9. Polish — Print, Keyboard, A11y, Welcome & Updates | 0/? | Not started | - |
 | 10. Chrome Web Store Submission | 0/? | Not started | - |

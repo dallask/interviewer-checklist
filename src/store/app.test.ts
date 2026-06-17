@@ -8,6 +8,7 @@ vi.mock('../storage/index.js', () => ({
     read: vi.fn(),
     flushPending: vi.fn(),
     remove: vi.fn().mockResolvedValue(undefined),
+    snapshot: vi.fn().mockResolvedValue(undefined),
   },
 }));
 
@@ -849,5 +850,126 @@ describe('session store actions', () => {
       return 'manifest' in arg;
     });
     expect(manifestWrite).toBeDefined();
+  });
+});
+
+// ---------------------------------------------------------------------------
+// importSession — Phase 7 (YAML-02 / YAML-03)
+// ---------------------------------------------------------------------------
+
+describe('importSession', () => {
+  const SESSION_ID_1 = 'sess-import-1';
+
+  const makeManifest = (
+    sessions: Array<{ id: string; name: string }>,
+    activeId: string,
+  ) => ({
+    version: 2 as const,
+    activeSessionId: activeId,
+    sessions: sessions.map((s) => ({
+      id: s.id,
+      name: s.name,
+      createdAt: '2026-01-01T00:00:00.000Z',
+      updatedAt: '2026-01-01T00:00:00.000Z',
+    })),
+  });
+
+  const makeImportData = (overrides?: Partial<{
+    scores: Record<string, number | null>;
+    sessionName: string;
+    candidate: null;
+  }>) => ({
+    scores: { 'twig-0': 8, 'twig-1': 7 },
+    overrides: {},
+    notes: {},
+    topicNotes: {},
+    customQuestions: [],
+    candidate: null,
+    sessionName: '',
+    ...overrides,
+  });
+
+  beforeEach(() => {
+    vi.clearAllMocks();
+    useAppStore.setState({
+      ...DEFAULT_STATE,
+      manifest: makeManifest([{ id: SESSION_ID_1, name: 'Session 1' }], SESSION_ID_1),
+      activeSessionId: SESSION_ID_1,
+    });
+    // Default: storageAdapter.read returns empty object (for createSession → switchSession)
+    (storageAdapter.read as ReturnType<typeof vi.fn>).mockResolvedValue({});
+    (storageAdapter.snapshot as ReturnType<typeof vi.fn>).mockResolvedValue(undefined);
+  });
+
+  it('importSession(data, false) — storageAdapter.snapshot is called once before createSession', async () => {
+    const callOrder: string[] = [];
+    (storageAdapter.snapshot as ReturnType<typeof vi.fn>).mockImplementation(async () => {
+      callOrder.push('snapshot');
+    });
+    (storageAdapter.write as ReturnType<typeof vi.fn>).mockImplementation(() => {
+      callOrder.push('write');
+    });
+
+    await useAppStore.getState().importSession(makeImportData(), false);
+
+    expect(callOrder[0]).toBe('snapshot');
+    expect(storageAdapter.snapshot).toHaveBeenCalledTimes(1);
+  });
+
+  it('importSession(data, false) — after action, activeSessionId differs from pre-import id', async () => {
+    const priorId = useAppStore.getState().activeSessionId;
+    await useAppStore.getState().importSession(makeImportData(), false);
+    const newId = useAppStore.getState().activeSessionId;
+    expect(newId).not.toBe(priorId);
+  });
+
+  it('importSession(data, false) with sessionName — renameSession is called with that name', async () => {
+    const data = makeImportData({ sessionName: 'Alice Smith' });
+    await useAppStore.getState().importSession(data, false);
+    // After renameSession, the active session should have the imported name
+    const state = useAppStore.getState();
+    const activeMeta = state.manifest?.sessions.find((s) => s.id === state.activeSessionId);
+    expect(activeMeta?.name).toBe('Alice Smith');
+  });
+
+  it('importSession(data, true) — storageAdapter.snapshot is called once before set()', async () => {
+    const callOrder: string[] = [];
+    (storageAdapter.snapshot as ReturnType<typeof vi.fn>).mockImplementation(async () => {
+      callOrder.push('snapshot');
+    });
+    (storageAdapter.write as ReturnType<typeof vi.fn>).mockImplementation(() => {
+      callOrder.push('write');
+    });
+
+    await useAppStore.getState().importSession(makeImportData(), true);
+
+    expect(callOrder[0]).toBe('snapshot');
+    expect(storageAdapter.snapshot).toHaveBeenCalledTimes(1);
+  });
+
+  it('importSession(data, true) — after action, activeSessionId remains the same', async () => {
+    const priorId = useAppStore.getState().activeSessionId;
+    await useAppStore.getState().importSession(makeImportData(), true);
+    expect(useAppStore.getState().activeSessionId).toBe(priorId);
+  });
+
+  it('importSession(data, true) — store state.scores matches data.scores after action', async () => {
+    const data = makeImportData({ scores: { 'twig-0': 9, 'twig-4': 6 } });
+    await useAppStore.getState().importSession(data, true);
+    expect(useAppStore.getState().scores).toEqual(data.scores);
+  });
+
+  it('importSession — snapshot is called BEFORE any write mutation (call-order spy)', async () => {
+    const callOrder: string[] = [];
+    (storageAdapter.snapshot as ReturnType<typeof vi.fn>).mockImplementation(async () => {
+      callOrder.push('snapshot');
+    });
+    (storageAdapter.write as ReturnType<typeof vi.fn>).mockImplementation(() => {
+      callOrder.push('write');
+    });
+
+    await useAppStore.getState().importSession(makeImportData(), true);
+
+    expect(callOrder[0]).toBe('snapshot');
   });
 });

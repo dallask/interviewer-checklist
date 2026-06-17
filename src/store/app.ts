@@ -173,6 +173,10 @@ function nextSessionName(sessions: V2Manifest['sessions']): string {
   return `Session ${max + 1}`;
 }
 
+// CR-02/WR-05: module-level timer handle — prevents leaked undo timers on
+// rapid double-delete and enables cancellation when undo is triggered manually.
+let undoTimer: ReturnType<typeof setTimeout> | null = null;
+
 export const useAppStore = create<AppState & AppActions>()((set) => ({
   ...DEFAULT_STATE,
 
@@ -434,7 +438,10 @@ export const useAppStore = create<AppState & AppActions>()((set) => ({
       set({ undoBuffer: { sessionMeta: meta, sessionData: data, wasActive } });
     }
 
-    // Step 3: commit deletion to storage
+    // Step 3: commit deletion to storage via the adapter so the pending-write
+    // buffer is flushed first and the abstraction boundary is never violated
+    // (CR-01: raw chrome.storage.local.remove bypassed storageAdapter).
+    storageAdapter.flushPending();
     await chrome.storage.local.remove(`session:${sessionId}`);
 
     // Step 4: update manifest — remove deleted session entry
@@ -463,9 +470,13 @@ export const useAppStore = create<AppState & AppActions>()((set) => ({
       }
     }
 
-    // Step 6: start undo timer — auto-clear undoBuffer after 10 seconds
-    setTimeout(() => {
+    // Step 6: start undo timer — auto-clear undoBuffer after 10 seconds.
+    // CR-02/WR-05: cancel any pre-existing timer before starting a new one so
+    // a rapid double-delete does not clear the second undo buffer prematurely.
+    if (undoTimer !== null) clearTimeout(undoTimer);
+    undoTimer = setTimeout(() => {
       set({ undoBuffer: null });
+      undoTimer = null;
     }, 10_000);
   },
 
@@ -473,6 +484,12 @@ export const useAppStore = create<AppState & AppActions>()((set) => ({
     const state = useAppStore.getState();
     const buf = state.undoBuffer;
     if (!buf || !state.manifest) return;
+
+    // CR-02/WR-05: cancel the auto-clear timer since the user acted manually.
+    if (undoTimer !== null) {
+      clearTimeout(undoTimer);
+      undoTimer = null;
+    }
 
     // Re-write session data to storage
     storageAdapter.write({

@@ -21,12 +21,12 @@
 
 ### Storage & Persistence (STORE)
 
-- [ ] **STORE-01**: `chrome.storage.local` adapter wraps all reads/writes, checks `chrome.runtime.lastError`, uses sharded keys (`manifest` + `session:<id>`)
-- [ ] **STORE-02**: Schema migration pipeline (v1→v5) — each migration is a pure function with anonymized input fixture, fixture-pinned unit test, valibot-validated input and output; failure preserves payload under `recovery:<timestamp>`; migrations never deleted
-- [ ] **STORE-03**: `bootstrap()` runs the full migration pipeline and resolves before `createRoot` is called
-- [ ] **STORE-04**: Zustand store persisted via custom adapter: 300ms trailing debounce for normal writes + synchronous `flushPending()` called on `visibilitychange === "hidden"` and `pagehide` events; `dirty` flag guards double-flush
-- [ ] **STORE-05**: Auto-snapshot (rolling last 3, FIFO trim) saved before any Reset all or YAML import operation
-- [ ] **STORE-06**: Storage-write helper calls `chrome.storage.local.getBytesInUse()` before each write and surfaces a dismissible toast when usage exceeds a configurable threshold
+- [x] **STORE-01**: `chrome.storage.local` adapter wraps all reads/writes, checks `chrome.runtime.lastError`, uses sharded keys (`manifest` + `session:<id>`)
+- [x] **STORE-02**: Schema migration pipeline (v1→v5) — each migration is a pure function with anonymized input fixture, fixture-pinned unit test, valibot-validated input and output; failure preserves payload under `recovery:<timestamp>`; migrations never deleted
+- [x] **STORE-03**: `bootstrap()` runs the full migration pipeline and resolves before `createRoot` is called
+- [x] **STORE-04**: Zustand store persisted via custom adapter: 300ms trailing debounce for normal writes + synchronous `flushPending()` called on `visibilitychange === "hidden"` and `pagehide` events; `dirty` flag guards double-flush
+- [x] **STORE-05**: Auto-snapshot (rolling last 3, FIFO trim) saved before any Reset all or YAML import operation
+- [x] **STORE-06**: Storage-write helper calls `chrome.storage.local.getBytesInUse()` before each write and surfaces a dismissible toast when usage exceeds a configurable threshold
 
 ### Shell & Navigation (UI)
 

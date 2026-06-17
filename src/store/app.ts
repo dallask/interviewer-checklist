@@ -528,6 +528,13 @@ export const useAppStore = create<AppState & AppActions>()((set) => ({
   importSession: async (data: ImportResult, overwriteActive: boolean) => {
     const { activeSessionId } = useAppStore.getState();
 
+    // CR-01: flush any debounced writes so snapshot() reads the latest data.
+    // snapshot() reads from chrome.storage.local directly and does not consult
+    // the in-memory pending write buffer; without this flush, changes made in
+    // the final debounce window (300 ms) before clicking Confirm would be lost
+    // from the rollback snapshot.
+    storageAdapter.flushPending();
+
     // STORE-05: snapshot MUST be called first — before any set() or createSession()
     await storageAdapter.snapshot(activeSessionId);
 

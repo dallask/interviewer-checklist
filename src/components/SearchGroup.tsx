@@ -1,10 +1,20 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import { DEFAULT_SECTIONS } from '../data/bank/index.js';
 import { useAppStore } from '../store/app.js';
+import { buildFlatRows } from '../utils/buildFlatRows.js';
 
-const TOTAL_QUESTIONS = 1067;
+const TOTAL_QUESTIONS = DEFAULT_SECTIONS.reduce(
+  (acc, s) => acc + s.items.reduce((a, t) => a + t.questions.length, 0),
+  0,
+);
 
 export function SearchGroup() {
   const setSearchQuery = useAppStore((s) => s.setSearchQuery);
+  const searchQuery = useAppStore((s) => s.searchQuery);
+  const selectedDifficulties = useAppStore((s) => s.selectedDifficulties);
+  const selectedSections = useAppStore((s) => s.selectedSections);
+  const topicOpen = useAppStore((s) => s.topicOpen);
+  const sectionOpen = useAppStore((s) => s.sectionOpen);
   const [localValue, setLocalValue] = useState('');
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -22,6 +32,27 @@ export function SearchGroup() {
     if (debounceRef.current) clearTimeout(debounceRef.current);
     setSearchQuery('');
   };
+
+  const resultCount = useMemo(
+    () =>
+      buildFlatRows(DEFAULT_SECTIONS, topicOpen, sectionOpen, {
+        searchQuery,
+        selectedDifficulties,
+        selectedSections,
+      }).filter((r) => r.type === 'question').length,
+    [
+      searchQuery,
+      selectedDifficulties,
+      selectedSections,
+      topicOpen,
+      sectionOpen,
+    ],
+  );
+
+  const isFiltered =
+    searchQuery.length > 0 ||
+    selectedDifficulties.size > 0 ||
+    selectedSections.size > 0;
 
   useEffect(
     () => () => {
@@ -57,8 +88,8 @@ export function SearchGroup() {
         aria-atomic="true"
         className="text-xs text-gray-500 dark:text-gray-400"
       >
-        {localValue
-          ? `Showing ${TOTAL_QUESTIONS.toLocaleString()} of ${TOTAL_QUESTIONS.toLocaleString()} questions`
+        {isFiltered
+          ? `Showing ${resultCount.toLocaleString()} of ${TOTAL_QUESTIONS.toLocaleString()} questions`
           : `Showing all ${TOTAL_QUESTIONS.toLocaleString()} questions`}
       </p>
     </div>

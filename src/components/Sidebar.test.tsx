@@ -14,6 +14,8 @@ function makeState(overrides: Record<string, unknown> = {}) {
   return {
     sidebarOpen: true,
     setSidebarOpen: vi.fn(),
+    topicOpen: {},
+    sectionOpen: {},
     groupOpen: {
       search: true,
       difficulty: true,

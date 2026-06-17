@@ -20,8 +20,10 @@ describe('SearchGroup', () => {
       selector({
         setSearchQuery,
         searchQuery: '',
-        filteredCount: 1067,
-        totalCount: 1067,
+        selectedDifficulties: new Set(),
+        selectedSections: new Set(),
+        topicOpen: {},
+        sectionOpen: {},
       }),
     );
   });

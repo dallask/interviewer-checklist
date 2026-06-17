@@ -6,9 +6,23 @@ vi.mock('../store/app.js', () => ({
   useAppStore: vi.fn(),
 }));
 
+vi.mock('./SessionSwitcherModal.js', () => ({
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  SessionSwitcherModal: ({ dialogRef }: { dialogRef: any }) => (
+    <dialog ref={dialogRef} data-testid="session-switcher-modal" />
+  ),
+}));
+
 import { useAppStore } from '../store/app.js';
 
 const mockUseAppStore = useAppStore as unknown as ReturnType<typeof vi.fn>;
+
+const SESSION_ID = 'session-1';
+const MANIFEST = {
+  version: 2 as const,
+  activeSessionId: SESSION_ID,
+  sessions: [{ id: SESSION_ID, name: 'Session 1', createdAt: '', updatedAt: '' }],
+};
 
 describe('ActionsGroup', () => {
   const expandAll = vi.fn();
@@ -26,6 +40,8 @@ describe('ActionsGroup', () => {
         setHideMarked,
         darkMode: false,
         setDarkMode,
+        manifest: MANIFEST,
+        activeSessionId: SESSION_ID,
       }),
     );
   });
@@ -139,5 +155,31 @@ describe('ActionsGroup', () => {
     render(<ActionsGroup />);
     const btn = screen.getByRole('button', { name: /reset all/i });
     expect(btn.className).toContain('text-red-600');
+  });
+
+  describe('Session switcher', () => {
+    it('renders active session name label with aria-label="Active session"', () => {
+      render(<ActionsGroup />);
+      const label = screen.getByLabelText('Active session');
+      expect(label).toBeInTheDocument();
+      expect(label.textContent).toBe('Session 1');
+    });
+
+    it('renders "Switch session" button with id="open-session-switcher"', () => {
+      render(<ActionsGroup />);
+      const btn = screen.getByRole('button', { name: /switch session/i });
+      expect(btn).toBeInTheDocument();
+      expect(btn).toHaveAttribute('id', 'open-session-switcher');
+    });
+
+    it('clicking "Switch session" calls showModal() on the session switcher dialog ref', () => {
+      render(<ActionsGroup />);
+      const dialog = screen.getByTestId('session-switcher-modal') as HTMLDialogElement;
+      const showModal = vi.fn();
+      Object.defineProperty(dialog, 'showModal', { value: showModal, writable: true });
+      const btn = screen.getByRole('button', { name: /switch session/i });
+      fireEvent.click(btn);
+      expect(showModal).toHaveBeenCalledTimes(1);
+    });
   });
 });

@@ -19,13 +19,26 @@ export default defineConfig({
     passWithNoTests: true,
     coverage: {
       provider: 'v8',
-      include: ['src/scoring/**', 'src/storage/**'],
+      include: ['src/scoring/**', 'src/storage/**', 'src/store/**', 'src/utils/buildFlatRows.ts'],
       exclude: ['src/data/bank/**'],
       thresholds: {
         lines: 100,
         branches: 100,
         functions: 100,
         statements: 100,
+        // Per-file overrides: lower threshold for store and utils (90%)
+        'src/store/**': {
+          lines: 90,
+          branches: 90,
+          functions: 90,
+          statements: 90,
+        },
+        'src/utils/buildFlatRows.ts': {
+          lines: 90,
+          branches: 90,
+          functions: 90,
+          statements: 90,
+        },
       },
     },
   },

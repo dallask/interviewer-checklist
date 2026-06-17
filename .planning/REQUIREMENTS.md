@@ -15,9 +15,9 @@
 
 ### Question Bank & Scoring (BANK)
 
-- [ ] **BANK-01**: Built-in question bank compiled as a build-time constant — 9 groups / ~86 topics / 1000+ questions / 4 difficulty levels (coefficients 1.00 / 1.25 / 1.50 / 1.75); never persisted in storage
-- [ ] **BANK-02**: Weighted scoring engine: difficulty-weighted topic marks, manual topic overrides, plain-mean group and overall marks, live recompute on every score change, colored mark bands
-- [ ] **BANK-03**: Vitest unit coverage on bank structure and scoring engine with prototype-derived fixtures
+- [x] **BANK-01**: Built-in question bank compiled as a build-time constant — 9 groups / ~86 topics / 1000+ questions / 4 difficulty levels (coefficients 1.00 / 1.25 / 1.50 / 1.75); never persisted in storage
+- [x] **BANK-02**: Weighted scoring engine: difficulty-weighted topic marks, manual topic overrides, plain-mean group and overall marks, live recompute on every score change, colored mark bands
+- [x] **BANK-03**: Vitest unit coverage on bank structure and scoring engine with prototype-derived fixtures
 
 ### Storage & Persistence (STORE)
 

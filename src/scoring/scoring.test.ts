@@ -113,6 +113,20 @@ describe('computeTopicMark', () => {
     expect(result.mark).toBeNull();
     expect(result.scoredCount).toBe(0);
   });
+
+  it('NaN score is treated as unscored (does not corrupt mark)', () => {
+    const result = computeTopicMark(TWIG_TOPIC, { 'twig-0': NaN });
+    expect(result.mark).toBeNull();
+    expect(result.band).toBe('none');
+    expect(result.scoredCount).toBe(0);
+  });
+
+  it('Infinity score is treated as unscored (does not corrupt mark)', () => {
+    const result = computeTopicMark(TWIG_TOPIC, { 'twig-0': Infinity });
+    expect(result.mark).toBeNull();
+    expect(result.band).toBe('none');
+    expect(result.scoredCount).toBe(0);
+  });
 });
 
 describe('computeSectionMark', () => {
@@ -218,6 +232,8 @@ describe('computeOverallMark', () => {
 
 describe('getMarkBand — CONTEXT.md thresholds', () => {
   it('null → none', () => expect(getMarkBand(null)).toBe('none'));
+  it('NaN → none', () => expect(getMarkBand(NaN)).toBe('none'));
+  it('Infinity → none', () => expect(getMarkBand(Infinity)).toBe('none'));
   it('0 → low', () => expect(getMarkBand(0)).toBe('low'));
   it('4.99 → low', () => expect(getMarkBand(4.99)).toBe('low'));
   it('5.0 → mid', () => expect(getMarkBand(5.0)).toBe('mid'));

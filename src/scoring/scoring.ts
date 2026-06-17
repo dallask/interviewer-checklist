@@ -61,8 +61,8 @@ export function computeTopicMark(
   topic.questions.forEach((q, i) => {
     const key = `${topic.id}-${i}`;
     const score = scores[key];
-    // Use typeof guard — admits score=0 as valid, skips null/undefined/missing
-    if (typeof score !== 'number') return;
+    // Use typeof + isFinite guard — admits score=0 as valid, skips null/undefined/missing/NaN/Infinity
+    if (typeof score !== 'number' || !Number.isFinite(score)) return;
     const coef = DIFFICULTY_COEFFICIENTS[q.level];
     weightedSum += coef * score;
     coeffSum += coef;
@@ -132,7 +132,7 @@ export function computeOverallMark(
  * [8, 10]   → 'high'
  */
 export function getMarkBand(mark: number | null): MarkBand {
-  if (mark === null) return 'none';
+  if (mark === null || !Number.isFinite(mark)) return 'none';
   if (mark < 5) return 'low';
   if (mark < 6.5) return 'mid';
   if (mark < 8) return 'good';

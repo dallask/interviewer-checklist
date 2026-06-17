@@ -159,9 +159,18 @@ export function parseLegacy(
       incomingScores as Record<string, unknown>,
     )) {
       if (idSet.has(key)) {
-        modifiedCount++;
-        result.scores[key] =
-          typeof value === 'number' ? value : value === null ? null : null;
+        // WR-03: only store and count numeric values as modified; non-numeric
+        // values (strings, booleans) are treated as unmatched to avoid
+        // inflating modifiedCount with entries that silently become null.
+        const numericValue = typeof value === 'number' ? value : null;
+        if (numericValue !== null) {
+          result.scores[key] = numericValue;
+          modifiedCount++;
+        } else if (value !== null) {
+          // non-numeric, non-null value in a known key → unmatched
+          unmatchedCount++;
+        }
+        // null values (explicit null in YAML) are silently skipped — no score written
       } else {
         unmatchedCount++;
       }

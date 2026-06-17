@@ -1,7 +1,7 @@
 ---
 phase: 5
 slug: scoring-ui-notes-candidate-custom-questions
-status: draft
+status: approved
 shadcn_initialized: false
 preset: none
 created: 2026-06-17

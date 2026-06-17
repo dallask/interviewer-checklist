@@ -170,6 +170,17 @@ describe('ActionsGroup', () => {
     expect(btn).toHaveAttribute('id', 'open-ai-prompt');
   });
 
+  it('clicking "AI feedback prompt" calls showModal() on the AI prompt dialog', () => {
+    render(<ActionsGroup />);
+    const dialog = document.querySelector(
+      'dialog[aria-labelledby="ai-prompt-title"]',
+    ) as HTMLDialogElement;
+    const showModal = vi.fn();
+    Object.defineProperty(dialog, 'showModal', { value: showModal, writable: true });
+    fireEvent.click(screen.getByRole('button', { name: /ai feedback prompt/i }));
+    expect(showModal).toHaveBeenCalledTimes(1);
+  });
+
   describe('Session switcher', () => {
     it('renders active session name label with aria-label="Active session"', () => {
       render(<ActionsGroup />);

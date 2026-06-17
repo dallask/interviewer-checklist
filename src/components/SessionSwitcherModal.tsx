@@ -119,10 +119,16 @@ export function SessionSwitcherModal({ dialogRef }: Props) {
               }
             }}
             onRename={(name) => {
-              void renameSession(session.id, name);
+              // WR-07: catch rejection so silent no-op renames surface in console
+              renameSession(session.id, name).catch((err) => {
+                console.error('[SessionSwitcherModal] renameSession failed:', err);
+              });
             }}
             onDuplicate={() => {
-              void duplicateSession(session.id);
+              // WR-07: catch rejection so failed duplicate is not silently discarded
+              duplicateSession(session.id).catch((err) => {
+                console.error('[SessionSwitcherModal] duplicateSession failed:', err);
+              });
             }}
             onDelete={() => {
               setPendingDelete(session);

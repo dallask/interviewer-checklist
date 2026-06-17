@@ -1,5 +1,9 @@
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 import { useAppStore } from '../store/app.js';
+import { DEFAULT_SECTIONS } from '../data/bank/index.js';
+import type { V3Session } from '../storage/types.js';
+import { buildAiPrompt } from '../utils/buildAiPrompt.js';
+import { AiPromptModal } from './AiPromptModal.js';
 import { CandidateModal } from './CandidateModal.js';
 import { ResetConfirmDialog } from './ResetConfirmDialog.js';
 import { SessionSwitcherModal } from './SessionSwitcherModal.js';
@@ -13,13 +17,36 @@ export function ActionsGroup() {
   const setDarkMode = useAppStore((s) => s.setDarkMode);
   const manifest = useAppStore((s) => s.manifest);
   const activeSessionId = useAppStore((s) => s.activeSessionId);
+  const scores = useAppStore((s) => s.scores);
+  const overrides = useAppStore((s) => s.overrides);
+  const notes = useAppStore((s) => s.notes);
+  const topicNotes = useAppStore((s) => s.topicNotes);
+  const customQuestions = useAppStore((s) => s.customQuestions);
+  const candidate = useAppStore((s) => s.candidate);
 
   const candidateDialogRef = useRef<HTMLDialogElement>(null);
   const resetDialogRef = useRef<HTMLDialogElement>(null);
   const sessionSwitcherRef = useRef<HTMLDialogElement>(null);
+  const aiPromptRef = useRef<HTMLDialogElement>(null);
+
+  const [aiPrompt, setAiPrompt] = useState('');
 
   const activeSessionName =
     manifest?.sessions.find((s) => s.id === activeSessionId)?.name ?? '';
+
+  const handleOpenAiPrompt = () => {
+    const currentSession = {
+      scores,
+      overrides,
+      notes,
+      topicNotes,
+      customQuestions,
+      candidate,
+    };
+    const generated = buildAiPrompt(currentSession as unknown as V3Session, DEFAULT_SECTIONS);
+    setAiPrompt(generated);
+    aiPromptRef.current?.showModal();
+  };
 
   return (
     <div className="flex flex-col gap-2">
@@ -36,6 +63,14 @@ export function ActionsGroup() {
         className="w-full text-sm px-3 py-2 text-left text-gray-900 dark:text-gray-100 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none"
       >
         Switch session
+      </button>
+      <button
+        type="button"
+        id="open-ai-prompt"
+        onClick={handleOpenAiPrompt}
+        className="w-full text-sm px-3 py-2 text-left text-gray-900 dark:text-gray-100 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none"
+      >
+        AI feedback prompt
       </button>
       <hr className="border-gray-200 dark:border-gray-700 my-1" />
       <button
@@ -87,6 +122,11 @@ export function ActionsGroup() {
       <SessionSwitcherModal dialogRef={sessionSwitcherRef} />
       <CandidateModal dialogRef={candidateDialogRef} />
       <ResetConfirmDialog dialogRef={resetDialogRef} />
+      <AiPromptModal
+        dialogRef={aiPromptRef}
+        prompt={aiPrompt}
+        onClose={() => { aiPromptRef.current?.close(); }}
+      />
     </div>
   );
 }

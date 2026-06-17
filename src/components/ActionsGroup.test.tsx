@@ -42,6 +42,12 @@ describe('ActionsGroup', () => {
         setDarkMode,
         manifest: MANIFEST,
         activeSessionId: SESSION_ID,
+        scores: {},
+        overrides: {},
+        notes: {},
+        topicNotes: {},
+        customQuestions: [],
+        candidate: null,
       }),
     );
   });
@@ -155,6 +161,13 @@ describe('ActionsGroup', () => {
     render(<ActionsGroup />);
     const btn = screen.getByRole('button', { name: /reset all/i });
     expect(btn.className).toContain('text-red-600');
+  });
+
+  it('renders "AI feedback prompt" button with id="open-ai-prompt"', () => {
+    render(<ActionsGroup />);
+    const btn = screen.getByRole('button', { name: /ai feedback prompt/i });
+    expect(btn).toBeInTheDocument();
+    expect(btn).toHaveAttribute('id', 'open-ai-prompt');
   });
 
   describe('Session switcher', () => {

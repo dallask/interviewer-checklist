@@ -1,164 +1,112 @@
 ---
 phase: 06-multiple-named-sessions-switcher
-reviewed: 2026-06-17T12:00:00Z
+reviewed: 2026-06-17T18:00:00Z
 depth: standard
-files_reviewed: 5
+files_reviewed: 6
 files_reviewed_list:
-  - src/app/main.tsx
+  - src/storage/adapter.ts
+  - src/store/app.ts
+  - src/components/SessionSwitcherModal.tsx
   - src/components/DeleteSessionConfirmDialog.tsx
   - src/components/SessionRow.tsx
-  - src/components/SessionSwitcherModal.tsx
-  - src/store/app.ts
+  - src/app/main.tsx
 findings:
-  critical: 2
+  critical: 0
   warning: 2
   info: 2
-  total: 6
+  total: 4
 status: issues_found
 ---
 
-# Phase 06: Code Review Report (Re-review)
+# Phase 06: Code Review Report (Final Re-review — Iteration 3)
 
-**Reviewed:** 2026-06-17T12:00:00Z
+**Reviewed:** 2026-06-17T18:00:00Z
 **Depth:** standard
-**Files Reviewed:** 5
+**Files Reviewed:** 6
 **Status:** issues_found
 
 ## Summary
 
-Re-review after fixes for CR-01 through CR-04 and WR-01 through WR-05. Five of the eight findings are fully resolved: CR-02 (leaked undo timer), CR-03 (Escape-then-blur double-trigger), CR-04 (missing manifest optional-chain), WR-02 (focus-trap empty-list crash), and WR-03 (switchSession fire-and-forget) are all correctly fixed. WR-01, WR-04, and WR-05 are also resolved.
+Final re-review after two fix iterations. All five previously-CRITICAL issues are now resolved: CR-01 (`StorageAdapter.remove()` method added, race eliminated), CR-02/WR-05 (module-level `undoTimer` with cancellation), CR-03 (`cancelledRef` in `SessionRow`), CR-04 (optional chaining on `manifest?.activeSessionId`), and CR-05 (`handleNewSession` is now `async` with `try/catch`). WR-01, WR-02, WR-03, WR-04, WR-05, and WR-07 are all resolved.
 
-**CR-01 is not fixed.** The comment at `app.ts:441-443` claims the abstraction boundary is no longer violated, but `chrome.storage.local.remove` is still called directly on line 445; no `remove()` method was added to `StorageAdapter`. More critically, the `flushPending()` call on line 444 is fire-and-forget inside the adapter (`void this.#flush()`), meaning the pending-write set and the subsequent `remove` execute concurrently — the remove can complete before `#flush`'s `chrome.storage.local.set` finishes, leaving the deleted session key silently re-written by the flush.
+WR-06 (double focus restore sequence when delete is confirmed) was explicitly deferred in iteration 2 and remains open.
 
-Two new issues were introduced by the WR-01 and WR-03 fixes. One new warning was introduced by partial WR-04 fix. One existing informational finding (IN-01, code duplication) remains unresolved.
+One new WARNING was introduced by the CR-01 fix: `StorageAdapter.remove()` proceeds to call `chrome.storage.local.remove()` even when the preceding `#flush()` failed, which can leave buffered session data that will be re-written by the next debounce cycle — partially undoing the delete on storage error. This is a latent correctness issue in the new `remove()` method.
+
+IN-01 (focus-trap code duplication) remains unresolved.
 
 ---
 
-## Critical Issues
+## Warnings
 
-### CR-01: Raw `chrome.storage.local.remove` still present; `flushPending()` race not eliminated
+### WR-01: `StorageAdapter.remove()` proceeds after flush failure — re-write risk on storage error
 
-**File:** `src/store/app.ts:444-445`
-**Issue:** `deleteSession` calls `storageAdapter.flushPending()` on line 444 and then `await chrome.storage.local.remove(...)` on line 445. The fix comment at line 441 claims this satisfies the abstraction requirement, but it does not:
+**File:** `src/storage/adapter.ts:106-114`
+**Issue:** `remove()` calls `await this.#flush()` (line 112), then unconditionally calls `await chrome.storage.local.remove(keys)` (line 114). The `#flush()` method does not propagate errors: its internal `catch` block logs the error, restores `#dirty = true` and repopulates `#pendingData` (lines 73-76), and returns normally. So `await this.#flush()` always resolves — `remove()` has no mechanism to detect that the flush failed.
 
-1. **No `remove()` on `StorageAdapter`** — the adapter's public API is `read()`, `write()`, `flushPending()`, `snapshot()`. Calling `chrome.storage.local.remove` directly still bypasses the abstraction layer.
+When the flush fails:
+1. `#pendingData` is restored with `session:${sessionId}` (written by the Zustand subscribe callback before `remove()` was called).
+2. `chrome.storage.local.remove(keys)` executes anyway and deletes the key from storage.
+3. The debounce timer fires 300ms later (from any subsequent Zustand mutation), flushing the still-buffered `session:${sessionId}` back to storage — silently un-deleting the session.
 
-2. **`flushPending()` is fire-and-forget** — `flushPending()` calls `void this.#flush()` internally (adapter.ts:55). `#flush()` captures `#pendingData` synchronously and clears `#dirty`/`#pendingData` before the first `await` (adapter.ts:66-68), then calls `await chrome.storage.local.set(data)`. This means after `flushPending()` returns, two async I/O operations are simultaneously in flight: the adapter's `set(data)` (which includes the `session:${sessionId}` key written by the subscribe callback) and `deleteSession`'s own `remove(session:${sessionId})`. The remove can win the race and complete first; the set then re-writes the deleted key, silently un-deleting the session.
+Under the happy path (flush succeeds), the race is correctly eliminated. Under a storage error, the delete is completed but then reversed by the next flush.
 
-3. **Subscribe re-writes the key before `flushPending`** — `set({ undoBuffer: ... })` on line 438 triggers the Zustand subscribe callback (app.ts:520). At that point `state.activeSessionId` still equals the session being deleted, so the subscribe writes `session:${sessionId}` into the adapter's pending buffer (app.ts:543-554). `flushPending()` on line 444 then flushes this write. The race described in (2) follows.
-
-**Fix:** Add a `remove(keys: string | string[])` method to `StorageAdapter` that (a) calls `flushPending()` synchronously to drain any pending writes first, (b) awaits `chrome.storage.local.remove(keys)`, and (c) returns a `Promise<void>`. Replace the two-line sequence with a single awaited `storageAdapter.remove(...)` call:
-
+**Fix:** After awaiting `#flush()`, check `#dirty` to detect a flush failure and bail out rather than proceeding with the remove:
 ```typescript
-// StorageAdapter.remove (new method in adapter.ts):
 async remove(keys: string | string[]): Promise<void> {
-  // Drain pending writes synchronously so they don't race with the remove.
-  // flushPending() is fire-and-forget by design for lifecycle use, but here
-  // we need to await the actual storage operation.
   if (this.#dirty && this.#pendingData !== null) {
     if (this.#debounceTimer !== null) {
       clearTimeout(this.#debounceTimer);
       this.#debounceTimer = null;
     }
     await this.#flush();
+    // If flush failed, #dirty was restored. Do not remove — the key would be
+    // re-written by the next debounce cycle, silently undoing the delete.
+    if (this.#dirty) {
+      throw new Error('[StorageAdapter] remove() aborted: flush failed before remove');
+    }
   }
   await chrome.storage.local.remove(keys);
 }
-
-// In deleteSession (app.ts), replace lines 444-445:
-await storageAdapter.remove(`session:${sessionId}`);
 ```
-
-Note: this approach requires making `#flush` awaitable from `remove`, which it already is (it returns `Promise<void>`). The `async remove` method can call `await this.#flush()` instead of `void this.#flush()` to ensure the pending write completes before the remove executes.
+The thrown error propagates to `deleteSession` in `app.ts`, which currently has no `try/catch` around `await storageAdapter.remove(...)` — the rejection would surface to the caller (DeleteSessionConfirmDialog's `handleDelete`), which does have a `try/catch` that logs the error, so the failure path is already handled at the UI layer.
 
 ---
 
-### CR-05: `handleNewSession` swallows `createSession` rejection silently
+### WR-02: WR-06 (deferred): spurious intermediate focus after delete confirmation
 
-**File:** `src/components/SessionSwitcherModal.tsx:61-65`
-**Issue:** This is a new defect introduced when the WR-03 fix pattern (await + error handling) was applied to `onSwitch` but not to `handleNewSession`. The current code is:
+**File:** `src/components/DeleteSessionConfirmDialog.tsx:59`, `src/components/SessionSwitcherModal.tsx:159`
+**Issue:** This finding was flagged in the previous review iteration and explicitly deferred. It remains open. When a session is deleted via the confirm dialog:
 
+1. `handleDelete` calls `dialogRef.current?.close()` (line 59), which fires the delete dialog's `close` event.
+2. The `close` event listener (`handleClose`, lines 43-47) immediately focuses `document.getElementById(focusRestoreId)` — the `delete-session-${pendingDelete.id}` button inside the **still-open parent modal**.
+3. Milliseconds later, `onDeleted()` in the `finally` block (line 68) calls the parent modal's `.close()`.
+4. The parent modal's own `handleClose` (SessionSwitcherModal.tsx line 49-52) then focuses `open-session-switcher`.
+
+Step 2 moves focus to a node inside a dialog that is in the process of closing. This can produce a brief spurious focus announcement to screen readers, since the element is about to become hidden. The final focus destination (step 4) is correct.
+
+**Fix:** Introduce a `skipFocusRestore` ref that `handleDelete` sets to `true` before calling `.close()`, which `handleClose` checks before calling `.focus()`:
 ```typescript
-function handleNewSession() {
-  void createSession().then(() => {
-    dialogRef.current?.close();
-  });
-}
-```
+// In DeleteSessionConfirmDialog, inside the useEffect:
+const skipFocusRestore = { current: false }; // or useRef if extracted
 
-`void expr.then(...)` — if `createSession()` rejects, the rejection propagates into `.then()`, which produces a rejected promise that is then discarded by `void`. The user sees no feedback, the dialog does not close (because `.then()` doesn't run on rejection), and the UI is left open and unresponsive with no indication of what happened. This is the identical pattern that WR-03 identified for `switchSession` — one was fixed, the other was not.
-
-**Fix:** Apply the same async/await + try/catch pattern used in `onSwitch`:
-```typescript
-async function handleNewSession() {
-  try {
-    await createSession();
-    dialogRef.current?.close();
-  } catch (err) {
-    console.error('[SessionSwitcherModal] createSession failed:', err);
+function handleClose() {
+  if (skipFocusRestore.current) {
+    skipFocusRestore.current = false;
+    return;
   }
+  const restoreId = focusRestoreId ?? 'open-session-switcher';
+  document.getElementById(restoreId)?.focus();
 }
-```
 
----
-
-## Warnings
-
-### WR-06: `handleDelete` close triggers `handleClose` focus restore before `onDeleted` closes parent modal — spurious focus sequence
-
-**File:** `src/components/DeleteSessionConfirmDialog.tsx:59` and `src/components/SessionSwitcherModal.tsx:148`
-**Issue:** The WR-01 fix changed `handleDelete` to call `dialogRef.current?.close()` first (line 59), then `onDeleted()` in `finally` (line 68). The `onDeleted` prop from `SessionSwitcherModal` is `() => dialogRef.current?.close()` (the parent modal's close). This creates a double-focus-restore sequence:
-
-1. `DeleteSessionConfirmDialog.close()` (line 59) fires the delete dialog's `close` event → `handleClose` (lines 43-48) focuses `delete-session-${pendingDelete.id}` — the delete button inside the **already-closing parent modal**.
-2. Shortly after, `onDeleted()` calls the parent modal's `.close()` → `SessionSwitcherModal`'s `handleClose` (lines 49-52) focuses `open-session-switcher`.
-
-Step 1 moves focus into a DOM element that is part of the parent modal, which is about to close. Depending on browser implementation, focusing a node inside a dialog that is closing can produce a brief focus flash or announce a spurious accessible name to screen readers, since the element is inside an element with `display: none` being applied. The final focus destination (step 2) is correct, but the intermediate step is not.
-
-**Fix:** Clear the delete dialog's focus-restore behavior when deletion is confirmed (as opposed to cancelled), since the parent modal is closing anyway and will restore focus itself:
-```typescript
+// In handleDelete:
 const handleDelete = async () => {
-  // Suppress delete dialog's own focus restore — parent modal close (via
-  // onDeleted) will fire its own handleClose and restore to 'open-session-switcher'.
-  dialogEl.removeEventListener('close', handleClose); // or use a ref flag
+  skipFocusRestore.current = true;
   dialogRef.current?.close();
-  try {
-    await deleteSession(sessionId);
-  } catch (err) {
-    console.error('[DeleteSessionConfirmDialog] deleteSession failed:', err);
-  } finally {
-    onDeleted();
-  }
+  // ...
 };
 ```
-A simpler alternative: introduce a `skipFocusRestore` ref that `handleDelete` sets to `true` before closing, which `handleClose` checks before calling `.focus()`.
-
----
-
-### WR-07: `onRename` and `onDuplicate` callbacks fire-and-forget without error handling
-
-**File:** `src/components/SessionSwitcherModal.tsx:116-121`
-**Issue:** Both `onRename` and `onDuplicate` in `SessionSwitcherModal` use `void` fire-and-forget:
-```typescript
-onRename={(name) => { void renameSession(session.id, name); }}
-onDuplicate={() => { void duplicateSession(session.id); }}
-```
-If either `renameSession` or `duplicateSession` throws (e.g., storage adapter write failure), the rejection is silently discarded. For `onRename`, the session name in the `SessionRow` UI will revert to the old value on next render (since the manifest update failed), but no error is surfaced to the user — the rename input disappears and the old name reappears, which appears as a silent no-op. For `onDuplicate`, the new session is never created but the UI shows no indication.
-
-This was present in the original code and was not addressed by the WR-03 fix (which only covered `onSwitch`). It is escalated to WARNING because the same fix pattern was applied selectively, making the inconsistency more visible.
-
-**Fix:**
-```typescript
-onRename={(name) => {
-  renameSession(session.id, name).catch((err) => {
-    console.error('[SessionSwitcherModal] renameSession failed:', err);
-  });
-}}
-onDuplicate={() => {
-  duplicateSession(session.id).catch((err) => {
-    console.error('[SessionSwitcherModal] duplicateSession failed:', err);
-  });
-}}
-```
+This prevents the intermediate focus step when the user confirms deletion (the parent modal's close will handle final focus restoration). Cancellation continues to restore focus normally.
 
 ---
 
@@ -167,20 +115,20 @@ onDuplicate={() => {
 ### IN-01: Identical focus-trap implementation copy-pasted across two components (unchanged)
 
 **File:** `src/components/SessionSwitcherModal.tsx:31-45`
-**File:** `src/components/DeleteSessionConfirmDialog.tsx:21-35`
+**File:** `src/components/DeleteSessionConfirmDialog.tsx:25-41`
 
-**Issue:** The Tab/Shift-Tab focus-trap `handleKeyDown` function is byte-for-byte identical in both files. The comment in `DeleteSessionConfirmDialog.tsx` explicitly says "verbatim from ResetConfirmDialog.tsx". This was not addressed by the current round of fixes. Any future change to the focus-trap logic must be applied manually to all copies.
+**Issue:** The Tab/Shift-Tab focus-trap `handleKeyDown` function is byte-for-byte identical in both files (and per comments, also in ResetConfirmDialog.tsx which is not in scope). Any change to the focus-trap logic must be applied manually to every copy. This was not addressed in either fix iteration.
 
 **Fix:** Extract a `useDialogFocusTrap(dialogRef, returnFocusId)` custom hook used by all dialog components.
 
 ---
 
-### IN-02: `renameSession` does not persist manifest to storage
+### IN-02: `renameSession` and `duplicateSession` do not call `flushPending()` — 300ms data-loss window (unchanged)
 
-**File:** `src/store/app.ts:379-389`
-**Issue:** `renameSession` updates `state.manifest` in the Zustand store via `set(...)`. The module-level subscribe callback (app.ts:520) will pick up the change and write the manifest to storage. This is the correct path. However, `renameSession` does not call `storageAdapter.flushPending()` before or after the rename. This means if the page is closed within 300ms of a rename (before the debounce fires), the manifest change is lost and the old name is restored on next load. The same issue applies to `duplicateSession`. This is a pre-existing quality issue (not introduced by the fixes) but worth noting given the rename-race could produce user-visible data loss on close.
+**File:** `src/store/app.ts:379-389`, `src/store/app.ts:391-423`
+**Issue:** Both `renameSession` and `duplicateSession` update the Zustand store via `set(...)`, which triggers the subscribe callback, which calls `storageAdapter.write(...)` — a debounced write with a 300ms delay. If the page is closed within the debounce window after a rename or duplicate, the manifest change (updated name or new session entry) is lost and reverted on next load. `switchSession` calls `storageAdapter.flushPending()` before any mutations to protect cross-session writes, but no equivalent protection exists for rename/duplicate.
 
-**Fix:** Add `storageAdapter.flushPending()` at the end of `renameSession` and `duplicateSession`, or document that these operations are best-effort within the debounce window.
+**Fix:** Call `storageAdapter.flushPending()` at the end of `renameSession` and `duplicateSession`, or add an explicit `storageAdapter.write({ manifest: updatedManifest })` call inside each action (bypassing the subscribe relay) so the write is at least enqueued before function return. Add a comment documenting the 300ms best-effort window if a full flush is not desired.
 
 ---
 
@@ -188,21 +136,24 @@ onDuplicate={() => {
 
 | Finding | Status |
 |---------|--------|
-| CR-01: Raw `chrome.storage.local.remove` bypasses adapter | **NOT FIXED** — see CR-01 above |
-| CR-02: Leaked undo timer | FIXED (module-level `undoTimer` with cancel) |
-| CR-03: Escape-then-blur double-trigger | FIXED (`cancelledRef` pattern) |
-| CR-04: Missing optional-chain on `manifest?.activeSessionId` | FIXED |
-| WR-01: `onDeleted()` never called on `deleteSession` throw | FIXED (try/finally) |
-| WR-02: Focus-trap crash on empty focusable list | FIXED (length guard) |
-| WR-03: `switchSession` fire-and-forget, closes before load | FIXED (await + try/catch) |
-| WR-04: Focus restore targets wrong element | FIXED (`focusRestoreId` prop) |
-| WR-05: Undo timer handle not stored | FIXED (module-level `undoTimer`) |
-| IN-01: Focus-trap code duplication | Not addressed |
-| IN-02: Unused `V2Manifest` import / missing null guard | FIXED (import removed, optional-chain added) |
-| IN-03: No test coverage for undo timer auto-clear | Not verified in this pass (test files not in scope) |
+| CR-01: Raw `chrome.storage.local.remove` bypasses adapter; flush race | **FIXED** — `StorageAdapter.remove()` method added; awaits `#flush()` before `chrome.storage.local.remove()` |
+| CR-02/WR-05: Leaked/unstored undo timer | **FIXED** — module-level `undoTimer` with cancel in both `deleteSession` and `undoDeleteSession` |
+| CR-03: Escape-then-blur double-trigger in SessionRow | **FIXED** — `cancelledRef` pattern correctly implemented |
+| CR-04: Missing optional-chain on `manifest?.activeSessionId` | **FIXED** — `initialState.manifest?.activeSessionId ?? ''` at main.tsx:29 |
+| CR-05: `handleNewSession` swallows `createSession` rejection | **FIXED** — `async` with `try/catch` at SessionSwitcherModal.tsx:61-69 |
+| WR-01: `onDeleted()` never called on `deleteSession` throw | **FIXED** — `try/finally` in `handleDelete` |
+| WR-02: Focus-trap crash on empty focusable list | **FIXED** — length guard in both dialog components |
+| WR-03: `switchSession` fire-and-forget, closes before load | **FIXED** — `await` + `try/catch` in `onSwitch` |
+| WR-04: Focus restore targets wrong element | **FIXED** — `focusRestoreId` prop wired through; `handleClose` uses it |
+| WR-05: Undo timer handle not stored | **FIXED** — combined with CR-02 |
+| WR-06: Spurious intermediate focus after delete confirmation | **NOT FIXED** — deferred in iteration 2; remains open as WR-02 in this report |
+| WR-07: `onRename` / `onDuplicate` fire-and-forget without error handling | **FIXED** — `.catch(console.error)` added for both |
+| IN-01: Focus-trap code duplication across components | Not addressed |
+| IN-02: `renameSession`/`duplicateSession` 300ms data-loss window | Not addressed |
+| **NEW** WR-01 (this report): `remove()` proceeds after flush failure | New finding introduced by CR-01 fix |
 
 ---
 
-_Reviewed: 2026-06-17T12:00:00Z_
+_Reviewed: 2026-06-17T18:00:00Z_
 _Reviewer: Claude (gsd-code-reviewer)_
 _Depth: standard_

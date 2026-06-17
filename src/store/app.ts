@@ -2,6 +2,8 @@ import { create } from 'zustand';
 import { DEFAULT_SECTIONS } from '../data/bank/index.js';
 import type { Difficulty } from '../data/bank/types.js';
 import { storageAdapter } from '../storage/index.js';
+import type { V2Manifest, V3Session } from '../storage/types.js';
+import { createDefaultV3Session } from '../storage/types.js';
 
 // ---------------------------------------------------------------------------
 // Scoring domain types (Phase 5)
@@ -23,6 +25,20 @@ export interface CustomQuestion {
   topicId: string;
   text: string;
   level: Difficulty;
+}
+
+// ---------------------------------------------------------------------------
+// Session management types (Phase 6)
+// ---------------------------------------------------------------------------
+
+/** In-memory undo buffer for session delete — never persisted to storage. */
+export interface UndoBuffer {
+  /** The session metadata entry from manifest.sessions */
+  sessionMeta: V2Manifest['sessions'][number];
+  /** The full session scoring payload */
+  sessionData: V3Session;
+  /** If true, the deleted session was the active one; restore on undo */
+  wasActive: boolean;
 }
 
 // ---------------------------------------------------------------------------
@@ -63,6 +79,11 @@ export interface AppState {
   candidate: CandidateDetails | null;
   /** ID of the currently active session (from manifest.activeSessionId) */
   activeSessionId: string;
+  // --- Session management (Phase 6) ---
+  /** Full manifest object mirrored in store for reactive session list. */
+  manifest: V2Manifest | null;
+  /** In-memory undo buffer for session delete — never persisted. */
+  undoBuffer: UndoBuffer | null;
 }
 
 export interface AppActions {
@@ -94,6 +115,23 @@ export interface AppActions {
   setCandidate: (candidate: CandidateDetails | null) => void;
   /** Clear all scoring data for the current session (preserves activeSessionId and uiState). */
   resetAll: () => void;
+  // --- Session management actions (Phase 6) ---
+  /** Create a new session, auto-named "Session N" (highest existing N + 1), and switch to it. */
+  createSession: () => Promise<void>;
+  /** Rename a session by id; updates updatedAt. Does not change active session. */
+  renameSession: (sessionId: string, newName: string) => Promise<void>;
+  /** Duplicate a session row (reads from storage by ID, not current Zustand state). */
+  duplicateSession: (sessionId: string) => Promise<void>;
+  /** Delete a session; captures undo buffer BEFORE remove; auto-switches if active. */
+  deleteSession: (sessionId: string) => Promise<void>;
+  /** Switch to target session: flushPending() FIRST, then load data, then single setState. */
+  switchSession: (targetId: string) => Promise<void>;
+  /** Undo the last deleteSession: re-write session data + re-insert SessionMeta. */
+  undoDeleteSession: () => Promise<void>;
+  /** Simple setter for manifest (used by bootstrap hydration). */
+  setManifest: (manifest: V2Manifest) => void;
+  /** Simple setter for undoBuffer (used by UndoToast dismiss button). */
+  setUndoBuffer: (buf: UndoBuffer | null) => void;
 }
 
 export const DEFAULT_STATE: AppState = {
@@ -114,7 +152,26 @@ export const DEFAULT_STATE: AppState = {
   customQuestions: [],
   candidate: null,
   activeSessionId: '',
+  // Session management defaults (Phase 6)
+  manifest: null,
+  undoBuffer: null,
 };
+
+// ---------------------------------------------------------------------------
+// Helper: compute next auto-number session name
+// Finds the highest "Session N" number across existing sessions and returns
+// "Session N+1". Falls back to "Session 1" when no numbered sessions exist.
+// ---------------------------------------------------------------------------
+function nextSessionName(sessions: V2Manifest['sessions']): string {
+  const numbers = sessions
+    .map((s) => {
+      const match = /^Session (\d+)$/.exec(s.name);
+      return match ? parseInt(match[1], 10) : 0;
+    })
+    .filter((n) => n > 0);
+  const max = numbers.length > 0 ? Math.max(...numbers) : 0;
+  return `Session ${max + 1}`;
+}
 
 export const useAppStore = create<AppState & AppActions>()((set) => ({
   ...DEFAULT_STATE,
@@ -246,6 +303,198 @@ export const useAppStore = create<AppState & AppActions>()((set) => ({
       hideMarked: false,
       // activeSessionId is NOT reset — session identity must persist across resets
     }),
+
+  // ---------------------------------------------------------------------------
+  // Session management actions — Phase 6
+  // ---------------------------------------------------------------------------
+
+  setManifest: (manifest) => set({ manifest }),
+
+  setUndoBuffer: (buf) => set({ undoBuffer: buf }),
+
+  // SESS-04: switchSession must call flushPending() BEFORE any set() to prevent
+  // cross-session write corruption. The subscribe callback writes data under
+  // `session:${activeSessionId}`, so activeSessionId must NOT change before flush.
+  switchSession: async (targetId) => {
+    // Step 1: flush any pending writes for the CURRENT session FIRST (SESS-04)
+    storageAdapter.flushPending();
+
+    // Step 2: read target session data from chrome.storage.local
+    const key = `session:${targetId}`;
+    const raw = await storageAdapter.read([key]);
+    const session = raw[key] as V3Session | undefined;
+
+    // Step 3: atomically update store — all per-session fields + activeSessionId
+    // + manifest.activeSessionId in ONE set() call.
+    // Pitfall 2 guard: never split this into multiple set() calls.
+    set((s) => ({
+      manifest: s.manifest
+        ? { ...s.manifest, activeSessionId: targetId }
+        : s.manifest,
+      scores: session?.scores ?? {},
+      overrides: session?.overrides ?? {},
+      notes: session?.notes ?? {},
+      topicNotes: session?.topicNotes ?? {},
+      customQuestions: session?.customQuestions ?? [],
+      candidate: session?.candidate ?? null,
+      activeSessionId: targetId,
+    }));
+  },
+
+  createSession: async () => {
+    const state = useAppStore.getState();
+    const sessions = state.manifest?.sessions ?? [];
+    const name = nextSessionName(sessions);
+    const id = crypto.randomUUID();
+    const now = new Date().toISOString();
+
+    // Write new session data to storage
+    const newSession = createDefaultV3Session(id);
+    storageAdapter.write({ [`session:${id}`]: newSession });
+
+    // Update manifest in store: append new SessionMeta
+    const newMeta: V2Manifest['sessions'][number] = {
+      id,
+      name,
+      createdAt: now,
+      updatedAt: now,
+    };
+    const updatedManifest: V2Manifest = state.manifest
+      ? { ...state.manifest, sessions: [...state.manifest.sessions, newMeta] }
+      : {
+          version: 2,
+          activeSessionId: id,
+          sessions: [newMeta],
+        };
+    set({ manifest: updatedManifest });
+
+    // Switch to the new session (flushPending() fires inside switchSession — SESS-04)
+    await useAppStore.getState().switchSession(id);
+  },
+
+  renameSession: async (sessionId, newName) => {
+    const state = useAppStore.getState();
+    if (!state.manifest) return;
+    const now = new Date().toISOString();
+    const updatedSessions = state.manifest.sessions.map((s) =>
+      s.id === sessionId ? { ...s, name: newName, updatedAt: now } : s,
+    );
+    set({
+      manifest: { ...state.manifest, sessions: updatedSessions },
+    });
+  },
+
+  duplicateSession: async (sessionId) => {
+    const state = useAppStore.getState();
+    if (!state.manifest) return;
+
+    // Read from storage by sessionId — NOT from current Zustand state (A3 guard)
+    const raw = await storageAdapter.read([`session:${sessionId}`]);
+    const source = raw[`session:${sessionId}`] as V3Session | undefined;
+
+    const originalMeta = state.manifest.sessions.find((s) => s.id === sessionId);
+    if (!originalMeta || !source) return;
+
+    const newId = crypto.randomUUID();
+    const now = new Date().toISOString();
+    const copyName = `${originalMeta.name} (copy)`;
+
+    // Write new session data (copy) to storage
+    const copySession: V3Session = { ...source, id: newId };
+    storageAdapter.write({ [`session:${newId}`]: copySession });
+
+    // Append new SessionMeta to manifest — does NOT change activeSessionId
+    const newMeta: V2Manifest['sessions'][number] = {
+      id: newId,
+      name: copyName,
+      createdAt: now,
+      updatedAt: now,
+    };
+    set({
+      manifest: {
+        ...state.manifest,
+        sessions: [...state.manifest.sessions, newMeta],
+      },
+    });
+  },
+
+  deleteSession: async (sessionId) => {
+    const state = useAppStore.getState();
+    if (!state.manifest) return;
+
+    const meta = state.manifest.sessions.find((s) => s.id === sessionId);
+    const wasActive = sessionId === state.activeSessionId;
+
+    // Step 1: read session data from storage BEFORE deletion — Pitfall "Async deleteSession" guard
+    const raw = await storageAdapter.read([`session:${sessionId}`]);
+    const data = raw[`session:${sessionId}`] as V3Session | undefined;
+
+    // Step 2: capture undo buffer BEFORE remove (T-06-01-02 mitigated)
+    if (meta && data) {
+      set({ undoBuffer: { sessionMeta: meta, sessionData: data, wasActive } });
+    }
+
+    // Step 3: commit deletion to storage
+    await chrome.storage.local.remove(`session:${sessionId}`);
+
+    // Step 4: update manifest — remove deleted session entry
+    const remainingSessions = state.manifest.sessions.filter(
+      (s) => s.id !== sessionId,
+    );
+    const updatedManifest: V2Manifest = {
+      ...state.manifest,
+      sessions: remainingSessions,
+    };
+    set({ manifest: updatedManifest });
+
+    // Step 5: auto-switch if the deleted session was active
+    if (wasActive) {
+      if (remainingSessions.length > 0) {
+        // Switch to the most-recently-updated remaining session
+        const sorted = [...remainingSessions].sort(
+          (a, b) =>
+            new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime(),
+        );
+        const nextId = sorted[0].id;
+        await useAppStore.getState().switchSession(nextId);
+      } else {
+        // No sessions remain — create a blank "Session 1" and switch to it
+        await useAppStore.getState().createSession();
+      }
+    }
+
+    // Step 6: start undo timer — auto-clear undoBuffer after 10 seconds
+    setTimeout(() => {
+      set({ undoBuffer: null });
+    }, 10_000);
+  },
+
+  undoDeleteSession: async () => {
+    const state = useAppStore.getState();
+    const buf = state.undoBuffer;
+    if (!buf || !state.manifest) return;
+
+    // Re-write session data to storage
+    storageAdapter.write({
+      [`session:${buf.sessionMeta.id}`]: buf.sessionData,
+    });
+
+    // Re-insert SessionMeta back into manifest.sessions
+    set((s) => ({
+      manifest: s.manifest
+        ? {
+            ...s.manifest,
+            sessions: [...s.manifest.sessions, buf.sessionMeta],
+          }
+        : s.manifest,
+      undoBuffer: null,
+    }));
+
+    // If the deleted session was the active one, switch back to it
+    if (buf.wasActive) {
+      await useAppStore.getState().switchSession(buf.sessionMeta.id);
+    }
+  },
 }));
 
 // Module-level subscribe: fires after every mutation.
@@ -265,6 +514,11 @@ useAppStore.subscribe((state) => {
       darkMode: state.darkMode,
     },
   });
+
+  // Phase 6: persist manifest when it is set (Pitfall 6 guard — manifest not written after session ops)
+  if (state.manifest) {
+    storageAdapter.write({ manifest: state.manifest });
+  }
 
   // Session persistence: write scoring state under session:<id> key when a session is active.
   // Guard: only write when activeSessionId is non-empty to avoid orphaned session keys.

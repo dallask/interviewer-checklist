@@ -16,7 +16,7 @@ Ten phases take the project from an empty repo to a published Chrome Web Store l
 Decimal phases appear between their surrounding integers in numeric order.
 
 - [x] **Phase 1: Foundation & Scaffolding** - Build system, manifest, CI safety nets locked before any feature code (completed 2026-06-16)
-- [ ] **Phase 2: Question Bank & Scoring Engine** - Pure data and pure scoring functions with full unit coverage
+- [x] **Phase 2: Question Bank & Scoring Engine** - Pure data and pure scoring functions with full unit coverage (completed 2026-06-17)
 - [ ] **Phase 3: Storage Layer, Migration & Bootstrap** - Persistence, schema migration, and debounced flush before any UI write
 - [ ] **Phase 4: Shell, Sidebar & Read-Only Content Tree** - First visible UI: shell layout, sidebar, dark mode, accessibility
 - [ ] **Phase 5: Scoring UI, Notes, Candidate & Custom Questions** - Full interactive scoring loop for a single session
@@ -75,7 +75,7 @@ Plans:
 
 **Wave 2** *(blocked on Wave 1 completion)*
 
-- [ ] 02-02-PLAN.md — Scoring engine (computeTopicMark, computeSectionMark, computeOverallMark, getMarkBand), scoring.test.ts with prototype-derived fixtures, 100% coverage gate
+- [x] 02-02-PLAN.md — Scoring engine (computeTopicMark, computeSectionMark, computeOverallMark, getMarkBand), scoring.test.ts with prototype-derived fixtures, 100% coverage gate
 
 ### Phase 3: Storage Layer, Migration & Bootstrap
 
@@ -204,7 +204,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 →
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Foundation & Scaffolding | 3/3 | Complete    | 2026-06-16 |
-| 2. Question Bank & Scoring Engine | 1/2 | In Progress|  |
+| 2. Question Bank & Scoring Engine | 2/2 | Complete   | 2026-06-17 |
 | 3. Storage Layer, Migration & Bootstrap | 0/? | Not started | - |
 | 4. Shell, Sidebar & Read-Only Content Tree | 0/? | Not started | - |
 | 5. Scoring UI, Notes, Candidate & Custom Questions | 0/? | Not started | - |

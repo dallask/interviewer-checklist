@@ -44,16 +44,6 @@ export function computeTopicMark(
   scores: ScoreMap,
   override?: number | null,
 ): TopicResult {
-  // Override validation: typeof check correctly admits override=0 as valid
-  if (typeof override === 'number' && override >= 0 && override <= 10) {
-    return {
-      mark: override,
-      band: getMarkBand(override),
-      scoredCount: 0,
-      totalCount: topic.questions.length,
-    };
-  }
-
   let weightedSum = 0;
   let coeffSum = 0;
   let scoredCount = 0;
@@ -68,6 +58,18 @@ export function computeTopicMark(
     coeffSum += coef;
     scoredCount++;
   });
+
+  // Override validation: typeof check correctly admits override=0 as valid.
+  // scoredCount reflects actual scored questions even when override is active,
+  // so consumers can display "X of N scored (mark overridden)".
+  if (typeof override === 'number' && override >= 0 && override <= 10) {
+    return {
+      mark: override,
+      band: getMarkBand(override),
+      scoredCount,
+      totalCount: topic.questions.length,
+    };
+  }
 
   const mark = coeffSum > 0 ? weightedSum / coeffSum : null;
   return {

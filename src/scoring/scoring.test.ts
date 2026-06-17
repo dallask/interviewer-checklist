@@ -80,6 +80,19 @@ describe('computeTopicMark', () => {
     expect(result.band).toBe('high');
   });
 
+  it('override preserves actual scoredCount from the scores map', () => {
+    const scores = { 'twig-0': 3 };
+    const result = computeTopicMark(TWIG_TOPIC, scores, 9);
+    expect(result.scoredCount).toBe(1);
+    expect(result.totalCount).toBe(12);
+  });
+
+  it('override with no scored questions yields scoredCount 0', () => {
+    const result = computeTopicMark(TWIG_TOPIC, {}, 9);
+    expect(result.scoredCount).toBe(0);
+    expect(result.totalCount).toBe(12);
+  });
+
   it('override of 0 is valid (not treated as null)', () => {
     const scores = { 'twig-0': 10 };
     const result = computeTopicMark(TWIG_TOPIC, scores, 0);

@@ -98,6 +98,23 @@ export class StorageAdapter {
   }
 
   /**
+   * Removes keys from chrome.storage.local after draining any pending writes.
+   * Awaits the flush so pending set() and remove() never race — calling
+   * flushPending() (which is void/fire-and-forget) then remove() immediately
+   * after could let the set() win the race and silently re-write the removed key.
+   */
+  async remove(keys: string | string[]): Promise<void> {
+    if (this.#dirty && this.#pendingData !== null) {
+      if (this.#debounceTimer !== null) {
+        clearTimeout(this.#debounceTimer);
+        this.#debounceTimer = null;
+      }
+      await this.#flush();
+    }
+    await chrome.storage.local.remove(keys);
+  }
+
+  /**
    * Reads current session state and writes it under snapshot:<sessionId>:<timestamp>.
    * Guard: if no session data exists, returns early without writing.
    * Triggers FIFO trim to keep only the last 3 snapshots.

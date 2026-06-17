@@ -440,9 +440,10 @@ export const useAppStore = create<AppState & AppActions>()((set) => ({
 
     // Step 3: commit deletion to storage via the adapter so the pending-write
     // buffer is flushed first and the abstraction boundary is never violated
-    // (CR-01: raw chrome.storage.local.remove bypassed storageAdapter).
-    storageAdapter.flushPending();
-    await chrome.storage.local.remove(`session:${sessionId}`);
+    // (CR-01: storageAdapter.remove() awaits flush before remove so the set()
+    // and remove() never race — previous fire-and-forget flushPending() + direct
+    // chrome.storage.local.remove could let the set() re-write the deleted key).
+    await storageAdapter.remove(`session:${sessionId}`);
 
     // Step 4: update manifest — remove deleted session entry
     const remainingSessions = state.manifest.sessions.filter(

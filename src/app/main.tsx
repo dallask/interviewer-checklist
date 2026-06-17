@@ -4,7 +4,7 @@ import type { Difficulty } from '../data/bank/index.js';
 import { bootstrap } from '../storage/bootstrap.js';
 import { storageAdapter } from '../storage/index.js';
 import { registerLifecycleListeners } from '../storage/lifecycle.js';
-import type { V2Manifest, V3Session } from '../storage/types.js';
+import type { V3Session } from '../storage/types.js';
 import type { AppState } from '../store/app.js';
 import { useAppStore } from '../store/app.js';
 import { App } from './App.tsx';
@@ -25,7 +25,8 @@ const uiStateRaw = await storageAdapter.read(['uiState']);
 const uiState = (uiStateRaw.uiState as Partial<AppState> | undefined) ?? {};
 
 // Read activeSessionId from the manifest so the store knows which session is loaded.
-const activeSessionId = initialState.manifest.activeSessionId ?? '';
+// CR-04: use optional chaining — manifest may be null on first-launch or migration failure.
+const activeSessionId = initialState.manifest?.activeSessionId ?? '';
 
 useAppStore.setState({
   ...uiState,

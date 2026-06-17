@@ -386,14 +386,15 @@ export function parseStructural(
                 ? null
                 : null;
 
-          result.scores[questionKey] = score;
+          // WR-04: only write score entries when non-null to keep scores map sparse
+          // (matches resetAll() behaviour and avoids inflating chrome.storage.local
+          // with null placeholders for every unscored question in the YAML).
+          if (score !== null) {
+            result.scores[questionKey] = score;
+            modifiedCount++;
+          }
           if (typeof q.note === 'string' && q.note !== '') {
             result.notes[questionKey] = q.note;
-          }
-
-          // Count as modified if it has a non-null score
-          if (score !== null) {
-            modifiedCount++;
           }
         }
       }

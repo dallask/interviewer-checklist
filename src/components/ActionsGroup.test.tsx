@@ -113,4 +113,31 @@ describe('ActionsGroup', () => {
       expect(btn.className).toContain('focus-visible:ring-blue-500');
     }
   });
+
+  it('renders "Candidate details" button with id="open-candidate-modal"', () => {
+    render(<ActionsGroup />);
+    const btn = screen.getByRole('button', { name: /candidate details/i });
+    expect(btn).toBeInTheDocument();
+    expect(btn).toHaveAttribute('id', 'open-candidate-modal');
+  });
+
+  it('"Candidate details" button has correct styling classes', () => {
+    render(<ActionsGroup />);
+    const btn = screen.getByRole('button', { name: /candidate details/i });
+    expect(btn.className).toContain('text-gray-900');
+    expect(btn.className).toContain('bg-gray-100');
+  });
+
+  it('renders "Reset all" button with id="open-reset-dialog"', () => {
+    render(<ActionsGroup />);
+    const btn = screen.getByRole('button', { name: /reset all/i });
+    expect(btn).toBeInTheDocument();
+    expect(btn).toHaveAttribute('id', 'open-reset-dialog');
+  });
+
+  it('"Reset all" button has text-red-600 class', () => {
+    render(<ActionsGroup />);
+    const btn = screen.getByRole('button', { name: /reset all/i });
+    expect(btn.className).toContain('text-red-600');
+  });
 });

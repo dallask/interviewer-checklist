@@ -10,19 +10,33 @@ import { useAppStore } from '../store/app.js';
 
 const mockUseAppStore = useAppStore as unknown as ReturnType<typeof vi.fn>;
 
-describe('Sidebar', () => {
-  const setSidebarOpen = vi.fn();
-  const toggleGroup = vi.fn();
+function makeState(overrides: Record<string, unknown> = {}) {
+  return {
+    sidebarOpen: true,
+    setSidebarOpen: vi.fn(),
+    groupOpen: { search: true, difficulty: true, sections: true, actions: true },
+    toggleGroup: vi.fn(),
+    setSearchQuery: vi.fn(),
+    searchQuery: '',
+    selectedDifficulties: new Set(),
+    selectedSections: new Set(),
+    toggleDifficulty: vi.fn(),
+    toggleSection: vi.fn(),
+    expandAll: vi.fn(),
+    collapseAll: vi.fn(),
+    hideMarked: false,
+    setHideMarked: vi.fn(),
+    darkMode: false,
+    setDarkMode: vi.fn(),
+    ...overrides,
+  };
+}
 
+describe('Sidebar', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     mockUseAppStore.mockImplementation((selector: (s: unknown) => unknown) =>
-      selector({
-        sidebarOpen: true,
-        setSidebarOpen,
-        groupOpen: { search: true, difficulty: true, sections: true, actions: true },
-        toggleGroup,
-      }),
+      selector(makeState()),
     );
   });
 
@@ -42,12 +56,7 @@ describe('Sidebar', () => {
 
   it('has -translate-x-full class when sidebarOpen=false', () => {
     mockUseAppStore.mockImplementation((selector: (s: unknown) => unknown) =>
-      selector({
-        sidebarOpen: false,
-        setSidebarOpen,
-        groupOpen: { search: true, difficulty: true, sections: true, actions: true },
-        toggleGroup,
-      }),
+      selector(makeState({ sidebarOpen: false })),
     );
     render(<Sidebar />);
     const aside = screen.getByRole('complementary');
@@ -68,12 +77,7 @@ describe('Sidebar', () => {
 
   it('does not render backdrop when sidebarOpen=false', () => {
     mockUseAppStore.mockImplementation((selector: (s: unknown) => unknown) =>
-      selector({
-        sidebarOpen: false,
-        setSidebarOpen,
-        groupOpen: { search: true, difficulty: true, sections: true, actions: true },
-        toggleGroup,
-      }),
+      selector(makeState({ sidebarOpen: false })),
     );
     render(<Sidebar />);
     const backdrop = document.querySelector('[aria-hidden="true"]');

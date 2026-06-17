@@ -12,10 +12,12 @@ interface Props {
 
 export function ImportPreviewModal({ dialogRef, preview, onConfirm }: Props) {
   const [overwriteActive, setOverwriteActive] = useState(false);
+  const [importError, setImportError] = useState<string | null>(null);
 
-  // Reset toggle to "new session" whenever a different preview is loaded (REFACTOR requirement)
+  // Reset toggle and error state whenever a different preview is loaded (REFACTOR requirement)
   useEffect(() => {
     setOverwriteActive(false);
+    setImportError(null);
   }, [preview]);
 
   // Focus trap + focus restore pattern (WR-02 guard from CandidateModal.tsx)
@@ -57,8 +59,14 @@ export function ImportPreviewModal({ dialogRef, preview, onConfirm }: Props) {
   }, [dialogRef]);
 
   const handleConfirm = async () => {
-    await onConfirm(overwriteActive);
-    dialogRef.current?.close();
+    // WR-01: catch rejections so close() is always reachable and errors are surfaced
+    try {
+      await onConfirm(overwriteActive);
+      dialogRef.current?.close();
+    } catch (err) {
+      console.error('Import failed:', err);
+      setImportError(err instanceof Error ? err.message : 'Import failed');
+    }
   };
 
   const handleCancel = () => {
@@ -125,6 +133,15 @@ export function ImportPreviewModal({ dialogRef, preview, onConfirm }: Props) {
           Overwrite active session
         </button>
       </div>
+
+      {importError && (
+        <p
+          role="alert"
+          className="mb-3 text-sm text-red-600 dark:text-red-400"
+        >
+          {importError}
+        </p>
+      )}
 
       <div className="flex gap-3 justify-end">
         <button

@@ -278,3 +278,160 @@ describe('buildFlatRows — SectionRow questionCount', () => {
     }
   });
 });
+
+describe('buildFlatRows — index fix under difficulty filtering', () => {
+  it('QuestionRow.index reflects original topic.questions position when filter hides q0', () => {
+    // Build a synthetic section with 3 questions at different difficulty levels
+    const syntheticSection = {
+      id: 'test-section',
+      label: 'Test Section',
+      icon: 'T',
+      items: [
+        {
+          id: 'test-topic',
+          name: 'Test Topic',
+          desc: 'desc',
+          tag: 'test',
+          questions: [
+            { q: 'Q0 intermediate', level: 'intermediate' as const },
+            { q: 'Q1 expert', level: 'expert' as const },
+            { q: 'Q2 expert', level: 'expert' as const },
+          ],
+        },
+      ],
+    };
+
+    // Filter to expert only — hides q0 (intermediate)
+    const rows = buildFlatRows(
+      [syntheticSection],
+      {},
+      {},
+      {
+        ...emptyFilters,
+        selectedDifficulties: new Set(['expert']) as Set<
+          import('../data/bank/types.js').Difficulty
+        >,
+      },
+    );
+
+    const questionRows = rows.filter((r) => r.type === 'question');
+    // q1 should have index === 1 (original position in topic.questions)
+    // q2 should have index === 2 (original position in topic.questions)
+    expect(questionRows).toHaveLength(2);
+    if (questionRows[0].type === 'question') {
+      expect(questionRows[0].index).toBe(1); // not 0 (original position preserved)
+    }
+    if (questionRows[1].type === 'question') {
+      expect(questionRows[1].index).toBe(2); // not 1 (original position preserved)
+    }
+  });
+
+  it('QuestionRow.index matches 0-based position with no filter active', () => {
+    const syntheticSection = {
+      id: 'test-section',
+      label: 'Test Section',
+      icon: 'T',
+      items: [
+        {
+          id: 'test-topic',
+          name: 'Test Topic',
+          desc: 'desc',
+          tag: 'test',
+          questions: [
+            { q: 'Q0', level: 'novice' as const },
+            { q: 'Q1', level: 'intermediate' as const },
+            { q: 'Q2', level: 'expert' as const },
+          ],
+        },
+      ],
+    };
+
+    const rows = buildFlatRows([syntheticSection], {}, {}, emptyFilters);
+    const questionRows = rows.filter((r) => r.type === 'question');
+
+    expect(questionRows).toHaveLength(3);
+    for (let i = 0; i < questionRows.length; i++) {
+      const row = questionRows[i];
+      if (row.type === 'question') {
+        expect(row.index).toBe(i);
+      }
+    }
+  });
+});
+
+describe('buildFlatRows — hideMarked filter', () => {
+  it('hideMarked:true with marked topic hides that topic from output', () => {
+    const syntheticSection = {
+      id: 'test-section',
+      label: 'Test Section',
+      icon: 'T',
+      items: [
+        {
+          id: 'topic-A',
+          name: 'Topic A',
+          desc: 'desc',
+          tag: 'ta',
+          questions: [{ q: 'Q0', level: 'novice' as const }],
+        },
+        {
+          id: 'topic-B',
+          name: 'Topic B',
+          desc: 'desc',
+          tag: 'tb',
+          questions: [{ q: 'Q1', level: 'novice' as const }],
+        },
+      ],
+    };
+
+    const rows = buildFlatRows(
+      [syntheticSection],
+      {},
+      {},
+      {
+        ...emptyFilters,
+        hideMarked: true,
+        markedTopicIds: new Set(['topic-A']),
+      },
+    );
+
+    const topicRows = rows.filter((r) => r.type === 'topic');
+    const topicIds = topicRows
+      .filter((r) => r.type === 'topic')
+      .map((r) => (r.type === 'topic' ? r.topic.id : ''));
+    expect(topicIds).not.toContain('topic-A');
+    expect(topicIds).toContain('topic-B');
+  });
+
+  it('hideMarked:false allows marked topic to appear in output', () => {
+    const syntheticSection = {
+      id: 'test-section',
+      label: 'Test Section',
+      icon: 'T',
+      items: [
+        {
+          id: 'topic-A',
+          name: 'Topic A',
+          desc: 'desc',
+          tag: 'ta',
+          questions: [{ q: 'Q0', level: 'novice' as const }],
+        },
+      ],
+    };
+
+    const rows = buildFlatRows(
+      [syntheticSection],
+      {},
+      {},
+      {
+        ...emptyFilters,
+        hideMarked: false,
+        markedTopicIds: new Set(['topic-A']),
+      },
+    );
+
+    const topicRows = rows.filter(
+      (r) => r.type === 'topic' && r.topic.id === 'topic-A',
+    );
+    expect(topicRows).toHaveLength(1);
+  });
+});

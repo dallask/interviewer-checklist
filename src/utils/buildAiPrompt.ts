@@ -4,7 +4,21 @@ import type { V3Session } from '../storage/types.js';
 import { computeTopicMark } from '../scoring/scoring.js';
 
 /**
- * Build an AI feedback prompt string from a V3Session and section data.
+ * Narrow interface covering only the fields that buildAiPrompt reads.
+ * Using this instead of V3Session avoids requiring `version` and `id`
+ * at call sites that assemble the object from store selectors.
+ */
+export interface AiPromptInput {
+  candidate: V3Session['candidate'];
+  scores: V3Session['scores'];
+  overrides: V3Session['overrides'];
+  notes: V3Session['notes'];
+  topicNotes: V3Session['topicNotes'];
+  customQuestions: V3Session['customQuestions'];
+}
+
+/**
+ * Build an AI feedback prompt string from session data and section definitions.
  *
  * Pure function — no side effects, no DOM calls, no React.
  *
@@ -12,7 +26,7 @@ import { computeTopicMark } from '../scoring/scoring.js';
  * Custom question score key: cq.id (e.g. 'custom-twig-1') — same as store.
  */
 export function buildAiPrompt(
-  session: V3Session,
+  session: AiPromptInput,
   sections: readonly Section[],
 ): string {
   const lines: string[] = [];

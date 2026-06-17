@@ -1,7 +1,6 @@
 import { useRef, useState } from 'react';
 import { useAppStore } from '../store/app.js';
 import { DEFAULT_SECTIONS } from '../data/bank/index.js';
-import type { V3Session } from '../storage/types.js';
 import { buildAiPrompt } from '../utils/buildAiPrompt.js';
 import { AiPromptModal } from './AiPromptModal.js';
 import { CandidateModal } from './CandidateModal.js';
@@ -43,7 +42,7 @@ export function ActionsGroup() {
       customQuestions,
       candidate,
     };
-    const generated = buildAiPrompt(currentSession as unknown as V3Session, DEFAULT_SECTIONS);
+    const generated = buildAiPrompt(currentSession, DEFAULT_SECTIONS);
     setAiPrompt(generated);
     aiPromptRef.current?.showModal();
   };

@@ -50,7 +50,7 @@ Inherited from Phase 4–5. No new tokens declared.
 
 - Session row height: `min-h-[44px]` on each row — WCAG 2.5.8 touch target minimum for the clickable/tappable row area.
 - Inline rename input: `w-full` within the row, same height as the row text (`py-1 px-1`); no separate sizing token.
-- UndoToast: `fixed bottom-0 left-0 right-0` full-width; `py-3 px-4` internal padding — functional layout, not a spacing token.
+- UndoToast: `fixed bottom-0 left-0 right-0` full-width; `py-2 px-4` internal padding — functional layout, not a spacing token.
 - Session list max-height: `max-h-[352px]` (8 rows × 44px) with `overflow-y-auto` — functional constraint from CONTEXT.md (8 rows before scroll). Source: CONTEXT.md.
 - Modal max-width: `max-w-md` (448px) — wider than ResetConfirmDialog (max-w-sm) but narrower than CandidateModal (max-w-lg); session list content does not need the extra width.
 
@@ -314,7 +314,7 @@ When the rename ✎ button is clicked (or the user triggers rename), the session
     defaultValue={session.name}
     class="flex-1 text-sm font-normal text-gray-900 dark:text-gray-100
            bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600
-           rounded px-1 py-0.5
+           rounded px-1 py-1
            focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none"
     autoFocus
     onKeyDown={(e) => {
@@ -372,7 +372,7 @@ Minimal `<dialog>` for session delete confirmation. Follows `ResetConfirmDialog`
              hover:bg-red-700 dark:bg-red-500 dark:hover:bg-red-600
              focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none"
     >
-      Delete
+      Delete session
     </button>
   </div>
 </dialog>
@@ -402,7 +402,7 @@ Fixed-position ephemeral notification at the bottom of the extension viewport.
          bg-gray-900 dark:bg-gray-100
          text-gray-100 dark:text-gray-900
          flex items-center justify-between
-         py-3 px-4
+         py-2 px-4
          motion-safe:animate-slide-up"
 >
   <span class="text-xs font-normal">
@@ -565,7 +565,7 @@ Inherits Phase 4–5 contract. Phase 6 additions:
 | Delete confirm title | "Delete session?" | Claude's Discretion |
 | Delete confirm body | '"{sessionName}" will be permanently deleted. An undo option will appear briefly after deletion.' | SESS-03, CONTEXT.md |
 | Delete confirm: cancel | "Keep session" | Claude's Discretion (parallels "Keep scores" in Phase 5) |
-| Delete confirm: destructive | "Delete" | SESS-03 |
+| Delete confirm: destructive | "Delete session" | SESS-03 |
 | UndoToast message | '"{deletedSessionName}" deleted' | SESS-03 |
 | UndoToast undo button | "Undo" | SESS-03 |
 | Empty session list | Not applicable — if all sessions deleted, "Session 1" is auto-created; list is never empty | CONTEXT.md |
@@ -575,7 +575,7 @@ Inherits Phase 4–5 contract. Phase 6 additions:
 
 | Action | Trigger copy | Dialog title | Dialog body | Confirm button | Cancel button |
 |--------|-------------|--------------|-------------|----------------|---------------|
-| Delete session | × icon button on row | "Delete session?" | '"{sessionName}" will be permanently deleted. An undo option will appear briefly after deletion.' | "Delete" (red) | "Keep session" |
+| Delete session | × icon button on row | "Delete session?" | '"{sessionName}" will be permanently deleted. An undo option will appear briefly after deletion.' | "Delete session" (red) | "Keep session" |
 
 **No empty state for the session list** — the store guarantees at least one session always exists. When deleting the last session, `createSession("Session 1")` fires before the delete completes from the user's perspective.
 

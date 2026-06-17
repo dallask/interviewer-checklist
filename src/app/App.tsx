@@ -1,8 +1,64 @@
+import './styles.css';
+import { ContentTree } from '../components/ContentTree.js';
+import { Sidebar } from '../components/Sidebar.js';
+import { StorageToast } from '../components/StorageToast.js';
+import { DEFAULT_SECTIONS } from '../data/bank/index.js';
+import { useAppStore } from '../store/app.js';
+import { buildFlatRows } from '../utils/buildFlatRows.js';
+
 export function App() {
+  const sidebarOpen = useAppStore((s) => s.sidebarOpen);
+  const setSidebarOpen = useAppStore((s) => s.setSidebarOpen);
+  const topicOpen = useAppStore((s) => s.topicOpen);
+  const sectionOpen = useAppStore((s) => s.sectionOpen);
+  const searchQuery = useAppStore((s) => s.searchQuery);
+  const selectedDifficulties = useAppStore((s) => s.selectedDifficulties);
+  const selectedSections = useAppStore((s) => s.selectedSections);
+
+  const rows = buildFlatRows(DEFAULT_SECTIONS, topicOpen, sectionOpen, {
+    searchQuery,
+    selectedDifficulties,
+    selectedSections,
+  });
+
   return (
-    <div>
-      <h1>Interviewer Checklist</h1>
-      <p>Phase 1 scaffold — feature work begins in Phase 2.</p>
-    </div>
+    <>
+      <a
+        href="#main-content"
+        className="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-50 focus:px-4 focus:py-2 focus:bg-white dark:focus:bg-gray-900 focus:rounded focus:ring-2 focus:ring-blue-500"
+      >
+        Skip to main content
+      </a>
+      <div className="flex h-screen overflow-hidden bg-white dark:bg-gray-900">
+        {/* Backdrop — narrow viewports only */}
+        {sidebarOpen && (
+          <div
+            className="fixed inset-0 bg-black/40 z-40 md:hidden"
+            aria-hidden="true"
+            onClick={() => setSidebarOpen(false)}
+          />
+        )}
+        <Sidebar />
+        <div className="flex flex-col flex-1 overflow-hidden">
+          {/* Sidebar toggle button */}
+          <button
+            type="button"
+            aria-expanded={sidebarOpen}
+            onClick={() => setSidebarOpen(!sidebarOpen)}
+            aria-label={sidebarOpen ? 'Close sidebar' : 'Open sidebar'}
+            className="self-start m-2 p-2 min-h-[44px] text-gray-600 dark:text-gray-300 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none rounded"
+          >
+            ☰
+          </button>
+          <main
+            id="main-content"
+            className="flex-1 overflow-y-auto bg-white dark:bg-gray-900"
+          >
+            <ContentTree rows={rows} />
+          </main>
+        </div>
+      </div>
+      <StorageToast />
+    </>
   );
 }

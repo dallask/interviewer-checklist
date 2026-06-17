@@ -161,7 +161,7 @@ export function ImportPreviewModal({ dialogRef, preview, onConfirm }: Props) {
         </button>
         <button
           type="button"
-          disabled={isPending}
+          disabled={isPending || preview === null}
           onClick={() => {
             void handleConfirm();
           }}

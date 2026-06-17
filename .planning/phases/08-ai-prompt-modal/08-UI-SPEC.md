@@ -56,9 +56,11 @@ Source: ImportPreviewModal.tsx and ResetConfirmDialog.tsx — copied verbatim.
 | Role | Size | Weight | Line Height |
 |------|------|--------|-------------|
 | Body | 14px (text-sm) | 400 (font-normal) | 1.5 (Tailwind default) |
-| Label | 14px (text-sm) | 500 (font-medium) | 1.5 |
+| Label | 14px (text-sm) | 400 (font-normal) | 1.5 |
 | Heading | 16px (text-base) | 600 (font-semibold) | 1.2 |
 | Textarea content | 14px (text-sm) | 400 (font-normal) | 1.5 |
+
+Weights in use: **400 (font-normal)** for body, labels, textarea, and buttons; **600 (font-semibold)** for the modal heading only. No other weight is permitted.
 
 Rules:
 - Modal heading: `text-base font-semibold` — matches `ImportPreviewModal` h2 exactly
@@ -80,7 +82,9 @@ Source: ImportPreviewModal.tsx line 94 (heading), line 158 (Cancel button), line
 | Accent (10%) | blue-600 / blue-500 (dark) | Primary action button only |
 | Destructive | — | Not applicable — no destructive actions in this modal |
 
-Accent reserved for: **Copy to clipboard button only** — no other element in the AI Prompt Modal uses the accent color.
+Primary visual anchor: the blue `Copy to clipboard` button is the single highest-contrast element in the modal and the intended first focal point; every other interactive element uses the secondary (gray) treatment.
+
+Accent reserved for: **Copy to clipboard button and focus rings on all interactive elements** (the `focus-visible:ring-blue-500` token is an accessibility token — not a decorative accent — but it draws from the same blue-600/blue-500 swatch). No other element in the AI Prompt Modal uses the accent color.
 
 Color token map (Tailwind utilities):
 

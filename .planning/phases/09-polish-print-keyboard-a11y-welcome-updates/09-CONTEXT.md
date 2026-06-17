@@ -40,7 +40,7 @@ Covers requirements POLISH-01 through POLISH-07.
 
 ### Print CSS & Version Display (POLISH-05, POLISH-06)
 - Print CSS via Tailwind `print:` variants in component JSX — no separate CSS file
-- "Expand all on print" implemented CSS-only via `print:` variants that override collapsed/hidden states — no JS `beforeprint` event needed
+- "Expand all on print" implemented via `usePrintExpansion` hook that calls `expandAll()` on `window.beforeprint` and restores state on `window.afterprint` — CSS-only approach is impossible because `@tanstack/react-virtual` never renders collapsed rows to the DOM; CSS `print:block` cannot make non-rendered elements appear (verified from source in RESEARCH.md). User authorized JS hook override 2026-06-17.
 - App version displayed in sidebar footer below sidebar controls (the sidebar already has a footer area from Phase 4)
 - `chrome.runtime.getManifest().version` used to read version at runtime
 

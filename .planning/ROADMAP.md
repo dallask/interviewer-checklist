@@ -90,7 +90,19 @@ Plans:
   4. An auto-snapshot of the current session is created before any Reset all or YAML import operation
   5. A dismissible toast appears when `chrome.storage.local` usage exceeds the configured threshold
 
-**Plans**: TBD
+**Plans**: 3 plans
+Plans:
+**Wave 1**
+
+- [ ] 03-01-PLAN.md — Install vitest-chrome/zustand/valibot, extend vitest harness, define V1/V2 types and valibot schemas, v1-to-v2 migration (TDD)
+
+**Wave 2** *(blocked on Wave 1 completion)*
+
+- [ ] 03-02-PLAN.md — StorageAdapter class: read/write, 300ms debounce, flushPending, snapshot+FIFO, quota check (TDD)
+
+**Wave 3** *(blocked on Wave 2 completion)*
+
+- [ ] 03-03-PLAN.md — bootstrap() orchestration, lifecycle event handlers, storage barrel, main.tsx wiring (TDD)
 
 ### Phase 4: Shell, Sidebar & Read-Only Content Tree
 
@@ -205,7 +217,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 →
 |-------|----------------|--------|-----------|
 | 1. Foundation & Scaffolding | 3/3 | Complete    | 2026-06-16 |
 | 2. Question Bank & Scoring Engine | 2/2 | Complete    | 2026-06-17 |
-| 3. Storage Layer, Migration & Bootstrap | 0/? | Not started | - |
+| 3. Storage Layer, Migration & Bootstrap | 0/3 | In progress | - |
 | 4. Shell, Sidebar & Read-Only Content Tree | 0/? | Not started | - |
 | 5. Scoring UI, Notes, Candidate & Custom Questions | 0/? | Not started | - |
 | 6. Multiple Named Sessions & Switcher | 0/? | Not started | - |

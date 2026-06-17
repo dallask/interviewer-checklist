@@ -41,9 +41,11 @@ export function buildAiPrompt(
       );
 
       // Difficulty note: find highest coefficient across topic questions (one sentence per CONTEXT.md)
-      const maxCoef = Math.max(
-        ...topic.questions.map((q) => DIFFICULTY_COEFFICIENTS[q.level]),
-      );
+      // Guard against empty question arrays: Math.max(...[]) returns -Infinity.
+      const coefficients = topic.questions.map((q) => DIFFICULTY_COEFFICIENTS[q.level]);
+      const maxCoef = coefficients.length > 0
+        ? Math.max(...coefficients)
+        : DIFFICULTY_COEFFICIENTS['novice'];
       const diffEntry = Object.entries(DIFFICULTY_COEFFICIENTS).find(
         ([, v]) => v === maxCoef,
       );

@@ -6,6 +6,7 @@ vi.mock('../store/app.js', () => ({
   useAppStore: vi.fn(),
 }));
 
+import { DEFAULT_SECTIONS } from '../data/bank/index.js';
 import { useAppStore } from '../store/app.js';
 
 const mockUseAppStore = useAppStore as unknown as ReturnType<typeof vi.fn>;
@@ -19,6 +20,9 @@ describe('SectionFilter', () => {
       selector({
         selectedSections: new Set(),
         toggleSection,
+        scores: {},
+        overrides: {},
+        customQuestions: [],
       }),
     );
   });
@@ -37,7 +41,7 @@ describe('SectionFilter', () => {
     }
   });
 
-  it('each button shows "—" mark placeholder', () => {
+  it('each button shows "—" mark placeholder when no questions are scored', () => {
     render(<SectionFilter />);
     const marks = screen.getAllByText('—');
     expect(marks).toHaveLength(9);
@@ -63,6 +67,9 @@ describe('SectionFilter', () => {
       selector({
         selectedSections: new Set([calledId]),
         toggleSection,
+        scores: {},
+        overrides: {},
+        customQuestions: [],
       }),
     );
     const { unmount } = render(<SectionFilter />);
@@ -81,6 +88,59 @@ describe('SectionFilter', () => {
     for (const btn of buttons) {
       expect(btn.className).toContain('focus-visible:ring-2');
       expect(btn.className).toContain('focus-visible:ring-blue-500');
+    }
+  });
+
+  it('shows a numeric mark (not "—") for first section when a question is scored', () => {
+    // Find first section and first topic to build a valid score key
+    const firstSection = DEFAULT_SECTIONS[0];
+    const firstTopic = firstSection.items[0];
+    const scoreKey = `${firstTopic.id}-0`;
+
+    mockUseAppStore.mockImplementation((selector: (s: unknown) => unknown) =>
+      selector({
+        selectedSections: new Set(),
+        toggleSection,
+        scores: { [scoreKey]: 8 },
+        overrides: {},
+        customQuestions: [],
+      }),
+    );
+
+    render(<SectionFilter />);
+
+    // With one question scored, the first section should NOT show "—"
+    // There should be fewer than 9 "—" marks (one section now shows a number)
+    const dashes = screen.queryAllByText('—');
+    expect(dashes).toHaveLength(8);
+  });
+
+  it('scored section mark has a band color class', () => {
+    const firstSection = DEFAULT_SECTIONS[0];
+    const firstTopic = firstSection.items[0];
+    const scoreKey = `${firstTopic.id}-0`;
+
+    mockUseAppStore.mockImplementation((selector: (s: unknown) => unknown) =>
+      selector({
+        selectedSections: new Set(),
+        toggleSection,
+        scores: { [scoreKey]: 8 },
+        overrides: {},
+        customQuestions: [],
+      }),
+    );
+
+    render(<SectionFilter />);
+
+    // Score 8 → high band → text-emerald-600
+    const markElement = screen
+      .getAllByRole('button')[0]
+      .querySelector('.tabular-nums');
+    expect(markElement).not.toBeNull();
+    if (markElement) {
+      expect(markElement.className).toMatch(
+        /text-(emerald|green|yellow|red|gray)/,
+      );
     }
   });
 });

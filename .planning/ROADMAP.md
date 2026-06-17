@@ -152,7 +152,7 @@ Plans:
 
 **Wave 2** *(blocked on Wave 1 completion)*
 
-- [ ] 05-02-PLAN.md — QuestionCard scoring extensions (slider + notes + custom badge/delete), TopicMarkDisplay, TopicRow live mark + topic notes, CustomQuestionForm, SectionFilter live marks
+- [x] 05-02-PLAN.md — QuestionCard scoring extensions (slider + notes + custom badge/delete), TopicMarkDisplay, TopicRow live mark + topic notes, CustomQuestionForm, SectionFilter live marks
 
 **Wave 3** *(blocked on Wave 2 completion)*
 
@@ -241,7 +241,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 →
 | 2. Question Bank & Scoring Engine | 2/2 | Complete    | 2026-06-17 |
 | 3. Storage Layer, Migration & Bootstrap | 3/3 | Complete    | 2026-06-17 |
 | 4. Shell, Sidebar & Read-Only Content Tree | 3/3 | Complete    | 2026-06-17 |
-| 5. Scoring UI, Notes, Candidate & Custom Questions | 1/3 | In Progress|  |
+| 5. Scoring UI, Notes, Candidate & Custom Questions | 2/3 | In Progress|  |
 | 6. Multiple Named Sessions & Switcher | 0/? | Not started | - |
 | 7. YAML Import & Export | 0/? | Not started | - |
 | 8. AI Prompt Modal | 0/? | Not started | - |

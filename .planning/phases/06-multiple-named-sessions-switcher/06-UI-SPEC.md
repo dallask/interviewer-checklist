@@ -143,7 +143,7 @@ Add two new elements at the top of the `ActionsGroup` content area (above "Expan
   type="button"
   id="open-session-switcher"
   onClick={() => sessionSwitcherRef.current?.showModal()}
-  class="w-full text-sm px-3 py-2 text-left text-gray-900 dark:text-gray-100 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none"
+  class="w-full text-sm px-4 py-2 text-left text-gray-900 dark:text-gray-100 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none"
 >
   Switch session
 </button>
@@ -347,7 +347,7 @@ Minimal `<dialog>` for session delete confirmation. Follows `ResetConfirmDialog`
 >
   <h2
     id="delete-session-dialog-title"
-    class="text-base font-semibold text-gray-900 dark:text-gray-100 mb-3"
+    class="text-base font-semibold text-gray-900 dark:text-gray-100 mb-2"
   >
     Delete session?
   </h2>
@@ -355,7 +355,7 @@ Minimal `<dialog>` for session delete confirmation. Follows `ResetConfirmDialog`
     "{sessionName}" will be permanently deleted. An undo option will appear
     briefly after deletion.
   </p>
-  <div class="flex gap-3 justify-end">
+  <div class="flex gap-4 justify-end">
     <button
       type="button"
       id="cancel-delete-session"

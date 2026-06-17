@@ -175,7 +175,7 @@ Plans:
 
 **Wave 1**
 
-- [ ] 06-01-PLAN.md — Session store extension (TDD): UndoBuffer type, manifest/undoBuffer state, createSession/renameSession/duplicateSession/deleteSession/switchSession/undoDeleteSession actions, subscribe manifest write (SESS-01, SESS-04)
+- [x] 06-01-PLAN.md — Session store extension (TDD): UndoBuffer type, manifest/undoBuffer state, createSession/renameSession/duplicateSession/deleteSession/switchSession/undoDeleteSession actions, subscribe manifest write (SESS-01, SESS-04)
 
 **Wave 2** *(blocked on Wave 1 completion)*
 
@@ -254,7 +254,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 →
 | 3. Storage Layer, Migration & Bootstrap | 3/3 | Complete    | 2026-06-17 |
 | 4. Shell, Sidebar & Read-Only Content Tree | 3/3 | Complete    | 2026-06-17 |
 | 5. Scoring UI, Notes, Candidate & Custom Questions | 5/5 | Complete   | 2026-06-17 |
-| 6. Multiple Named Sessions & Switcher | 0/? | Not started | - |
+| 6. Multiple Named Sessions & Switcher | 1/3 | In Progress|  |
 | 7. YAML Import & Export | 0/? | Not started | - |
 | 8. AI Prompt Modal | 0/? | Not started | - |
 | 9. Polish — Print, Keyboard, A11y, Welcome & Updates | 0/? | Not started | - |

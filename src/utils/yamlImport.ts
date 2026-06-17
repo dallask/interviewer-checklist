@@ -356,7 +356,11 @@ export function parseStructural(
               ? null
               : null;
       }
-      if (typeof topic.topicNote === 'string') {
+      // WR-03: skip empty-string topicNote to match the sparse behaviour of
+      // q.note handling (line ~410) and resetAll() which returns topicNotes: {}.
+      // Empty strings are the yamlExport.ts default (topicNotes[id] ?? '') so
+      // round-tripping would otherwise inflate storage with '' for every topic.
+      if (typeof topic.topicNote === 'string' && topic.topicNote !== '') {
         result.topicNotes[topicId] = topic.topicNote;
       }
 

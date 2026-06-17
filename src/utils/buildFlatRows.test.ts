@@ -1,10 +1,12 @@
-import { describe, it, expect } from 'vitest';
-import { buildFlatRows } from './buildFlatRows.js';
+import { describe, expect, it } from 'vitest';
 import { DEFAULT_SECTIONS } from '../data/bank/index.js';
+import { buildFlatRows } from './buildFlatRows.js';
 
 const emptyFilters = {
   searchQuery: '',
-  selectedDifficulties: new Set<string>() as Set<import('../data/bank/types.js').Difficulty>,
+  selectedDifficulties: new Set<string>() as Set<
+    import('../data/bank/types.js').Difficulty
+  >,
   selectedSections: new Set<string>(),
 };
 
@@ -39,10 +41,17 @@ describe('buildFlatRows — no filters, all open', () => {
 
 describe('buildFlatRows — selectedDifficulties filter', () => {
   it('filters to only novice questions when selectedDifficulties = {novice}', () => {
-    const rows = buildFlatRows(DEFAULT_SECTIONS, {}, {}, {
-      ...emptyFilters,
-      selectedDifficulties: new Set(['novice']) as Set<import('../data/bank/types.js').Difficulty>,
-    });
+    const rows = buildFlatRows(
+      DEFAULT_SECTIONS,
+      {},
+      {},
+      {
+        ...emptyFilters,
+        selectedDifficulties: new Set(['novice']) as Set<
+          import('../data/bank/types.js').Difficulty
+        >,
+      },
+    );
     const questionRows = rows.filter((r) => r.type === 'question');
     expect(questionRows.length).toBeGreaterThan(0);
     for (const row of questionRows) {
@@ -53,10 +62,17 @@ describe('buildFlatRows — selectedDifficulties filter', () => {
   });
 
   it('no non-novice question rows when filtered to novice only', () => {
-    const rows = buildFlatRows(DEFAULT_SECTIONS, {}, {}, {
-      ...emptyFilters,
-      selectedDifficulties: new Set(['novice']) as Set<import('../data/bank/types.js').Difficulty>,
-    });
+    const rows = buildFlatRows(
+      DEFAULT_SECTIONS,
+      {},
+      {},
+      {
+        ...emptyFilters,
+        selectedDifficulties: new Set(['novice']) as Set<
+          import('../data/bank/types.js').Difficulty
+        >,
+      },
+    );
     for (const row of rows) {
       if (row.type === 'question') {
         expect(row.question.level).not.toBe('intermediate');
@@ -70,10 +86,15 @@ describe('buildFlatRows — selectedDifficulties filter', () => {
 describe('buildFlatRows — selectedSections filter', () => {
   it('filters to only rows for the selected section', () => {
     const firstSection = DEFAULT_SECTIONS[0];
-    const rows = buildFlatRows(DEFAULT_SECTIONS, {}, {}, {
-      ...emptyFilters,
-      selectedSections: new Set([firstSection.id]),
-    });
+    const rows = buildFlatRows(
+      DEFAULT_SECTIONS,
+      {},
+      {},
+      {
+        ...emptyFilters,
+        selectedSections: new Set([firstSection.id]),
+      },
+    );
     const sectionRows = rows.filter((r) => r.type === 'section');
     expect(sectionRows.length).toBe(1);
     if (sectionRows[0].type === 'section') {
@@ -83,10 +104,15 @@ describe('buildFlatRows — selectedSections filter', () => {
 
   it('returns no rows for excluded sections', () => {
     const firstSection = DEFAULT_SECTIONS[0];
-    const rows = buildFlatRows(DEFAULT_SECTIONS, {}, {}, {
-      ...emptyFilters,
-      selectedSections: new Set([firstSection.id]),
-    });
+    const rows = buildFlatRows(
+      DEFAULT_SECTIONS,
+      {},
+      {},
+      {
+        ...emptyFilters,
+        selectedSections: new Set([firstSection.id]),
+      },
+    );
     for (const row of rows) {
       if (row.type === 'topic' || row.type === 'question') {
         expect(row.sectionId).toBe(firstSection.id);
@@ -97,18 +123,28 @@ describe('buildFlatRows — selectedSections filter', () => {
 
 describe('buildFlatRows — search filter', () => {
   it('returns non-empty results for "react" search (case-insensitive)', () => {
-    const rows = buildFlatRows(DEFAULT_SECTIONS, {}, {}, {
-      ...emptyFilters,
-      searchQuery: 'react',
-    });
+    const rows = buildFlatRows(
+      DEFAULT_SECTIONS,
+      {},
+      {},
+      {
+        ...emptyFilters,
+        searchQuery: 'react',
+      },
+    );
     expect(rows.length).toBeGreaterThan(0);
   });
 
   it('all remaining question rows contain "react" in name/desc/tag/question text', () => {
-    const rows = buildFlatRows(DEFAULT_SECTIONS, {}, {}, {
-      ...emptyFilters,
-      searchQuery: 'react',
-    });
+    const rows = buildFlatRows(
+      DEFAULT_SECTIONS,
+      {},
+      {},
+      {
+        ...emptyFilters,
+        searchQuery: 'react',
+      },
+    );
     const questionRows = rows.filter((r) => r.type === 'question');
     expect(questionRows.length).toBeGreaterThan(0);
     // Each question row must be in a topic that matches, or the question itself matches
@@ -143,7 +179,9 @@ describe('buildFlatRows — collapsed section', () => {
       { [firstSection.id]: false },
       emptyFilters,
     );
-    const sectionRow = rows.find((r) => r.type === 'section' && r.id === firstSection.id);
+    const sectionRow = rows.find(
+      (r) => r.type === 'section' && r.id === firstSection.id,
+    );
     expect(sectionRow).toBeDefined();
   });
 
@@ -173,7 +211,9 @@ describe('buildFlatRows — collapsed topic', () => {
       {},
       emptyFilters,
     );
-    const topicRow = rows.find((r) => r.type === 'topic' && r.topic.id === firstTopic.id);
+    const topicRow = rows.find(
+      (r) => r.type === 'topic' && r.topic.id === firstTopic.id,
+    );
     expect(topicRow).toBeDefined();
     if (topicRow?.type === 'topic') {
       expect(topicRow.isOpen).toBe(false);
@@ -200,7 +240,9 @@ describe('buildFlatRows — collapsed topic', () => {
     const firstSection = DEFAULT_SECTIONS[0];
     const firstTopic = firstSection.items[0];
     const rows = buildFlatRows(DEFAULT_SECTIONS, {}, {}, emptyFilters);
-    const topicRow = rows.find((r) => r.type === 'topic' && r.topic.id === firstTopic.id);
+    const topicRow = rows.find(
+      (r) => r.type === 'topic' && r.topic.id === firstTopic.id,
+    );
     expect(topicRow).toBeDefined();
     if (topicRow?.type === 'topic') {
       expect(topicRow.isOpen).toBe(true);
@@ -210,10 +252,16 @@ describe('buildFlatRows — collapsed topic', () => {
 
 describe('buildFlatRows — empty results', () => {
   it('returns zero rows when impossible filters applied', () => {
-    const rows = buildFlatRows(DEFAULT_SECTIONS, {}, {}, {
-      ...emptyFilters,
-      searchQuery: 'xyzzy_impossible_search_string_that_matches_nothing_abc123',
-    });
+    const rows = buildFlatRows(
+      DEFAULT_SECTIONS,
+      {},
+      {},
+      {
+        ...emptyFilters,
+        searchQuery:
+          'xyzzy_impossible_search_string_that_matches_nothing_abc123',
+      },
+    );
     expect(rows.length).toBe(0);
   });
 });

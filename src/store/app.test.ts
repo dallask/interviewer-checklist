@@ -1,5 +1,5 @@
-import { vi, describe, it, expect, beforeEach } from 'vitest';
-import { useAppStore, DEFAULT_STATE } from './app.js';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { DEFAULT_STATE, useAppStore } from './app.js';
 
 // Mock storageAdapter at the module level to prevent actual storage writes in tests
 vi.mock('../storage/index.js', () => ({
@@ -88,14 +88,11 @@ describe('useAppStore — actions', () => {
     expect(useAppStore.getState().groupOpen.search).toBe(true);
   });
 
-  it('toggleTopic("t1") sets topicOpen["t1"] to true', () => {
+  it('toggleTopic("t1") sets topicOpen["t1"] to true (undefined → !undefined = true)', () => {
     useAppStore.getState().toggleTopic('t1');
-    // undefined (default open) toggled to explicit false, or to explicit true depending on logic.
-    // The plan says toggle stores explicitly. Default is undefined=open, toggle stores explicit value.
-    // toggleTopic flips: undefined → false (since undefined is treated as true, toggle to false).
-    // Actually re-reading plan: "default open means undefined=open, but explicit toggle stores it"
-    // toggleTopic('t1') where t1 is undefined: store t1 as false (toggled from default true)
-    expect(useAppStore.getState().topicOpen['t1']).toBe(false);
+    // !undefined = true (JS coercion). First explicit toggle stores true (explicit open state).
+    // Second toggle would set to false (collapsed). isOpen = topicOpen[id] !== false.
+    expect(useAppStore.getState().topicOpen.t1).toBe(true);
   });
 
   it('expandAll() sets all topic IDs to true in topicOpen', () => {
@@ -123,13 +120,17 @@ describe('useAppStore — actions', () => {
 
   it('toggleDifficulty("novice") adds novice to selectedDifficulties', () => {
     useAppStore.getState().toggleDifficulty('novice');
-    expect(useAppStore.getState().selectedDifficulties.has('novice')).toBe(true);
+    expect(useAppStore.getState().selectedDifficulties.has('novice')).toBe(
+      true,
+    );
   });
 
   it('toggleDifficulty("novice") called again removes novice from selectedDifficulties', () => {
     useAppStore.getState().toggleDifficulty('novice');
     useAppStore.getState().toggleDifficulty('novice');
-    expect(useAppStore.getState().selectedDifficulties.has('novice')).toBe(false);
+    expect(useAppStore.getState().selectedDifficulties.has('novice')).toBe(
+      false,
+    );
   });
 
   it('toggleSection("js") adds "js" to selectedSections Set', () => {
@@ -154,16 +155,16 @@ describe('useAppStore — actions', () => {
     toggleSpy.mockRestore();
   });
 
-  it('toggleSectionOpen("s1") flips sectionOpen["s1"] from default to false', () => {
+  it('toggleSectionOpen("s1") flips sectionOpen["s1"] from undefined to true (!undefined=true)', () => {
     useAppStore.getState().toggleSectionOpen('s1');
-    // undefined (default open) → explicit false
-    expect(useAppStore.getState().sectionOpen['s1']).toBe(false);
+    // !undefined = true (JS coercion). First toggle sets explicit true.
+    expect(useAppStore.getState().sectionOpen.s1).toBe(true);
   });
 
-  it('toggleSectionOpen("s1") called again flips sectionOpen["s1"] back to true', () => {
+  it('toggleSectionOpen("s1") called again flips sectionOpen["s1"] from true to false', () => {
     useAppStore.getState().toggleSectionOpen('s1');
     useAppStore.getState().toggleSectionOpen('s1');
-    expect(useAppStore.getState().sectionOpen['s1']).toBe(true);
+    expect(useAppStore.getState().sectionOpen.s1).toBe(false);
   });
 });
 
@@ -177,7 +178,9 @@ describe('useAppStore — subscribe serialization', () => {
     useAppStore.setState({ selectedDifficulties: new Set(['novice']) });
     // subscribe fires after setState
     expect(storageAdapter.write).toHaveBeenCalled();
-    const callArg = (storageAdapter.write as ReturnType<typeof vi.fn>).mock.calls.at(-1)?.[0] as {
+    const callArg = (
+      storageAdapter.write as ReturnType<typeof vi.fn>
+    ).mock.calls.at(-1)?.[0] as {
       uiState: { selectedDifficulties: unknown; selectedSections: unknown };
     };
     expect(Array.isArray(callArg.uiState.selectedDifficulties)).toBe(true);
@@ -186,7 +189,9 @@ describe('useAppStore — subscribe serialization', () => {
 
   it('storageAdapter.write serializes sectionOpen in uiState', () => {
     useAppStore.getState().setSearchQuery('test');
-    const callArg = (storageAdapter.write as ReturnType<typeof vi.fn>).mock.calls.at(-1)?.[0] as {
+    const callArg = (
+      storageAdapter.write as ReturnType<typeof vi.fn>
+    ).mock.calls.at(-1)?.[0] as {
       uiState: { searchQuery: string };
     };
     expect(callArg.uiState.searchQuery).toBe('test');

@@ -412,6 +412,18 @@ export function parseStructural(
       // Process custom questions
       const customQuestions = topic.customQuestions;
       if (Array.isArray(customQuestions)) {
+        // WR-02: enforce last-write-wins for duplicate topic IDs. Without this,
+        // two YAML entries with the same topic ID accumulate their custom questions
+        // (via push) and the ID generator produces identical IDs (same Date.now(),
+        // same cqIndex), causing deleteCustomQuestion to silently remove both.
+        const priorCount = result.customQuestions.filter(
+          (cq) => cq.topicId === topicId,
+        ).length;
+        result.customQuestions = result.customQuestions.filter(
+          (cq) => cq.topicId !== topicId,
+        );
+        addedCount -= priorCount;
+
         customQuestions.forEach((rawCq, cqIndex) => {
           if (
             typeof rawCq !== 'object' ||

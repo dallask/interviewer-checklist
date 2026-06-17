@@ -197,3 +197,121 @@ describe('useAppStore — subscribe serialization', () => {
     expect(callArg.uiState.searchQuery).toBe('test');
   });
 });
+
+describe('useAppStore — ScoringActions', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+    useAppStore.setState(DEFAULT_STATE);
+  });
+
+  it('setScore stores a numeric score', () => {
+    useAppStore.getState().setScore('topic1-0', 5);
+    expect(useAppStore.getState().scores['topic1-0']).toBe(5);
+  });
+
+  it('setScore stores null score', () => {
+    useAppStore.getState().setScore('topic1-0', null);
+    expect(useAppStore.getState().scores['topic1-0']).toBeNull();
+  });
+
+  it('setScore stores 0 (not falsy-filtered)', () => {
+    useAppStore.getState().setScore('topic1-0', 0);
+    expect(useAppStore.getState().scores['topic1-0']).toBe(0);
+  });
+
+  it('setOverride stores a numeric override', () => {
+    useAppStore.getState().setOverride('topic1', 7.5);
+    expect(useAppStore.getState().overrides['topic1']).toBe(7.5);
+  });
+
+  it('setOverride stores null override', () => {
+    useAppStore.getState().setOverride('topic1', null);
+    expect(useAppStore.getState().overrides['topic1']).toBeNull();
+  });
+
+  it('setNote stores a note string', () => {
+    useAppStore.getState().setNote('topic1-2', 'hello');
+    expect(useAppStore.getState().notes['topic1-2']).toBe('hello');
+  });
+
+  it('setTopicNote stores a topic note string', () => {
+    useAppStore.getState().setTopicNote('topic1', 'topic note');
+    expect(useAppStore.getState().topicNotes['topic1']).toBe('topic note');
+  });
+
+  it('addCustomQuestion adds a new CustomQuestion to the array', () => {
+    useAppStore.getState().addCustomQuestion({
+      id: 'custom-t1-1',
+      topicId: 't1',
+      text: 'Q?',
+      level: 'novice',
+    });
+    const cqs = useAppStore.getState().customQuestions;
+    expect(cqs).toHaveLength(1);
+    expect(cqs[0].id).toBe('custom-t1-1');
+  });
+
+  it('deleteCustomQuestion removes the entry from customQuestions', () => {
+    useAppStore.getState().addCustomQuestion({
+      id: 'custom-t1-1',
+      topicId: 't1',
+      text: 'Q?',
+      level: 'novice',
+    });
+    useAppStore.getState().deleteCustomQuestion('custom-t1-1');
+    expect(useAppStore.getState().customQuestions).toHaveLength(0);
+  });
+
+  it('setCandidate stores a candidate object', () => {
+    const candidate = {
+      name: 'Alice',
+      email: 'alice@example.com',
+      role: 'Engineer',
+      date: '2026-01-01',
+      interviewer: 'Bob',
+      details: 'Strong candidate',
+    };
+    useAppStore.getState().setCandidate(candidate);
+    expect(useAppStore.getState().candidate).toEqual(candidate);
+  });
+
+  it('setCandidate(null) sets candidate to null', () => {
+    useAppStore.getState().setCandidate(null);
+    expect(useAppStore.getState().candidate).toBeNull();
+  });
+
+  it('resetAll clears scores, overrides, notes, topicNotes, customQuestions, and candidate', () => {
+    useAppStore.getState().setScore('q-1', 8);
+    useAppStore.getState().setOverride('t-1', 7);
+    useAppStore.getState().setNote('q-1', 'note');
+    useAppStore.getState().setTopicNote('t-1', 'tnote');
+    useAppStore.getState().addCustomQuestion({
+      id: 'cq-1',
+      topicId: 't1',
+      text: 'Q',
+      level: 'expert',
+    });
+    useAppStore.getState().setCandidate({
+      name: 'Alice',
+      email: '',
+      role: '',
+      date: '',
+      interviewer: '',
+      details: '',
+    });
+    useAppStore.getState().resetAll();
+    const state = useAppStore.getState();
+    expect(state.scores).toEqual({});
+    expect(state.overrides).toEqual({});
+    expect(state.notes).toEqual({});
+    expect(state.topicNotes).toEqual({});
+    expect(state.customQuestions).toEqual([]);
+    expect(state.candidate).toBeNull();
+  });
+
+  it('resetAll preserves activeSessionId', () => {
+    useAppStore.setState({ activeSessionId: 'session-abc' });
+    useAppStore.getState().resetAll();
+    expect(useAppStore.getState().activeSessionId).toBe('session-abc');
+  });
+});

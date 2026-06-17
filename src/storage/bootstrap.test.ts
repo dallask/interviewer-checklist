@@ -1,13 +1,12 @@
+import * as v from 'valibot';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { chrome } from 'vitest-chrome';
+import { bootstrap } from './bootstrap.js';
 import {
+  createDefaultSession,
   V2ManifestSchema,
   V2SessionSchema,
-  createDefaultManifest,
-  createDefaultSession,
 } from './types.js';
-import * as v from 'valibot';
-import { bootstrap } from './bootstrap.js';
 
 // ---------------------------------------------------------------------------
 // Inline fixtures
@@ -43,8 +42,10 @@ const VALID_V2_SESSION = {
 // Verify fixtures are valid per schema (fixture correctness guard)
 const _manifestCheck = v.safeParse(V2ManifestSchema, VALID_V2_MANIFEST);
 const _sessionCheck = v.safeParse(V2SessionSchema, VALID_V2_SESSION);
-if (!_manifestCheck.success) throw new Error('VALID_V2_MANIFEST fixture is invalid');
-if (!_sessionCheck.success) throw new Error('VALID_V2_SESSION fixture is invalid');
+if (!_manifestCheck.success)
+  throw new Error('VALID_V2_MANIFEST fixture is invalid');
+if (!_sessionCheck.success)
+  throw new Error('VALID_V2_SESSION fixture is invalid');
 
 // ---------------------------------------------------------------------------
 // Scenario A: Empty storage (first run)
@@ -85,9 +86,14 @@ describe('bootstrap() — Scenario A: empty storage', () => {
     await bootstrap();
 
     expect(chrome.storage.local.set).toHaveBeenCalled();
-    const callArg = chrome.storage.local.set.mock.calls[0][0] as Record<string, unknown>;
+    const callArg = chrome.storage.local.set.mock.calls[0][0] as Record<
+      string,
+      unknown
+    >;
     expect(callArg).toHaveProperty('manifest');
-    const manifestKey = Object.keys(callArg).find((k) => k.startsWith('session:'));
+    const manifestKey = Object.keys(callArg).find((k) =>
+      k.startsWith('session:'),
+    );
     expect(manifestKey).toBeDefined();
   });
 
@@ -107,7 +113,9 @@ describe('bootstrap() — Scenario A: empty storage', () => {
     expect(result.sessions[sessionId]).toBeDefined();
     expect(result.sessions[sessionId].version).toBe(2);
     const defaultSession = createDefaultSession(sessionId);
-    expect(result.sessions[sessionId].questionScore).toEqual(defaultSession.questionScore);
+    expect(result.sessions[sessionId].questionScore).toEqual(
+      defaultSession.questionScore,
+    );
   });
 });
 
@@ -204,7 +212,12 @@ describe('bootstrap() — Scenario C: legacy v1 data', () => {
     search: '',
     hideReviewed: false,
     sidebarCollapsed: false,
-    sidebarGroups: { search: true, difficulty: true, sections: true, actions: true },
+    sidebarGroups: {
+      search: true,
+      difficulty: true,
+      sections: true,
+      actions: true,
+    },
   };
 
   it('calls chrome.storage.local.set with migrated v2 manifest and session keys', async () => {
@@ -221,9 +234,14 @@ describe('bootstrap() — Scenario C: legacy v1 data', () => {
     await bootstrap();
 
     expect(chrome.storage.local.set).toHaveBeenCalled();
-    const callArg = chrome.storage.local.set.mock.calls[0][0] as Record<string, unknown>;
+    const callArg = chrome.storage.local.set.mock.calls[0][0] as Record<
+      string,
+      unknown
+    >;
     expect(callArg).toHaveProperty('manifest');
-    const sessionKey = Object.keys(callArg).find((k) => k.startsWith('session:'));
+    const sessionKey = Object.keys(callArg).find((k) =>
+      k.startsWith('session:'),
+    );
     expect(sessionKey).toBeDefined();
   });
 
@@ -273,7 +291,9 @@ describe('bootstrap() — Scenario D: corrupt data (recovery path)', () => {
 
     await bootstrap();
 
-    const allSetCalls = chrome.storage.local.set.mock.calls as Array<[Record<string, unknown>, ...unknown[]]>;
+    const allSetCalls = chrome.storage.local.set.mock.calls as Array<
+      [Record<string, unknown>, ...unknown[]]
+    >;
     const recoveryCall = allSetCalls.find((call) => {
       const keys = Object.keys(call[0]);
       return keys.some((k) => k.startsWith('recovery:'));
@@ -294,7 +314,9 @@ describe('bootstrap() — Scenario D: corrupt data (recovery path)', () => {
 
     await bootstrap();
 
-    const allSetCalls = chrome.storage.local.set.mock.calls as Array<[Record<string, unknown>, ...unknown[]]>;
+    const allSetCalls = chrome.storage.local.set.mock.calls as Array<
+      [Record<string, unknown>, ...unknown[]]
+    >;
     const manifestCall = allSetCalls.find((call) => {
       const keys = Object.keys(call[0]);
       return keys.includes('manifest');

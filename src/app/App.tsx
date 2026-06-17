@@ -3,6 +3,7 @@ import { useMemo } from 'react';
 import { ContentTree } from '../components/ContentTree.js';
 import { Sidebar } from '../components/Sidebar.js';
 import { StorageToast } from '../components/StorageToast.js';
+import { UndoToast } from '../components/UndoToast.js';
 import { DEFAULT_SECTIONS } from '../data/bank/index.js';
 import { useAppStore } from '../store/app.js';
 import { buildFlatRows } from '../utils/buildFlatRows.js';
@@ -82,6 +83,7 @@ export function App() {
         </div>
       </div>
       <StorageToast />
+      <UndoToast />
     </>
   );
 }

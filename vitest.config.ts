@@ -1,13 +1,15 @@
 import { defineConfig } from 'vitest/config';
-import path from 'node:path';
+import { createRequire } from 'node:module';
+
+const require = createRequire(import.meta.url);
 
 export default defineConfig({
   resolve: {
     alias: {
       // vitest-chrome ships a CJS main; force Vitest to use the ESM build instead.
-      'vitest-chrome': path.resolve(
-        'node_modules/vitest-chrome/lib/index.esm.js',
-      ),
+      // Use require.resolve so the path resolves correctly in git worktrees where
+      // node_modules lives in the main repo root, not the worktree directory.
+      'vitest-chrome': require.resolve('vitest-chrome/lib/index.esm.js'),
     },
   },
   test: {

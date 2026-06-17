@@ -82,7 +82,7 @@ export function TopicMarkDisplay({ topicId, topic }: Props) {
         {displayValue}
       </span>
 
-      {/* Override number input */}
+      {/* Override number input — narrow, no placeholder text (aria-label covers accessibility) */}
       <input
         type="number"
         min={0}
@@ -90,10 +90,9 @@ export function TopicMarkDisplay({ topicId, topic }: Props) {
         step={0.1}
         aria-label={`Override mark for ${topic.name}`}
         value={overrideInput}
-        placeholder="override"
         onChange={(e) => setOverrideInput(e.target.value)}
         onBlur={handleOverrideBlur}
-        className="w-16 text-xs text-gray-700 dark:text-gray-300 bg-transparent border border-gray-300 dark:border-gray-600 rounded px-1 py-0.5 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none placeholder:text-gray-300 dark:placeholder:text-gray-700"
+        className="w-12 text-xs text-gray-700 dark:text-gray-300 bg-transparent border border-gray-300 dark:border-gray-600 rounded px-1 py-0.5 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none"
       />
 
       {/* Clear override button — visible only when override is set */}

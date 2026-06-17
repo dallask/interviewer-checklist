@@ -1,5 +1,5 @@
 import { render, screen } from '@testing-library/react';
-import { vi, describe, it, expect, beforeEach } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { Sidebar } from './Sidebar.js';
 
 vi.mock('../store/app.js', () => ({
@@ -14,7 +14,12 @@ function makeState(overrides: Record<string, unknown> = {}) {
   return {
     sidebarOpen: true,
     setSidebarOpen: vi.fn(),
-    groupOpen: { search: true, difficulty: true, sections: true, actions: true },
+    groupOpen: {
+      search: true,
+      difficulty: true,
+      sections: true,
+      actions: true,
+    },
     toggleGroup: vi.fn(),
     setSearchQuery: vi.fn(),
     searchQuery: '',

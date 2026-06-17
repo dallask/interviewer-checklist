@@ -1,5 +1,5 @@
-import { render, screen, fireEvent, act } from '@testing-library/react';
-import { vi, describe, it, expect } from 'vitest';
+import { act, fireEvent, render, screen } from '@testing-library/react';
+import { describe, expect, it } from 'vitest';
 import { StorageToast } from './StorageToast.js';
 
 describe('StorageToast', () => {
@@ -24,7 +24,9 @@ describe('StorageToast', () => {
       window.dispatchEvent(new CustomEvent('storage-quota-warning'));
     });
     expect(
-      screen.getByText('Storage is almost full. Export a YAML backup to free space.'),
+      screen.getByText(
+        'Storage is almost full. Export a YAML backup to free space.',
+      ),
     ).toBeInTheDocument();
   });
 
@@ -33,7 +35,9 @@ describe('StorageToast', () => {
     act(() => {
       window.dispatchEvent(new CustomEvent('storage-quota-warning'));
     });
-    const dismissBtn = screen.getByRole('button', { name: /dismiss storage warning/i });
+    const dismissBtn = screen.getByRole('button', {
+      name: /dismiss storage warning/i,
+    });
     expect(dismissBtn).toBeInTheDocument();
   });
 
@@ -42,7 +46,9 @@ describe('StorageToast', () => {
     act(() => {
       window.dispatchEvent(new CustomEvent('storage-quota-warning'));
     });
-    const dismissBtn = screen.getByRole('button', { name: /dismiss storage warning/i });
+    const dismissBtn = screen.getByRole('button', {
+      name: /dismiss storage warning/i,
+    });
     fireEvent.click(dismissBtn);
     const alert = document.querySelector('[role="alert"]');
     expect(alert).not.toBeInTheDocument();

@@ -1,5 +1,5 @@
-import { render, screen, fireEvent } from '@testing-library/react';
-import { vi, describe, it, expect, beforeEach } from 'vitest';
+import { fireEvent, render, screen } from '@testing-library/react';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { DifficultyFilter } from './DifficultyFilter.js';
 
 vi.mock('../store/app.js', () => ({
@@ -58,9 +58,15 @@ describe('DifficultyFilter', () => {
 
   it('renders beginner, intermediate, advanced, expert buttons', () => {
     render(<DifficultyFilter />);
-    expect(screen.getByRole('button', { name: /beginner/i })).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: /intermediate/i })).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: /advanced/i })).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: /beginner/i }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: /intermediate/i }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: /advanced/i }),
+    ).toBeInTheDocument();
     expect(screen.getByRole('button', { name: /expert/i })).toBeInTheDocument();
   });
 

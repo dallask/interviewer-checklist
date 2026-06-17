@@ -8,7 +8,12 @@ export interface SidebarGroupProps {
   children: ReactNode;
 }
 
-export function SidebarGroup({ label, isOpen, onToggle, children }: SidebarGroupProps) {
+export function SidebarGroup({
+  label,
+  isOpen,
+  onToggle,
+  children,
+}: SidebarGroupProps) {
   return (
     <div className="border-b border-gray-200 dark:border-gray-700">
       <button

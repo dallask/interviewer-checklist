@@ -1,5 +1,5 @@
-import { render, screen, fireEvent } from '@testing-library/react';
-import { vi, describe, it, expect } from 'vitest';
+import { fireEvent, render, screen } from '@testing-library/react';
+import { describe, expect, it, vi } from 'vitest';
 import { SidebarGroup } from './SidebarGroup.js';
 
 describe('SidebarGroup', () => {
@@ -7,7 +7,12 @@ describe('SidebarGroup', () => {
 
   it('renders group header button with aria-expanded="true" when isOpen=true', () => {
     render(
-      <SidebarGroup groupId="search" label="Search" isOpen={true} onToggle={onToggle}>
+      <SidebarGroup
+        groupId="search"
+        label="Search"
+        isOpen={true}
+        onToggle={onToggle}
+      >
         <p>Content</p>
       </SidebarGroup>,
     );
@@ -17,7 +22,12 @@ describe('SidebarGroup', () => {
 
   it('renders group header button with aria-expanded="false" when isOpen=false', () => {
     render(
-      <SidebarGroup groupId="search" label="Search" isOpen={false} onToggle={onToggle}>
+      <SidebarGroup
+        groupId="search"
+        label="Search"
+        isOpen={false}
+        onToggle={onToggle}
+      >
         <p>Content</p>
       </SidebarGroup>,
     );
@@ -27,7 +37,12 @@ describe('SidebarGroup', () => {
 
   it('renders children when isOpen=true', () => {
     render(
-      <SidebarGroup groupId="search" label="Search" isOpen={true} onToggle={onToggle}>
+      <SidebarGroup
+        groupId="search"
+        label="Search"
+        isOpen={true}
+        onToggle={onToggle}
+      >
         <p>Visible content</p>
       </SidebarGroup>,
     );
@@ -36,7 +51,12 @@ describe('SidebarGroup', () => {
 
   it('does not render children when isOpen=false', () => {
     render(
-      <SidebarGroup groupId="search" label="Search" isOpen={false} onToggle={onToggle}>
+      <SidebarGroup
+        groupId="search"
+        label="Search"
+        isOpen={false}
+        onToggle={onToggle}
+      >
         <p>Hidden content</p>
       </SidebarGroup>,
     );
@@ -45,7 +65,12 @@ describe('SidebarGroup', () => {
 
   it('calls onToggle when button is clicked', () => {
     render(
-      <SidebarGroup groupId="search" label="Search" isOpen={true} onToggle={onToggle}>
+      <SidebarGroup
+        groupId="search"
+        label="Search"
+        isOpen={true}
+        onToggle={onToggle}
+      >
         <p>Content</p>
       </SidebarGroup>,
     );
@@ -55,7 +80,12 @@ describe('SidebarGroup', () => {
 
   it('button has focus-visible ring classes', () => {
     render(
-      <SidebarGroup groupId="search" label="Search" isOpen={true} onToggle={onToggle}>
+      <SidebarGroup
+        groupId="search"
+        label="Search"
+        isOpen={true}
+        onToggle={onToggle}
+      >
         <p>Content</p>
       </SidebarGroup>,
     );

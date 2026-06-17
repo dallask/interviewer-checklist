@@ -1,5 +1,5 @@
-import { render, screen, fireEvent } from '@testing-library/react';
-import { vi, describe, it, expect, beforeEach } from 'vitest';
+import { fireEvent, render, screen } from '@testing-library/react';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { ActionsGroup } from './ActionsGroup.js';
 
 vi.mock('../store/app.js', () => ({
@@ -54,7 +54,9 @@ describe('ActionsGroup', () => {
 
   it('dark mode toggle shows "Dark mode" when darkMode=false', () => {
     render(<ActionsGroup />);
-    expect(screen.getByRole('button', { name: /dark mode/i })).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: /dark mode/i }),
+    ).toBeInTheDocument();
   });
 
   it('dark mode toggle shows "Light mode" when darkMode=true', () => {
@@ -69,7 +71,9 @@ describe('ActionsGroup', () => {
       }),
     );
     render(<ActionsGroup />);
-    expect(screen.getByRole('button', { name: /light mode/i })).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: /light mode/i }),
+    ).toBeInTheDocument();
   });
 
   it('dark mode toggle button has aria-pressed reflecting darkMode', () => {

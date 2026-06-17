@@ -1,7 +1,12 @@
 import type { Difficulty } from '../data/bank/types.js';
 import { useAppStore } from '../store/app.js';
 
-const DIFFICULTIES: Difficulty[] = ['novice', 'intermediate', 'advanced', 'expert'];
+const DIFFICULTIES: Difficulty[] = [
+  'novice',
+  'intermediate',
+  'advanced',
+  'expert',
+];
 
 const DIFFICULTY_LABELS: Record<Difficulty, string> = {
   novice: 'Beginner (1.00×)',

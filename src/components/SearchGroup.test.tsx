@@ -1,5 +1,5 @@
-import { render, screen, fireEvent, act } from '@testing-library/react';
-import { vi, describe, it, expect, beforeEach, afterEach } from 'vitest';
+import { act, fireEvent, render, screen } from '@testing-library/react';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { SearchGroup } from './SearchGroup.js';
 
 vi.mock('../store/app.js', () => ({
@@ -66,11 +66,17 @@ describe('SearchGroup', () => {
     render(<SearchGroup />);
     const input = screen.getByRole('searchbox');
     fireEvent.change(input, { target: { value: 'r' } });
-    act(() => { vi.advanceTimersByTime(50); });
+    act(() => {
+      vi.advanceTimersByTime(50);
+    });
     fireEvent.change(input, { target: { value: 're' } });
-    act(() => { vi.advanceTimersByTime(50); });
+    act(() => {
+      vi.advanceTimersByTime(50);
+    });
     fireEvent.change(input, { target: { value: 'react' } });
-    act(() => { vi.advanceTimersByTime(150); });
+    act(() => {
+      vi.advanceTimersByTime(150);
+    });
     expect(setSearchQuery).toHaveBeenCalledTimes(1);
     expect(setSearchQuery).toHaveBeenCalledWith('react');
   });
@@ -79,12 +85,16 @@ describe('SearchGroup', () => {
     render(<SearchGroup />);
     const input = screen.getByRole('searchbox');
     fireEvent.change(input, { target: { value: 'react' } });
-    expect(screen.getByRole('button', { name: /clear search/i })).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: /clear search/i }),
+    ).toBeInTheDocument();
   });
 
   it('hides clear button when input is empty', () => {
     render(<SearchGroup />);
-    expect(screen.queryByRole('button', { name: /clear search/i })).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole('button', { name: /clear search/i }),
+    ).not.toBeInTheDocument();
   });
 
   it('clicking clear button clears input and calls setSearchQuery immediately', () => {

@@ -359,8 +359,14 @@ export function parseStructural(
             continue;
           }
           const q = rawQ as Record<string, unknown>;
+          // CR-02: require non-negative integer index to prevent orphan keys like
+          // "twig-1.5" or "twig--3" from polluting the scores map permanently.
           const index =
-            typeof q.index === 'number' ? q.index : null;
+            typeof q.index === 'number' &&
+            Number.isInteger(q.index) &&
+            q.index >= 0
+              ? q.index
+              : null;
           if (index === null) continue;
 
           const questionKey = `${topicId}-${index}`;

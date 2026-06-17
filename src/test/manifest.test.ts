@@ -60,6 +60,20 @@ describe('manifest.json structure', () => {
     );
     expect(manifest.background?.type).toBe('module');
   });
+
+  it('manifest.json declares commands._execute_action with Alt+Shift+I default key', () => {
+    const manifest = JSON.parse(readFileSync(join(ROOT, 'manifest.json'), 'utf-8'));
+    expect(manifest.commands).toBeDefined();
+    expect(manifest.commands._execute_action).toBeDefined();
+    expect(manifest.commands._execute_action.suggested_key.default).toBe('Alt+Shift+I');
+  });
+
+  it('manifest.json declares web_accessible_resources for welcome.html', () => {
+    const manifest = JSON.parse(readFileSync(join(ROOT, 'manifest.json'), 'utf-8'));
+    const war: Array<{ resources: string[] }> = manifest.web_accessible_resources ?? [];
+    const allResources = war.flatMap((entry) => entry.resources);
+    expect(allResources).toContain('src/app/welcome.html');
+  });
 });
 
 describe('vite.config.ts structure', () => {

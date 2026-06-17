@@ -39,6 +39,8 @@ export function CandidateModal({ dialogRef }: Props) {
       const focusable = dialogEl.querySelectorAll<HTMLElement>(
         'button, input, textarea, select, [tabindex]:not([tabindex="-1"])',
       );
+      // WR-02: guard against empty focusable list to prevent TypeError on .focus()
+      if (focusable.length === 0) return;
       const first = focusable[0];
       const last = focusable[focusable.length - 1];
       if (e.shiftKey && document.activeElement === first) {

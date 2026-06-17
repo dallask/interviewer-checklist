@@ -64,13 +64,18 @@ export function exportSession(
  * Pattern: interview-{sanitizedName}-{YYYY-MM-DD}.yaml
  *
  * Sanitization: removes non-alphanumeric/dash/underscore/dot/space chars,
- * then replaces whitespace runs with a single dash.
+ * replaces whitespace runs with a single dash, trims leading/trailing dashes,
+ * and falls back to 'untitled' when the result is empty (e.g. '   ' or '!!!').
  */
 export function buildFilename(sessionName: string): string {
   const date = new Date().toISOString().slice(0, 10); // YYYY-MM-DD
-  const safe = sessionName
-    .replace(/[^a-zA-Z0-9\-_. ]/g, '')
-    .replace(/\s+/g, '-');
+  const safe =
+    (
+      sessionName
+        .replace(/[^a-zA-Z0-9\-_. ]/g, '')
+        .replace(/\s+/g, '-')
+        .replace(/^-+|-+$/g, '') // trim leading/trailing dashes
+    ) || 'untitled';
   return `interview-${safe}-${date}.yaml`;
 }
 

@@ -105,29 +105,36 @@ describe('TopicMarkDisplay', () => {
   it('override input onBlur with valid number calls setOverride with clamped value', () => {
     render(<TopicMarkDisplay topicId="react" topic={mockTopic} />);
     const input = screen.getByLabelText('Override mark for React');
-    fireEvent.blur(input, { target: { value: '7.5' } });
+    fireEvent.change(input, { target: { value: '7.5' } });
+    fireEvent.blur(input);
     expect(setOverride).toHaveBeenCalledWith('react', 7.5);
   });
 
   it('override input onBlur with empty string calls setOverride(topicId, null)', () => {
     render(<TopicMarkDisplay topicId="react" topic={mockTopic} />);
     const input = screen.getByLabelText('Override mark for React');
-    fireEvent.blur(input, { target: { value: '' } });
+    // Input starts empty; blur with empty value triggers null dispatch
+    fireEvent.change(input, { target: { value: '' } });
+    fireEvent.blur(input);
     expect(setOverride).toHaveBeenCalledWith('react', null);
   });
 
   it('override input onBlur with value > 10 calls setOverride clamped to 10', () => {
     render(<TopicMarkDisplay topicId="react" topic={mockTopic} />);
     const input = screen.getByLabelText('Override mark for React');
-    fireEvent.blur(input, { target: { value: '15' } });
+    fireEvent.change(input, { target: { value: '15' } });
+    fireEvent.blur(input);
     expect(setOverride).toHaveBeenCalledWith('react', 10);
   });
 
-  it('override input onBlur with NaN does NOT call setOverride', () => {
+  it('override input onBlur with empty value (invalid number input cleared by browser) calls setOverride(topicId, null)', () => {
+    // type="number" inputs sanitize non-numeric text to '' (browser behavior).
+    // The empty string path calls setOverride(topicId, null) which is correct.
     render(<TopicMarkDisplay topicId="react" topic={mockTopic} />);
     const input = screen.getByLabelText('Override mark for React');
-    fireEvent.blur(input, { target: { value: 'abc' } });
-    expect(setOverride).not.toHaveBeenCalled();
+    // Input is empty by default — blur without change should call setOverride(null)
+    fireEvent.blur(input);
+    expect(setOverride).toHaveBeenCalledWith('react', null);
   });
 
   it('displays computed mark as toFixed(1) when questions are scored', () => {

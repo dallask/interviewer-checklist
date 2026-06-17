@@ -1,42 +1,30 @@
 ---
 phase: 05-scoring-ui-notes-candidate-custom-questions
-verified: 2026-06-17T13:30:00Z
-status: gaps_found
-score: 8/10 must-haves verified
+verified: 2026-06-17T13:58:00Z
+status: human_needed
+score: 10/10 must-haves verified
 overrides_applied: 0
-gaps:
-  - truth: "Reset all clears scores, notes, custom questions, candidate details, and filters (ROADMAP SC-5, SCORE-06)"
-    status: failed
-    reason: "resetAll() in src/store/app.ts does not clear selectedDifficulties, selectedSections, searchQuery, or hideMarked. ROADMAP SC-5 and REQUIREMENTS SCORE-06 both require filter reset. The plan explicitly narrowed this to 'does NOT reset activeSessionId or any uiState fields' — contradicting REQUIREMENTS."
-    artifacts:
-      - path: "src/store/app.ts"
-        issue: "resetAll() only clears scores, overrides, notes, topicNotes, customQuestions, candidate — does not touch selectedDifficulties/selectedSections/searchQuery/hideMarked"
-      - path: "src/store/app.test.ts"
-        issue: "resetAll tests do not assert that filters are cleared, confirming the gap is untested"
-    missing:
-      - "Add selectedDifficulties: new Set(), selectedSections: new Set(), searchQuery: '', hideMarked: false to the resetAll() set call in src/store/app.ts"
-      - "Add test assertions for filter clearing in resetAll describe block in src/store/app.test.ts"
-  - truth: "npm run ci exits 0 (biome + tsc clean)"
-    status: failed
-    reason: "src/app/main.tsx has a committed biome formatting violation: the type cast on line 44 (`as V3Session | undefined`) exceeds column width and needs to be split across lines. Introduced in commit 3326d1f (post-SUMMARY). npm run ci exits non-zero."
-    artifacts:
-      - path: "src/app/main.tsx"
-        issue: "Line 44: `const session = sessionRaw[...] as V3Session | undefined;` — biome formatter requires splitting the type cast. Error: 'File content differs from formatting output'"
-    missing:
-      - "Run `npx biome format --write src/app/main.tsx` to auto-fix the formatting issue"
-      - "Verify npm run ci exits 0 after fix"
+re_verification:
+  previous_status: gaps_found
+  previous_score: 8/10
+  gaps_closed:
+    - "resetAll() now clears selectedDifficulties, selectedSections, searchQuery, and hideMarked (SCORE-06 / ROADMAP SC-5)"
+    - "npm run ci exits 0 — biome formatting violation in src/app/main.tsx resolved"
+    - "bootstrap.ts Scenario B now validates V3 sessions with V3SessionSchema first (CR-03 data-loss fix)"
+  gaps_remaining: []
+  regressions: []
 human_verification:
   - test: "Run the full 12-check smoke test in Chrome (from 05-03-PLAN.md checkpoint:human-verify)"
-    expected: "All 12 interaction checks pass: score slider updates live mark, score 0 shows '0 / 10', override replaces computed mark, notes persist across reload, topic notes persist, custom question adds with badge, delete custom question, candidate modal open/save/pre-populate, focus trap in modal, reset all confirmation dialog (Keep scores no-op; Reset clears everything), hideMarked hides scored topics, section filter shows numeric marks"
-    why_human: "Requires real Chrome extension load, visual UI inspection, and storage persistence verification across tab reloads — not testable with Vitest or grep"
+    expected: "All 12 interaction checks pass: score slider updates live mark, score 0 shows '0 / 10', override replaces computed mark, notes persist across reload, topic notes persist, custom question adds with badge, delete custom question, candidate modal open/save/pre-populate, focus trap in modal, reset all confirmation dialog (Keep scores no-op; Reset clears everything including filters), hideMarked hides scored topics, section filter shows numeric marks"
+    why_human: "Requires real Chrome extension load with chrome.storage.local, visual UI inspection, and storage persistence verification across tab reloads — not testable with Vitest or grep"
 ---
 
 # Phase 5: Scoring UI, Notes, Candidate & Custom Questions — Verification Report
 
 **Phase Goal:** A user can run a complete scoring session — score all questions, add notes, fill in candidate details, add custom questions, and reset — within a single session slot
-**Verified:** 2026-06-17T13:30:00Z
-**Status:** gaps_found
-**Re-verification:** No — initial verification
+**Verified:** 2026-06-17T13:58:00Z
+**Status:** human_needed
+**Re-verification:** Yes — after gap closure (previous status: gaps_found, 8/10)
 
 ## Goal Achievement
 
@@ -50,12 +38,12 @@ human_verification:
 | 4  | useAppStore AppState includes all ScoringState fields and all 8 ScoringActions are implemented | VERIFIED | `src/store/app.ts` lines 51–66 (state fields), 81–97 (actions), 200–244 (implementations); setScore/setOverride clamp to [0,10] |
 | 5  | buildFlatRows emits original topic.questions index (not filtered-subset index) when difficulty filter is active | VERIFIED | `src/utils/buildFlatRows.ts` line 159: `const index = topic.questions.indexOf(question)` replaces forEach position |
 | 6  | main.tsx reads uiState back from storage after bootstrap(); activeSessionId hydrated from manifest | VERIFIED | `src/app/main.tsx` lines 24–55: storageAdapter.read(['uiState']), manifest.activeSessionId, and scoring state hydration from session key |
-| 7  | QuestionCard renders score slider, notes toggle, custom badge/delete; TopicMarkDisplay + TopicRow wired; CustomQuestionForm functional; SectionFilter shows live marks | VERIFIED | All 5 component files exist and are substantive; 330 tests pass including 23 QuestionCard, 16 TopicMarkDisplay, 14 TopicRow, 14 CustomQuestionForm, and SectionFilter tests |
+| 7  | QuestionCard renders score slider, notes toggle, custom badge/delete; TopicMarkDisplay + TopicRow wired; CustomQuestionForm functional; SectionFilter shows live marks | VERIFIED | All 5 component files exist and are substantive; 334 tests pass including 23 QuestionCard, 16 TopicMarkDisplay, 14 TopicRow, 14 CustomQuestionForm, and SectionFilter tests |
 | 8  | CandidateModal (native dialog, focus trap, 6 fields); ResetConfirmDialog (snapshot-before-reset, focus trap); ActionsGroup trigger buttons with correct IDs | VERIFIED | All 3 component files exist and are substantive; 17 tests pass for modal behaviors |
 | 9  | App.tsx passes markedTopicIds Set to buildFlatRows via the hideMarked params | VERIFIED | `src/app/App.tsx` lines 24–36: useMemo computes markedTopicIds from scores; passes hideMarked + markedTopicIds to buildFlatRows line 43 |
-| 10 | Reset all clears scores, notes, custom questions, candidate details, AND filters (ROADMAP SC-5, SCORE-06) | FAILED | `resetAll()` in `src/store/app.ts` lines 235–244: clears scores/overrides/notes/topicNotes/customQuestions/candidate but explicitly does NOT clear selectedDifficulties, selectedSections, searchQuery, or hideMarked |
+| 10 | Reset all clears scores, notes, custom questions, candidate details, AND filters (ROADMAP SC-5, SCORE-06) | VERIFIED | `resetAll()` in `src/store/app.ts` lines 235–248: clears scores/overrides/notes/topicNotes/customQuestions/candidate AND selectedDifficulties/selectedSections/searchQuery/hideMarked; test at app.test.ts line 312 asserts all four filter fields cleared |
 
-**Score:** 8/10 truths verified (1 FAILED, 1 HUMAN NEEDED)
+**Score:** 10/10 truths verified
 
 ### Required Artifacts
 
@@ -64,7 +52,9 @@ human_verification:
 | `src/storage/types.ts` | V3SessionSchema, CustomQuestionSchema, V3Session type, createDefaultV3Session | VERIFIED | All 4 exports present; correct valibot schema shapes |
 | `src/storage/migrations/v2-to-v3.ts` | Pure migrateV2ToV3 function | VERIFIED | Named export, Readonly input, no try/catch, .js extensions |
 | `src/storage/migrations/v2-to-v3.test.ts` | Fixture-pinned unit tests | VERIFIED | 22 tests covering all field renames, customQuestions flattening, candidate null-coalesce |
-| `src/store/app.ts` | ScoringState, ScoringActions, activeSessionId, subscribe dual-write | VERIFIED | All fields, 8 actions with clamp, subscribe writes uiState + session:<id> key |
+| `src/storage/bootstrap.ts` | Scenario B validates sessions with V3SessionSchema first | VERIFIED | Lines 130–132: v3Result = v.safeParse(V3SessionSchema, rawSession); falls back to V2SessionSchema only if V3 fails |
+| `src/store/app.ts` | ScoringState, ScoringActions, activeSessionId, subscribe dual-write, resetAll clears filters | VERIFIED | All fields, 8 actions with clamp, subscribe writes uiState + session:<id> key; resetAll clears 4 filter fields |
+| `src/store/app.test.ts` | resetAll filter-clearing test | VERIFIED | Lines 312–325: test "resetAll clears selectedDifficulties, selectedSections, searchQuery, and hideMarked" — all four assertions present |
 | `src/components/TopicMarkDisplay.tsx` | Computed mark + BAND_COLORS + override input + clear button | VERIFIED | fieldset, 5 static color class pairs, computeTopicMark wired, override blur/clear |
 | `src/components/QuestionCard.tsx` | Score slider + notes toggle + custom badge/delete | VERIFIED | range input, aria attrs, score display null/0/N, notes debounce, purple badge |
 | `src/components/CustomQuestionForm.tsx` | Controlled form + 4-option difficulty select + submit validation | VERIFIED | Empty-text guard, addCustomQuestion dispatch, onDismiss call |
@@ -77,13 +67,14 @@ human_verification:
 
 | From | To | Via | Status | Details |
 |------|----|-----|--------|---------|
-| `src/store/app.ts` | `src/storage/adapter.ts` | subscribe handler `storageAdapter.write` | VERIFIED | Lines 267–280: guarded by `if (state.activeSessionId)`, writes session:<id> key |
+| `src/store/app.ts` | `src/storage/adapter.ts` | subscribe handler `storageAdapter.write` | VERIFIED | Lines 254–284: guarded by `if (state.activeSessionId)`, writes session:<id> key |
 | `src/storage/migrations/index.ts` | `src/storage/migrations/v2-to-v3.ts` | MIGRATIONS array `fromVersion: 2` | VERIFIED | Line 15: explicit entry; migrateV2ToV3 import at line 3 |
-| `src/components/QuestionCard.tsx` | `src/store/app.ts` | `useAppStore((s) => s.scores[questionId])` and `setScore` action | VERIFIED | Lines 36–40: granular selectors; score key `${row.topicId}-${row.index}` |
-| `src/components/TopicMarkDisplay.tsx` | `src/scoring/index.ts` | `computeTopicMark(topicWithCustom, scores, override)` | VERIFIED | Lines 42: correct call with merged topic including custom questions |
+| `src/storage/bootstrap.ts` | `src/storage/types.ts` | V3SessionSchema import + safeParse in Scenario B | VERIFIED | Line 15: V3SessionSchema imported; lines 130–132: v.safeParse(V3SessionSchema, rawSession) before V2 fallback |
+| `src/components/QuestionCard.tsx` | `src/store/app.ts` | `useAppStore((s) => s.scores[questionId])` and `setScore` action | VERIFIED | Granular selectors; score key `${row.topicId}-${row.index}` |
+| `src/components/TopicMarkDisplay.tsx` | `src/scoring/index.ts` | `computeTopicMark(topicWithCustom, scores, override)` | VERIFIED | Correct call with merged topic including custom questions |
 | `src/components/SectionFilter.tsx` | `src/scoring/index.ts` | `computeSectionMark` + per-topic `computeTopicMark` | VERIFIED | Reads scores/overrides/customQuestions; computes topicResults inline per render |
-| `src/components/ResetConfirmDialog.tsx` | `src/storage/adapter.ts` | `await storageAdapter.snapshot(activeSessionId)` before `resetAll()` | VERIFIED | Line 54: async handler, await before resetAll on line 55 |
-| `src/app/App.tsx` | `src/utils/buildFlatRows.ts` | `buildFlatRows(..., {hideMarked, markedTopicIds: computedSet})` | VERIFIED | Lines 38–45: buildFlatRows call with all 6 filter params |
+| `src/components/ResetConfirmDialog.tsx` | `src/storage/adapter.ts` | `await storageAdapter.snapshot(activeSessionId)` before `resetAll()` | VERIFIED | Async handler, await before resetAll |
+| `src/app/App.tsx` | `src/utils/buildFlatRows.ts` | `buildFlatRows(..., {hideMarked, markedTopicIds: computedSet})` | VERIFIED | buildFlatRows call with all 6 filter params |
 
 ### Data-Flow Trace (Level 4)
 
@@ -100,9 +91,10 @@ human_verification:
 | Behavior | Command | Result | Status |
 |----------|---------|--------|--------|
 | 22 v2-to-v3 migration tests pass | `npx vitest run src/storage/migrations/v2-to-v3.test.ts --reporter=dot` | 22 passed, exit 0 | PASS |
-| Full test suite (330 tests) | `npx vitest run --reporter=dot` | 24 test files, 330 tests passed, exit 0 | PASS |
-| npm run build produces bundle | `npm run build` | dist/ produced in 156ms, exit 0 | PASS |
-| npm run ci (biome + tsc) | `npm run ci` | biome exits non-zero: src/app/main.tsx formatting error (line 44 type cast needs wrapping) | FAIL |
+| Full test suite (334 tests) | `npx vitest run --reporter=dot` | 24 test files, 334 tests passed, exit 0 | PASS |
+| npm run build produces bundle | `npm run build` | dist/ produced, exit 0 (verified in previous run — committed state) | PASS |
+| npm run ci (biome + tsc) | `npm run ci` | "Checked 71 files in 37ms. No fixes applied." — exit 0 | PASS |
+| resetAll filter clearing test | `npx vitest run src/store/app.test.ts -t "resetAll clears selectedDifficulties" --reporter=dot` | 1 test passes | PASS |
 
 ### Requirements Coverage
 
@@ -113,22 +105,23 @@ human_verification:
 | SCORE-03 | 05-01, 05-02 | Per-question and per-topic notes saved and restored | SATISFIED | QuestionCard: notes textarea with debounced setNote; TopicRow: topic notes textarea with debounced setTopicNote; hydrated from session in main.tsx |
 | SCORE-04 | 05-03 | Candidate details modal with Save/Cancel/Reset | SATISFIED | CandidateModal: 6 fields, native dialog, focus trap, Save dispatches setCandidate, Discard no-op, Reset clears; 10 tests |
 | SCORE-05 | 05-01, 05-02 | Custom questions with badge, scoring participation, deletion | SATISFIED | CustomQuestionForm, QuestionCard badge/delete, buildFlatRows custom rows, TopicMarkDisplay includes custom in computeTopicMark |
-| SCORE-06 | 05-03 | Reset all clears scores, overrides, notes, custom questions, candidate details, filters | BLOCKED | resetAll() does NOT clear selectedDifficulties, selectedSections, searchQuery, or hideMarked. ROADMAP SC-5 and REQUIREMENTS.md both list "filters" as required. Plan 05-01 explicitly scoped this out ("does NOT reset uiState fields") — contradicting the requirement. |
+| SCORE-06 | 05-01, 05-03 | Reset all clears scores, overrides, notes, custom questions, candidate details, filters | SATISFIED | resetAll() in src/store/app.ts lines 235–248 clears all 10 fields including 4 filter fields; test at app.test.ts line 312 asserts filter clearing explicitly |
 
 ### Anti-Patterns Found
 
 | File | Line | Pattern | Severity | Impact |
 |------|------|---------|----------|--------|
-| `src/app/main.tsx` | 44 | Biome formatting violation — type cast `as V3Session \| undefined` on same line exceeds column limit | BLOCKER | `npm run ci` fails; plan done-criteria not met |
-| `src/store/app.test.ts` | 224, 229, 239 | `useLiteralKeys` lint/complexity infos (3 instances of `overrides['topic1']`) | INFO | Not errors; biome ci exits with infos only for these; does not block CI |
+| `src/store/app.test.ts` | 224, 229, 239 | `useLiteralKeys` lint/complexity infos (3 instances of `overrides['topic1']`) | INFO | Not errors; biome ci exits clean regardless; does not block CI |
 
 No `TBD`, `FIXME`, or `XXX` markers found in any phase-5-modified files.
+No formatting violations. `npm run ci` exits 0 with "No fixes applied."
 
 ### Human Verification Required
 
 #### 1. Full Interactive Scoring Loop Smoke Test (12 checks)
 
-**Test:** Load extension in Chrome as unpacked (`npm run build` → chrome://extensions → Load unpacked → dist/). Execute all 12 checks from 05-03-PLAN.md task checkpoint:human-verify:
+**Test:** Load extension in Chrome as unpacked (`npm run build` then chrome://extensions → Load unpacked → select dist/). Execute all 12 checks from 05-03-PLAN.md task checkpoint:human-verify:
+
 1. Move score slider — verify topic mark updates immediately with colored value
 2. Set slider to 0 — verify display shows "0 / 10" (not "— / 10")
 3. Type override value and tab out — verify it appears; click × — verify reverts
@@ -138,7 +131,7 @@ No `TBD`, `FIXME`, or `XXX` markers found in any phase-5-modified files.
 7. Delete custom question — verify disappears and mark recalculates
 8. Open Candidate details modal — verify dialog opens with backdrop; fill name/email; Save; re-open — verify pre-populated
 9. Tab through modal fields — verify focus wraps at last field; Escape closes modal
-10. Reset all → Keep scores — verify no change; Reset all → Reset — verify all cleared
+10. Reset all → Keep scores — verify no change; Reset all → Reset — verify all cleared (scores, notes, candidate details, AND active filters)
 11. Score a topic's question; toggle Hide marked — verify that topic disappears
 12. Score a question — verify section filter shows numeric mark (not "—")
 
@@ -147,13 +140,18 @@ No `TBD`, `FIXME`, or `XXX` markers found in any phase-5-modified files.
 
 ### Gaps Summary
 
-Two gaps block goal achievement:
+All automated gaps from the previous verification are closed:
 
-**Gap 1 — SCORE-06 filter reset missing (BLOCKER):** The ROADMAP Phase 5 Success Criteria explicitly states "Reset all (confirmed) clears all scores, notes, custom questions, candidate details, **and filters**." REQUIREMENTS.md SCORE-06 uses identical language. The `resetAll()` implementation in `src/store/app.ts` (lines 235–244) resets only scoring data — `selectedDifficulties`, `selectedSections`, `searchQuery`, and `hideMarked` are not cleared. The plan (05-01 behavior line) explicitly specified this as intentional ("does NOT reset activeSessionId or any uiState fields"), creating a direct contradiction between plan scope and requirement contract.
+**Gap 1 (SCORE-06 filter reset) — CLOSED:** `resetAll()` in `src/store/app.ts` (lines 235–248) now clears `selectedDifficulties`, `selectedSections`, `searchQuery`, and `hideMarked` in addition to scoring data. A dedicated test at `src/store/app.test.ts` line 312 asserts all four filter fields are reset. The implementation fully satisfies REQUIREMENTS.md SCORE-06 and ROADMAP SC-5.
 
-**Gap 2 — `npm run ci` formatting failure (BLOCKER):** Commit `3326d1f` (post-SUMMARY) introduced a formatting violation in `src/app/main.tsx` line 44. The type cast `as V3Session | undefined` on a single long line violates biome's column limit; biome requires it to be split across 3 lines. The SUMMARY claims "npm run ci exits 0" — this is false in the current HEAD. All three plan done-criteria include `npm run ci exits 0` as a gate; the committed state does not satisfy this.
+**Gap 2 (npm run ci formatting failure) — CLOSED:** `src/app/main.tsx` formatting violation resolved. `npm run ci` exits 0 with "Checked 71 files in 37ms. No fixes applied." Biome passes cleanly. The type cast on lines 43–46 is now split across multiple lines as required by the column-limit rule.
+
+**CR-03 data-loss fix — VERIFIED:** `src/storage/bootstrap.ts` Scenario B (lines 130–135) now tries `V3SessionSchema` first for each session key before falling back to `V2SessionSchema`. This prevents V3 sessions from being silently downgraded to V2 on re-validation after first-load migration.
+
+No automated blockers remain. Phase goal is achievable pending human smoke test.
 
 ---
 
-_Verified: 2026-06-17T13:30:00Z_
+_Verified: 2026-06-17T13:58:00Z_
 _Verifier: Claude (gsd-verifier)_
+_Re-verification: Yes — previous status gaps_found (8/10); new status human_needed (10/10)_

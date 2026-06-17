@@ -48,6 +48,8 @@ describe('ActionsGroup', () => {
         topicNotes: {},
         customQuestions: [],
         candidate: null,
+        resetAll: vi.fn(),
+        setCandidate: vi.fn(),
       }),
     );
   });

@@ -35,6 +35,10 @@ function makeState(overrides: Record<string, unknown> = {}) {
     setHideMarked: vi.fn(),
     darkMode: false,
     setDarkMode: vi.fn(),
+    // Phase 5 scoring state — required by SectionFilter (live marks)
+    scores: {},
+    overrides: {},
+    customQuestions: [],
     ...overrides,
   };
 }

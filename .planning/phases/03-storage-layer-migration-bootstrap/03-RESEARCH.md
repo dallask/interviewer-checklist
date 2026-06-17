@@ -843,7 +843,7 @@ const sessionId = crypto.randomUUID(); // Returns RFC 4122 UUID string
 
 ---
 
-## Open Questions
+## Open Questions (RESOLVED)
 
 1. **Where does Zustand get imported and wired in Phase 3 vs Phase 4?**
    - What we know: CONTEXT.md says `StorageAdapter` is ready for Phase 4+ to import. The Zustand install happens in Phase 3 (it's in the package install). Phase 3 does not create Zustand stores — those are Phase 4+.

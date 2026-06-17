@@ -87,8 +87,8 @@ Plans:
   1. The app renders only after `bootstrap()` completes its full migration pipeline, so the UI never sees an unvalidated schema
   2. Closing the tab mid-interaction does not lose the last state change (debounced write flushes synchronously on `visibilitychange === "hidden"` and `pagehide`)
   3. A payload from schema v1 is migrated to the current version with each intermediate step validated by its fixture-pinned unit test; a corrupt payload is preserved under `recovery:<timestamp>` rather than silently dropped
-  4. An auto-snapshot of the current session is created before any Reset all or YAML import operation
-  5. A dismissible toast appears when `chrome.storage.local` usage exceeds the configured threshold
+  4. `StorageAdapter.snapshot()` is implemented and tested; Phase 5 (Reset all) and Phase 7 (YAML import) invoke it before destructive operations
+  5. `StorageAdapter` dispatches a `storage-quota-warning` CustomEvent when `chrome.storage.local` usage exceeds the configured threshold (Phase 4 UI surfaces this as a dismissible toast)
 
 **Plans**: 3 plans
 Plans:

@@ -159,8 +159,7 @@ describe('AiPromptModal', () => {
     await vi.waitFor(() => expect(copyBtn).toBeDisabled());
   });
 
-  it('isPending disables close button during in-flight write', async () => {
-    // Use a never-resolving promise to keep isPending=true
+  it('isPending disables copy button but NOT close button during in-flight write', async () => {
     Object.defineProperty(navigator, 'clipboard', {
       value: { writeText: vi.fn().mockReturnValue(new Promise(() => {})) },
       configurable: true,
@@ -173,9 +172,8 @@ describe('AiPromptModal', () => {
     dialogRef.current.showModal();
     const copyBtn = screen.getByRole('button', { name: /copy to clipboard/i });
     fireEvent.click(copyBtn);
-    await vi.waitFor(() => {
-      const closeBtn = screen.getByRole('button', { name: /^close$/i });
-      expect(closeBtn).toBeDisabled();
-    });
+    await vi.waitFor(() => expect(copyBtn).toBeDisabled());
+    const closeBtn = screen.getByRole('button', { name: /^close$/i });
+    expect(closeBtn).not.toBeDisabled();
   });
 });

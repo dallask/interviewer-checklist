@@ -9,6 +9,7 @@
     "noEmit": true,
     "strict": true,
     "jsx": "react-jsx",
+    "skipLibCheck": true,
     "types": ["chrome", "vite/client", "node"]
   },
   "include": ["src"],

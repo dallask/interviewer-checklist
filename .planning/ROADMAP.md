@@ -125,7 +125,7 @@ Plans:
 
 **Wave 2** *(blocked on Wave 1 completion)*
 
-- [ ] 04-02-PLAN.md — All sidebar components (Sidebar, SidebarGroup, SearchGroup, DifficultyFilter, SectionFilter, ActionsGroup), ContentTree + row components, StorageToast — with unit tests
+- [x] 04-02-PLAN.md — All sidebar components (Sidebar, SidebarGroup, SearchGroup, DifficultyFilter, SectionFilter, ActionsGroup), ContentTree + row components, StorageToast — with unit tests
 
 **Wave 3** *(blocked on Wave 2 completion)*
 
@@ -229,7 +229,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 →
 | 1. Foundation & Scaffolding | 3/3 | Complete    | 2026-06-16 |
 | 2. Question Bank & Scoring Engine | 2/2 | Complete    | 2026-06-17 |
 | 3. Storage Layer, Migration & Bootstrap | 3/3 | Complete    | 2026-06-17 |
-| 4. Shell, Sidebar & Read-Only Content Tree | 1/3 | In Progress|  |
+| 4. Shell, Sidebar & Read-Only Content Tree | 2/3 | In Progress|  |
 | 5. Scoring UI, Notes, Candidate & Custom Questions | 0/? | Not started | - |
 | 6. Multiple Named Sessions & Switcher | 0/? | Not started | - |
 | 7. YAML Import & Export | 0/? | Not started | - |

@@ -4,6 +4,7 @@ import type { Difficulty } from '../data/bank/types.js';
 import { storageAdapter } from '../storage/index.js';
 import type { V2Manifest, V3Session } from '../storage/types.js';
 import { createDefaultV3Session } from '../storage/types.js';
+import type { ImportResult } from '../utils/yamlImport.js';
 
 // ---------------------------------------------------------------------------
 // Scoring domain types (Phase 5)
@@ -132,6 +133,11 @@ export interface AppActions {
   setManifest: (manifest: V2Manifest) => void;
   /** Simple setter for undoBuffer (used by UndoToast dismiss button). */
   setUndoBuffer: (buf: UndoBuffer | null) => void;
+  // --- YAML import action (Phase 7) ---
+  /** Import a parsed YAML result into the store.
+   *  STORE-05: storageAdapter.snapshot() is called BEFORE any mutation.
+   *  overwriteActive=false: creates a new session; overwriteActive=true: applies to active session. */
+  importSession: (data: ImportResult, overwriteActive: boolean) => Promise<void>;
 }
 
 export const DEFAULT_STATE: AppState = {
@@ -511,6 +517,46 @@ export const useAppStore = create<AppState & AppActions>()((set) => ({
     // If the deleted session was the active one, switch back to it
     if (buf.wasActive) {
       await useAppStore.getState().switchSession(buf.sessionMeta.id);
+    }
+  },
+
+  // ---------------------------------------------------------------------------
+  // importSession — Phase 7 (YAML-02 / YAML-03)
+  // STORE-05: snapshot MUST be the first await before any mutation.
+  // T-07-05: verified by call-order test in app.test.ts.
+  // ---------------------------------------------------------------------------
+  importSession: async (data: ImportResult, overwriteActive: boolean) => {
+    const { activeSessionId } = useAppStore.getState();
+
+    // STORE-05: snapshot MUST be called first — before any set() or createSession()
+    await storageAdapter.snapshot(activeSessionId);
+
+    if (overwriteActive) {
+      // Apply scores/notes/candidate directly to the active session
+      set({
+        scores: data.scores,
+        overrides: data.overrides,
+        notes: data.notes,
+        topicNotes: data.topicNotes,
+        customQuestions: data.customQuestions,
+        candidate: data.candidate,
+      });
+    } else {
+      // Create a new session and rename it to data.sessionName if provided
+      await useAppStore.getState().createSession();
+      const newId = useAppStore.getState().activeSessionId;
+      if (data.sessionName) {
+        await useAppStore.getState().renameSession(newId, data.sessionName);
+      }
+      // Apply import data to the new session
+      set({
+        scores: data.scores,
+        overrides: data.overrides,
+        notes: data.notes,
+        topicNotes: data.topicNotes,
+        customQuestions: data.customQuestions,
+        candidate: data.candidate,
+      });
     }
   },
 }));

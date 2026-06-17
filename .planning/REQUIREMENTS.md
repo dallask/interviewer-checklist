@@ -30,14 +30,14 @@
 
 ### Shell & Navigation (UI)
 
-- [ ] **UI-01**: Shell layout — collapsible sidebar + scrollable content area; sidebar becomes a responsive overlay on narrow viewports
-- [ ] **UI-02**: Sidebar contains four collapsible groups: Search / Difficulty / Sections / Actions; collapsed state remembered per group
-- [ ] **UI-03**: Search input debounced ~150ms, searches across question names, descriptions, tags, and full question text; live result count shown
-- [ ] **UI-04**: Multi-select difficulty filter with live counts per level; multi-select section filter showing per-group marks alongside each section label
-- [ ] **UI-05**: View toolbar: Expand all, Collapse all, Hide already-marked topics (toggle)
-- [ ] **UI-06**: Dark mode — respects OS `prefers-color-scheme` by default; user can toggle and override persists across sessions
-- [ ] **UI-07**: Accessibility: `<main>`, `<nav>`, `<aside>` landmark elements; skip-to-content link at top of page; all interactive elements use real `<button>` / `<select>` / `<input>`; ARIA roles, labels, `aria-expanded`, `aria-pressed`, `aria-checked` on relevant controls; visible focus rings
-- [ ] **UI-08**: `prefers-reduced-motion` media query gates sidebar slide and any other CSS transitions/animations
+- [x] **UI-01**: Shell layout — collapsible sidebar + scrollable content area; sidebar becomes a responsive overlay on narrow viewports
+- [x] **UI-02**: Sidebar contains four collapsible groups: Search / Difficulty / Sections / Actions; collapsed state remembered per group
+- [x] **UI-03**: Search input debounced ~150ms, searches across question names, descriptions, tags, and full question text; live result count shown
+- [x] **UI-04**: Multi-select difficulty filter with live counts per level; multi-select section filter showing per-group marks alongside each section label
+- [x] **UI-05**: View toolbar: Expand all, Collapse all, Hide already-marked topics (toggle)
+- [x] **UI-06**: Dark mode — respects OS `prefers-color-scheme` by default; user can toggle and override persists across sessions
+- [x] **UI-07**: Accessibility: `<main>`, `<nav>`, `<aside>` landmark elements; skip-to-content link at top of page; all interactive elements use real `<button>` / `<select>` / `<input>`; ARIA roles, labels, `aria-expanded`, `aria-pressed`, `aria-checked` on relevant controls; visible focus rings
+- [x] **UI-08**: `prefers-reduced-motion` media query gates sidebar slide and any other CSS transitions/animations
 
 ### Scoring UI (SCORE)
 

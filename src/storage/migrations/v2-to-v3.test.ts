@@ -57,7 +57,7 @@ describe('migrateV2ToV3 — field renames', () => {
 });
 
 describe('migrateV2ToV3 — customQuestions flattening', () => {
-  it('flattens customQuestions Record to CustomQuestion[] using custom-${topicId}-${q.id} ids', () => {
+  it('flattens customQuestions Record to CustomQuestion[] using custom-topicId-qId pattern', () => {
     const result = migrateV2ToV3(V2_SESSION_EMPTY);
     expect(result.customQuestions).toHaveLength(1);
     expect(result.customQuestions[0]).toEqual({
@@ -79,7 +79,9 @@ describe('migrateV2ToV3 — customQuestions flattening', () => {
 
   it('preserves topicId on each CustomQuestion', () => {
     const result = migrateV2ToV3(V2_SESSION_POPULATED);
-    const topicBQs = result.customQuestions.filter((q) => q.topicId === 'topic-b');
+    const topicBQs = result.customQuestions.filter(
+      (q) => q.topicId === 'topic-b',
+    );
     expect(topicBQs).toHaveLength(2);
   });
 
@@ -153,7 +155,11 @@ describe('V3SessionSchema — valibot validation', () => {
   });
 
   it('validates migrated V3 from all fixtures', () => {
-    for (const fixture of [V2_SESSION_EMPTY, V2_SESSION_POPULATED, V2_SESSION_EMPTY_CANDIDATE]) {
+    for (const fixture of [
+      V2_SESSION_EMPTY,
+      V2_SESSION_POPULATED,
+      V2_SESSION_EMPTY_CANDIDATE,
+    ]) {
       const result = migrateV2ToV3(fixture);
       const parsed = v.safeParse(V3SessionSchema, result);
       expect(parsed.success).toBe(true);

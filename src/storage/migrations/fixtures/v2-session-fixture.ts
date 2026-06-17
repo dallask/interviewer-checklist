@@ -33,8 +33,14 @@ export const V2_SESSION_POPULATED: Readonly<V2Session> = Object.freeze({
   id: 'populated-session',
   questionScore: { 'topic-b-0': 8, 'topic-b-1': 6 },
   topicOverride: { 'topic-b': 7.5 },
-  questionComment: { 'topic-b-0': 'Good explanation', 'topic-b-1': 'Needs work' },
-  cardComment: { 'topic-b': 'Strong candidate', 'topic-c': 'Needs improvement' },
+  questionComment: {
+    'topic-b-0': 'Good explanation',
+    'topic-b-1': 'Needs work',
+  },
+  cardComment: {
+    'topic-b': 'Strong candidate',
+    'topic-c': 'Needs improvement',
+  },
   customQuestions: {
     'topic-b': [
       { id: 1, text: 'Custom Q 1', level: 'novice' },

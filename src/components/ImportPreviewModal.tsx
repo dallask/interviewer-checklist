@@ -13,11 +13,14 @@ interface Props {
 export function ImportPreviewModal({ dialogRef, preview, onConfirm }: Props) {
   const [overwriteActive, setOverwriteActive] = useState(false);
   const [importError, setImportError] = useState<string | null>(null);
+  // WR-01: prevent double-submit — track whether an async confirm is in flight.
+  const [isPending, setIsPending] = useState(false);
 
   // Reset toggle and error state whenever a different preview is loaded (REFACTOR requirement)
   useEffect(() => {
     setOverwriteActive(false);
     setImportError(null);
+    setIsPending(false);
   }, [preview]);
 
   // Focus trap + focus restore pattern (WR-02 guard from CandidateModal.tsx)
@@ -59,13 +62,17 @@ export function ImportPreviewModal({ dialogRef, preview, onConfirm }: Props) {
   }, [dialogRef]);
 
   const handleConfirm = async () => {
-    // WR-01: catch rejections so close() is always reachable and errors are surfaced
+    // WR-01: guard against double-submit (double-click, rapid Enter presses).
+    if (isPending) return;
+    setIsPending(true);
     try {
       await onConfirm(overwriteActive);
       dialogRef.current?.close();
     } catch (err) {
       console.error('Import failed:', err);
       setImportError(err instanceof Error ? err.message : 'Import failed');
+    } finally {
+      setIsPending(false);
     }
   };
 
@@ -153,12 +160,13 @@ export function ImportPreviewModal({ dialogRef, preview, onConfirm }: Props) {
         </button>
         <button
           type="button"
+          disabled={isPending}
           onClick={() => {
             void handleConfirm();
           }}
-          className="text-sm font-normal px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none"
+          className="text-sm font-normal px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          Confirm
+          {isPending ? 'Importing…' : 'Confirm'}
         </button>
       </div>
     </dialog>

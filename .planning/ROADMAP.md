@@ -19,7 +19,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 2: Question Bank & Scoring Engine** - Pure data and pure scoring functions with full unit coverage (completed 2026-06-17)
 - [x] **Phase 3: Storage Layer, Migration & Bootstrap** - Persistence, schema migration, and debounced flush before any UI write (completed 2026-06-17)
 - [x] **Phase 4: Shell, Sidebar & Read-Only Content Tree** - First visible UI: shell layout, sidebar, dark mode, accessibility (completed 2026-06-17)
-- [ ] **Phase 5: Scoring UI, Notes, Candidate & Custom Questions** - Full interactive scoring loop for a single session
+- [x] **Phase 5: Scoring UI, Notes, Candidate & Custom Questions** - Full interactive scoring loop for a single session (completed 2026-06-17)
 - [ ] **Phase 6: Multiple Named Sessions & Switcher** - Session management with safe switch, delete, and undo
 - [ ] **Phase 7: YAML Import & Export** - Structural and legacy-format portability codec with import preview
 - [ ] **Phase 8: AI Prompt Modal** - AI candidate-feedback prompt builder with copy-to-clipboard
@@ -156,7 +156,7 @@ Plans:
 
 **Wave 3** *(blocked on Wave 2 completion)*
 
-- [ ] 05-03-PLAN.md — CandidateModal + ResetConfirmDialog (native <dialog> with focus traps), ActionsGroup trigger wiring, App.tsx hideMarked activation, human smoke test
+- [x] 05-03-PLAN.md — CandidateModal + ResetConfirmDialog (native <dialog> with focus traps), ActionsGroup trigger wiring, App.tsx hideMarked activation, human smoke test
 
 ### Phase 6: Multiple Named Sessions & Switcher
 
@@ -241,7 +241,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 →
 | 2. Question Bank & Scoring Engine | 2/2 | Complete    | 2026-06-17 |
 | 3. Storage Layer, Migration & Bootstrap | 3/3 | Complete    | 2026-06-17 |
 | 4. Shell, Sidebar & Read-Only Content Tree | 3/3 | Complete    | 2026-06-17 |
-| 5. Scoring UI, Notes, Candidate & Custom Questions | 2/3 | In Progress|  |
+| 5. Scoring UI, Notes, Candidate & Custom Questions | 5/5 | Complete   | 2026-06-17 |
 | 6. Multiple Named Sessions & Switcher | 0/? | Not started | - |
 | 7. YAML Import & Export | 0/? | Not started | - |
 | 8. AI Prompt Modal | 0/? | Not started | - |

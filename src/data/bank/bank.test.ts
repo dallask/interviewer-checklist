@@ -42,4 +42,9 @@ describe('DEFAULT_SECTIONS structure', () => {
       });
     });
   });
+
+  it('every topic id is unique across all sections', () => {
+    const ids = DEFAULT_SECTIONS.flatMap((s) => s.items.map((t) => t.id));
+    expect(ids.length).toBe(new Set(ids).size);
+  });
 });

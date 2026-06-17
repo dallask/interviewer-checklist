@@ -6,6 +6,7 @@ import {
   createDefaultSession,
   V2ManifestSchema,
   V2SessionSchema,
+  V3SessionSchema,
 } from './types.js';
 
 // ---------------------------------------------------------------------------
@@ -343,5 +344,98 @@ describe('bootstrap() — Scenario D: corrupt data (recovery path)', () => {
     const sessionId = result.manifest.activeSessionId;
     expect(result.sessions[sessionId]).toBeDefined();
     expect(result.sessions[sessionId].version).toBe(2);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Scenario B: V3 session round-trip (version-aware session validation — CR-03)
+// ---------------------------------------------------------------------------
+
+describe('bootstrap() — Scenario B: V3 session round-trip', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
+  const VALID_V3_SESSION = {
+    version: 3 as const,
+    id: SESSION_ID,
+    scores: { 't1-0': 8 },
+    overrides: {},
+    notes: {},
+    topicNotes: {},
+    customQuestions: [],
+    candidate: null,
+  };
+
+  // Verify the V3 fixture is valid per schema
+  const _v3Check = v.safeParse(V3SessionSchema, VALID_V3_SESSION);
+  if (!_v3Check.success)
+    throw new Error('VALID_V3_SESSION fixture is invalid');
+
+  it('returns V3 session intact (scores preserved) when a V3 session is stored under a valid V2 manifest', async () => {
+    chrome.storage.local.get.mockImplementation((keys, callback) => {
+      const keysArr = Array.isArray(keys) ? keys : [keys];
+      if (keysArr.includes('manifest')) {
+        const result = { manifest: VALID_V2_MANIFEST };
+        callback?.(result);
+        return Promise.resolve(result);
+      }
+      // Session read — return a V3 session
+      const result = { [`session:${SESSION_ID}`]: VALID_V3_SESSION };
+      callback?.(result);
+      return Promise.resolve(result);
+    });
+
+    const result = await bootstrap();
+
+    expect(result.sessions[SESSION_ID]).toBeDefined();
+    // V3 session must be returned intact — scores must NOT be empty default
+    const session = result.sessions[SESSION_ID] as unknown as typeof VALID_V3_SESSION;
+    expect(session.scores).toEqual({ 't1-0': 8 });
+  });
+
+  it('returns V2 session intact (regression guard) when a V2 session is stored under a valid V2 manifest', async () => {
+    chrome.storage.local.get.mockImplementation((keys, callback) => {
+      const keysArr = Array.isArray(keys) ? keys : [keys];
+      if (keysArr.includes('manifest')) {
+        const result = { manifest: VALID_V2_MANIFEST };
+        callback?.(result);
+        return Promise.resolve(result);
+      }
+      const result = { [`session:${SESSION_ID}`]: VALID_V2_SESSION };
+      callback?.(result);
+      return Promise.resolve(result);
+    });
+
+    const result = await bootstrap();
+
+    expect(result.sessions[SESSION_ID]).toBeDefined();
+    expect(result.sessions[SESSION_ID].version).toBe(2);
+    expect(result.sessions[SESSION_ID].id).toBe(SESSION_ID);
+  });
+
+  it('returns createDefaultSession fallback when session data is corrupt/unknown (version: 99)', async () => {
+    const CORRUPT_SESSION = { version: 99, garbage: true };
+
+    chrome.storage.local.get.mockImplementation((keys, callback) => {
+      const keysArr = Array.isArray(keys) ? keys : [keys];
+      if (keysArr.includes('manifest')) {
+        const result = { manifest: VALID_V2_MANIFEST };
+        callback?.(result);
+        return Promise.resolve(result);
+      }
+      const result = { [`session:${SESSION_ID}`]: CORRUPT_SESSION };
+      callback?.(result);
+      return Promise.resolve(result);
+    });
+
+    const result = await bootstrap();
+
+    // Should fall back to default session
+    const defaultSession = createDefaultSession(SESSION_ID);
+    expect(result.sessions[SESSION_ID]).toBeDefined();
+    expect(result.sessions[SESSION_ID].version).toBe(2);
+    expect(result.sessions[SESSION_ID].id).toBe(SESSION_ID);
+    expect(result.sessions[SESSION_ID].questionScore).toEqual(defaultSession.questionScore);
   });
 });

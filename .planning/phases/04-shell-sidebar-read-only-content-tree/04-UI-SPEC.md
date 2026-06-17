@@ -1,7 +1,7 @@
 ---
 phase: 4
 slug: shell-sidebar-read-only-content-tree
-status: draft
+status: approved
 shadcn_initialized: false
 preset: none
 created: 2026-06-17

@@ -58,10 +58,15 @@ export function SessionSwitcherModal({ dialogRef }: Props) {
     };
   }, [dialogRef]);
 
-  function handleNewSession() {
-    void createSession().then(() => {
+  async function handleNewSession() {
+    // CR-05: await createSession so rejection is caught rather than silently
+    // discarded by void expr.then() — same pattern applied to onSwitch (WR-03).
+    try {
+      await createSession();
       dialogRef.current?.close();
-    });
+    } catch (err) {
+      console.error('[SessionSwitcherModal] createSession failed:', err);
+    }
   }
 
   return (

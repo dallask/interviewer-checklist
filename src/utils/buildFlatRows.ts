@@ -4,6 +4,7 @@ import type {
   Section,
   Topic,
 } from '../data/bank/types.js';
+import type { CustomQuestion } from '../storage/types.js';
 
 // Re-export types used by consumers
 export type { Question, Section, Topic };
@@ -67,6 +68,8 @@ export function buildFlatRows(
     hideMarked?: boolean;
     /** Set of topic ids that have been fully marked / reviewed */
     markedTopicIds?: Set<string>;
+    /** User-created custom questions to append to their topic's rows */
+    customQuestions?: CustomQuestion[];
   },
 ): VirtualRow[] {
   const rows: VirtualRow[] = [];
@@ -160,6 +163,23 @@ export function buildFlatRows(
           topicId: topic.id,
           question,
           index,
+        });
+      }
+
+      // Append custom questions for this topic — always shown when topic is open,
+      // not subject to difficulty/search filtering (user explicitly added them).
+      const customForTopic = (filters.customQuestions ?? []).filter(
+        (cq) => cq.topicId === topic.id,
+      );
+      for (const cq of customForTopic) {
+        rows.push({
+          type: 'question',
+          sectionId: section.id,
+          topicId: topic.id,
+          question: { q: cq.text, level: cq.level },
+          index: topic.questions.length + customForTopic.indexOf(cq),
+          isCustom: true,
+          customId: cq.id,
         });
       }
     }

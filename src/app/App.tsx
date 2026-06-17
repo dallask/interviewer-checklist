@@ -17,6 +17,7 @@ export function App() {
   const selectedSections = useAppStore((s) => s.selectedSections);
   const scores = useAppStore((s) => s.scores);
   const hideMarked = useAppStore((s) => s.hideMarked);
+  const customQuestions = useAppStore((s) => s.customQuestions);
 
   // Compute set of topic IDs that have at least one scored question.
   // A topic is "marked" when it has a score != null — used by hideMarked toggle.
@@ -40,6 +41,7 @@ export function App() {
     selectedSections,
     hideMarked,
     markedTopicIds,
+    customQuestions,
   });
 
   return (

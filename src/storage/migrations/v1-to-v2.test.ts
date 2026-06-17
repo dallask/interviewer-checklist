@@ -1,9 +1,9 @@
-import { describe, expect, it } from 'vitest';
 import * as v from 'valibot';
+import { describe, expect, it } from 'vitest';
 import { V2ManifestSchema, V2SessionSchema } from '../types.js';
-import { migrateV1ToV2 } from './v1-to-v2.js';
-import { runMigrations } from './index.js';
 import v1FixtureRaw from './fixtures/v1-snapshot.json' with { type: 'json' };
+import { runMigrations } from './index.js';
+import { migrateV1ToV2 } from './v1-to-v2.js';
 
 type V1Schema = import('../types.js').V1Schema;
 
@@ -37,7 +37,9 @@ describe('migrateV1ToV2', () => {
 
   it('maps customQuestions from fixture', () => {
     const result = migrateV1ToV2(FROZEN_V1);
-    expect(result.session.customQuestions).toEqual(FROZEN_V1.customQuestions ?? {});
+    expect(result.session.customQuestions).toEqual(
+      FROZEN_V1.customQuestions ?? {},
+    );
   });
 
   it('does NOT mutate the frozen input', () => {
@@ -71,7 +73,7 @@ describe('migrateV1ToV2', () => {
 describe('runMigrations', () => {
   it('returns {manifest, session} via migrateV1ToV2 when raw has no version field', () => {
     const raw: Record<string, unknown> = { ...FROZEN_V1 };
-    delete raw['version'];
+    delete raw.version;
     const result = runMigrations(raw);
     expect(result).not.toBeNull();
     expect(result?.manifest.version).toBe(2);

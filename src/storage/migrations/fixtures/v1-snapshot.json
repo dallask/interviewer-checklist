@@ -17,7 +17,9 @@
     "details": "Strong candidate overall"
   },
   "customQuestions": {
-    "js-async": [{ "id": 1, "text": "Custom async question", "level": "intermediate" }]
+    "js-async": [
+      { "id": 1, "text": "Custom async question", "level": "intermediate" }
+    ]
   },
   "customSeq": 1,
   "filters": ["javascript"],

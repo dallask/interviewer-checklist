@@ -89,8 +89,11 @@ describe('SessionSwitcherModal', () => {
   it('dialog has aria-labelledby="session-switcher-title"', () => {
     const ref = createRef<HTMLDialogElement>();
     render(<SessionSwitcherModal dialogRef={ref} />);
-    const dialog = screen.getByRole('dialog', { hidden: true });
-    expect(dialog).toHaveAttribute('aria-labelledby', 'session-switcher-title');
+    // Use getAllByRole since there are two dialogs (switcher + nested delete dialog)
+    const dialogs = screen.getAllByRole('dialog', { hidden: true });
+    const switcherDialog = dialogs.find((d) => d.getAttribute('aria-labelledby') === 'session-switcher-title');
+    expect(switcherDialog).toBeDefined();
+    expect(switcherDialog).toHaveAttribute('aria-labelledby', 'session-switcher-title');
   });
 
   it('ul has role="listbox" with aria-activedescendant pointing to active session row', () => {

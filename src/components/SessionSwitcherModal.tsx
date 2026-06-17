@@ -33,6 +33,8 @@ export function SessionSwitcherModal({ dialogRef }: Props) {
       const focusable = dialogEl.querySelectorAll<HTMLElement>(
         'button, input, textarea, select, [tabindex]:not([tabindex="-1"])',
       );
+      // WR-02: guard against empty focusable list to prevent TypeError on .focus()
+      if (focusable.length === 0) return;
       const first = focusable[0];
       const last = focusable[focusable.length - 1];
       if (e.shiftKey && document.activeElement === first) {
@@ -100,9 +102,16 @@ export function SessionSwitcherModal({ dialogRef }: Props) {
             key={session.id}
             session={session}
             isActive={session.id === activeSessionId}
-            onSwitch={() => {
-              void switchSession(session.id);
-              dialogRef.current?.close();
+            onSwitch={async () => {
+              // WR-03: await switchSession before closing so the dialog does not
+              // close before session data is loaded, and errors are not silently
+              // discarded by fire-and-forget void.
+              try {
+                await switchSession(session.id);
+                dialogRef.current?.close();
+              } catch (err) {
+                console.error('[SessionSwitcherModal] switchSession failed:', err);
+              }
             }}
             onRename={(name) => {
               void renameSession(session.id, name);
@@ -130,11 +139,14 @@ export function SessionSwitcherModal({ dialogRef }: Props) {
       </div>
 
       {/* DeleteSessionConfirmDialog nested inside modal */}
+      {/* WR-04: pass focusRestoreId so the dialog restores focus to the specific
+          delete button that opened it (not the parent session-switcher trigger). */}
       <DeleteSessionConfirmDialog
         dialogRef={deleteDialogRef}
         sessionId={pendingDelete?.id ?? ''}
         sessionName={pendingDelete?.name ?? ''}
         onDeleted={() => dialogRef.current?.close()}
+        focusRestoreId={pendingDelete ? `delete-session-${pendingDelete.id}` : undefined}
       />
     </dialog>
   );

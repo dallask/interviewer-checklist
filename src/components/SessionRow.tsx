@@ -122,6 +122,7 @@ export function SessionRow({ session, isActive, onSwitch, onRename, onDuplicate,
             </button>
             <button
               type="button"
+              id={`delete-session-${session.id}`}
               aria-label={`Delete ${session.name}`}
               onClick={onDelete}
               className="p-1 text-xs text-red-600 dark:text-red-400 hover:text-red-800 dark:hover:text-red-300 rounded focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none"

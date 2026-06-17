@@ -6,9 +6,13 @@ interface Props {
   sessionId: string;
   sessionName: string;
   onDeleted: () => void;
+  /** WR-04: ID of the element that should receive focus when this dialog closes.
+   *  Should be the trigger that opened this dialog (e.g. the delete button row),
+   *  NOT the parent modal's trigger button. */
+  focusRestoreId?: string;
 }
 
-export function DeleteSessionConfirmDialog({ dialogRef, sessionId, sessionName, onDeleted }: Props) {
+export function DeleteSessionConfirmDialog({ dialogRef, sessionId, sessionName, onDeleted, focusRestoreId }: Props) {
   const deleteSession = useAppStore((s) => s.deleteSession);
 
   // Focus trap + focus restore (verbatim from ResetConfirmDialog.tsx)
@@ -23,6 +27,8 @@ export function DeleteSessionConfirmDialog({ dialogRef, sessionId, sessionName, 
       const focusable = dialogEl.querySelectorAll<HTMLElement>(
         'button, input, textarea, select, [tabindex]:not([tabindex="-1"])',
       );
+      // WR-02: guard against empty focusable list to prevent TypeError on .focus()
+      if (focusable.length === 0) return;
       const first = focusable[0];
       const last = focusable[focusable.length - 1];
       if (e.shiftKey && document.activeElement === first) {
@@ -35,7 +41,10 @@ export function DeleteSessionConfirmDialog({ dialogRef, sessionId, sessionName, 
     }
 
     function handleClose() {
-      document.getElementById('open-session-switcher')?.focus();
+      // WR-04: restore focus to the element that triggered THIS dialog (the
+      // delete button row), not to the parent session-switcher trigger.
+      const restoreId = focusRestoreId ?? 'open-session-switcher';
+      document.getElementById(restoreId)?.focus();
     }
 
     dialogEl.addEventListener('keydown', handleKeyDown);
@@ -44,12 +53,20 @@ export function DeleteSessionConfirmDialog({ dialogRef, sessionId, sessionName, 
       dialogEl.removeEventListener('keydown', handleKeyDown);
       dialogEl.removeEventListener('close', handleClose);
     };
-  }, [dialogRef]);
+  }, [dialogRef, focusRestoreId]);
 
   const handleDelete = async () => {
     dialogRef.current?.close();
-    await deleteSession(sessionId);
-    onDeleted();
+    // WR-01: wrap in try/finally so onDeleted() is always called even if
+    // deleteSession throws (e.g. storage failure), preventing the parent modal
+    // from staying open with stale state.
+    try {
+      await deleteSession(sessionId);
+    } catch (err) {
+      console.error('[DeleteSessionConfirmDialog] deleteSession failed:', err);
+    } finally {
+      onDeleted();
+    }
   };
 
   return (

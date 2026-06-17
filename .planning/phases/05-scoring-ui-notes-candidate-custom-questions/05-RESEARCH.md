@@ -795,7 +795,7 @@ All runtime dependencies are present and at required versions.
 
 ---
 
-## Open Questions
+## Open Questions (RESOLVED)
 
 1. **Should `uiState` read be added to `bootstrap()` or to `main.tsx` directly?**
    - What we know: `storageAdapter.write({uiState: {...}})` stores it as a root key; `bootstrap()` reads only `manifest` and `session:<id>` keys

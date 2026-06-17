@@ -117,8 +117,19 @@ Plans:
   4. Dark mode toggles between light and system-default dark; the preference persists across sessions without a flash of unstyled content
   5. Screen reader users can navigate all controls via landmark elements and ARIA attributes; keyboard focus rings are visible; `prefers-reduced-motion` suppresses sidebar animations
 
-**Plans**: TBD
-**UI hint**: yes
+**Plans**: 3 plans
+Plans:
+**Wave 1**
+
+- [ ] 04-01-PLAN.md — Install @tanstack/react-virtual, create styles.css + theme.ts (FOUC), useAppStore (Zustand), buildFlatRows utility, vitest coverage update
+
+**Wave 2** *(blocked on Wave 1 completion)*
+
+- [ ] 04-02-PLAN.md — All sidebar components (Sidebar, SidebarGroup, SearchGroup, DifficultyFilter, SectionFilter, ActionsGroup), ContentTree + row components, StorageToast — with unit tests
+
+**Wave 3** *(blocked on Wave 2 completion)*
+
+- [ ] 04-03-PLAN.md — App.tsx full shell wiring + main.tsx store hydration + human smoke test in Chrome
 
 ### Phase 5: Scoring UI, Notes, Candidate & Custom Questions
 
@@ -218,7 +229,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 →
 | 1. Foundation & Scaffolding | 3/3 | Complete    | 2026-06-16 |
 | 2. Question Bank & Scoring Engine | 2/2 | Complete    | 2026-06-17 |
 | 3. Storage Layer, Migration & Bootstrap | 3/3 | Complete    | 2026-06-17 |
-| 4. Shell, Sidebar & Read-Only Content Tree | 0/? | Not started | - |
+| 4. Shell, Sidebar & Read-Only Content Tree | 0/3 | Not started | - |
 | 5. Scoring UI, Notes, Candidate & Custom Questions | 0/? | Not started | - |
 | 6. Multiple Named Sessions & Switcher | 0/? | Not started | - |
 | 7. YAML Import & Export | 0/? | Not started | - |

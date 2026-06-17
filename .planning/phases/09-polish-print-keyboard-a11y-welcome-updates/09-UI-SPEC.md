@@ -55,14 +55,14 @@ Source: ActionsGroup.tsx (px-3 py-2), UndoToast.tsx (py-2 px-4), ResetConfirmDia
 
 | Role | Size | Weight | Line Height |
 |------|------|--------|-------------|
-| Body | 14px (text-sm) | 400 (font-normal) | 1.5 |
+| Body | 16px (text-base) | 400 (font-normal) | 1.5 |
 | Label | 12px (text-xs) | 400 (font-normal) | 1.5 |
 | Heading | 16px (text-base) | 600 (font-semibold) | 1.2 |
 | Display | 20px (text-xl) | 600 (font-semibold) | 1.2 |
 
 Notes:
-- Body (14px/400) is the established app default, used in all existing buttons and paragraph text — source: ResetConfirmDialog.tsx (`text-sm font-normal`), ActionsGroup.tsx (`text-sm`).
-- Label (12px/400) used for metadata text — source: ActionsGroup.tsx active session name (`text-xs font-normal`), UndoToast.tsx (`text-xs font-normal`). To reinforce the 2px size distinction from body (14px), label text must also use `text-gray-400 dark:text-gray-500` color differentiation, not body's `text-gray-700 dark:text-gray-300`.
+- Body (16px/400) is the app shell body and button size introduced in this phase. Existing components that use `text-sm` (14px) — such as ResetConfirmDialog.tsx, ActionsGroup.tsx — are pre-existing patterns and are not re-specified or changed by this phase.
+- Label (12px/400) used for metadata text — source: ActionsGroup.tsx active session name (`text-xs font-normal`), UndoToast.tsx (`text-xs font-normal`). The 4px size gap from body (16px) makes the distinction clear; label text additionally uses `text-gray-400 dark:text-gray-500` to reinforce the hierarchy, not body's `text-gray-700 dark:text-gray-300`.
 - Heading (16px/600) used for modal titles — source: ResetConfirmDialog.tsx (`text-base font-semibold`).
 - Display (20px/600) used for welcome page section headings only. Default — no existing precedent at this size, but consistent with 4-step type scale.
 
@@ -156,11 +156,13 @@ Position: sticky top banner inside the main content area, above the question lis
             bg-amber-50 dark:bg-yellow-900/30
             border-b border-amber-300 dark:border-yellow-700
             text-amber-800 dark:text-yellow-200
-            px-4 py-2 text-sm font-normal">
+            px-4 py-2 text-base font-normal">
   <span>New in v{version}: <button class="underline font-normal">What's new</button></span>
   <button aria-label="Dismiss update banner" class="...">×</button>
 </div>
 ```
+
+Note: the banner uses `text-base` (16px) to align with the app shell type scale. `text-sm` is not introduced by this phase; any existing components that already use `text-sm` are pre-existing and not changed here.
 
 **Copy:**
 - Banner text: "Updated to v{version}."

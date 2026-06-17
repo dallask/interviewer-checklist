@@ -461,6 +461,7 @@ export function parseStructural(
           // Store the custom question's score under the new ID
           if (typeof cq.score === 'number') {
             result.scores[newId] = cq.score;
+            modifiedCount++;
           }
           if (typeof cq.note === 'string' && cq.note !== '') {
             result.notes[newId] = cq.note;

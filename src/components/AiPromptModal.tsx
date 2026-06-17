@@ -60,6 +60,11 @@ export function AiPromptModal({ dialogRef, prompt, onClose }: Props) {
     }
 
     function handleClose() {
+      // Return focus to the trigger button on close. The ID 'open-ai-prompt'
+      // matches the button in ActionsGroup — this is the established project
+      // convention (mirrors 'open-import-yaml' in ImportPreviewModal). If the
+      // modal is ever reused in a different context, pass a triggerRef prop
+      // instead and call triggerRef.current?.focus() here.
       document.getElementById('open-ai-prompt')?.focus();
     }
 

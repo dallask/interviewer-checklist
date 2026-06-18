@@ -76,6 +76,8 @@ export function TopicMarkDisplay({ topicId, topic }: Props) {
     <fieldset
       className="flex items-center gap-1 border-0 p-0 m-0"
       aria-label={`Mark for ${topic.name}`}
+      onClick={(e) => e.stopPropagation()}
+      onMouseDown={(e) => e.stopPropagation()}
     >
       {/* Computed mark or override value */}
       <span className={`text-xs tabular-nums ${colorClass}`}>

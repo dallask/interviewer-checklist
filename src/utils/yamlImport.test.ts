@@ -1,7 +1,8 @@
 import { load } from 'js-yaml';
 import { describe, expect, it } from 'vitest';
 import { DEFAULT_SECTIONS } from '../data/bank/index.js';
-import type { V3Session } from '../storage/types.js';
+import { materializeSections } from '../storage/migrations/v3-to-v4.js';
+import type { V4Session } from '../storage/types.js';
 import { exportSession } from './yamlExport.js';
 import {
   detectFormat,
@@ -10,6 +11,8 @@ import {
   parseYaml,
   reKeyImportResultToV4,
 } from './yamlImport.js';
+
+const DEFAULT_V4_SECTIONS = materializeSections(DEFAULT_SECTIONS);
 
 // ---------------------------------------------------------------------------
 // LEGACY_FIXTURE — spans multiple topics from DEFAULT_SECTIONS
@@ -128,10 +131,12 @@ describe('parseLegacy', () => {
 // ---------------------------------------------------------------------------
 
 describe('parseStructural', () => {
-  it('round-trip: export a session then parseStructural — scores match', () => {
-    const session: V3Session = {
-      version: 3,
+  it('round-trip: export a V4Session then parseStructural — scores match', () => {
+    const session: V4Session = {
+      version: 4,
       id: 'test-session',
+      sections: DEFAULT_V4_SECTIONS,
+      removedDefaultQuestionIds: [],
       scores: { 'twig-q0': 8, 'twig-q1': 6 },
       overrides: {},
       notes: { 'twig-q0': 'Good answer' },
@@ -140,7 +145,7 @@ describe('parseStructural', () => {
       candidate: null,
     };
 
-    const yamlString = exportSession(session, 'Test Session', DEFAULT_SECTIONS);
+    const yamlString = exportSession(session, 'Test Session');
     const parsed = load(yamlString);
     const preview = parseStructural(parsed, DEFAULT_SECTIONS);
 

@@ -56,7 +56,7 @@ describe('SCORE-07: TopicMarkDisplay event isolation', () => {
     id: 'topic-1',
     name: 'JavaScript',
     questions: [
-      { q: 'What is closure?', level: 'junior' as const },
+      { q: 'What is closure?', level: 'intermediate' as const },
     ],
   };
 

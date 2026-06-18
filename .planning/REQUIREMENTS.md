@@ -31,8 +31,8 @@
 
 ### Filters
 
-- [ ] **UI-16**: DifficultyFilter shows "All levels" as the first option with an infinity icon, a color dot next to each difficulty label (Novice green, Intermediate blue, Advanced orange, Expert pink), and the question count for each difficulty on the right (E2; Image #4)
-- [ ] **UI-17**: SectionFilter shows "All sections" as the first option with a clipboard icon, an emoji icon next to each section name (Frontend 🖥, Design 🎨, Backend ⚙, Dev Environment 🐳, Testing 🧪, CI/CD 🚀, Tooling 🔧, Integrations 🔗, AI & Tooling 🤖), and per-section question count on the right (E3; Image #5)
+- [x] **UI-16**: DifficultyFilter shows "All levels" as the first option with an infinity icon, a color dot next to each difficulty label (Novice green, Intermediate blue, Advanced orange, Expert pink), and the question count for each difficulty on the right (E2; Image #4)
+- [x] **UI-17**: SectionFilter shows "All sections" as the first option with a clipboard icon, an emoji icon next to each section name (Frontend 🖥, Design 🎨, Backend ⚙, Dev Environment 🐳, Testing 🧪, CI/CD 🚀, Tooling 🔧, Integrations 🔗, AI & Tooling 🤖), and per-section question count on the right (E3; Image #5)
 
 ### Editable Bank
 
@@ -86,8 +86,8 @@ Deferred. Not in v1.1 roadmap.
 | UI-13 | Phase 15 | Pending |
 | UI-14 | Phase 15 | Pending |
 | UI-15 | Phase 15 | Pending |
-| UI-16 | Phase 13 | Pending |
-| UI-17 | Phase 13 | Pending |
+| UI-16 | Phase 13 | Complete |
+| UI-17 | Phase 13 | Complete |
 | BANK-01 | Phase 14 | Pending |
 | BANK-02 | Phase 14 | Pending |
 | BANK-03 | Phase 14 | Pending |

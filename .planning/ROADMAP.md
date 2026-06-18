@@ -30,7 +30,7 @@ Full archive: [milestones/v1.0-ROADMAP.md](milestones/v1.0-ROADMAP.md)
 
 - [x] **Phase 11: V4 Session Migration & Legacy Compat** — Forward-only V3→V4 migration materializes default sections/topics into editable bank shape; legacy progress-only YAML imports keep working (completed 2026-06-18)
 - [x] **Phase 12: UAT Defect Cleanup** — Six small-touch fixes: topic-override propagation, session modal close paths, hide-notes wiring, sidebar icon buttons + section icons, desktop sidebar toggle (completed 2026-06-18)
-- [ ] **Phase 13: Filter Overhaul** — Difficulty and Section filters get "All" rows, colored/emoji indicators, and live per-row counts
+- [x] **Phase 13: Filter Overhaul** — Difficulty and Section filters get "All" rows, colored/emoji indicators, and live per-row counts (completed 2026-06-18)
 - [ ] **Phase 14: Editable Bank & YAML Schema Expansion** — Users can add/remove sections and topics, delete default questions; YAML round-trips the new editable-bank state with full per-question text/level/note fidelity
 - [ ] **Phase 15: Sidebar Shell Refactor & Compact QuestionCard** — Sticky sidebar header (toggle + candidate button + final-mark progress line), credit footer + AboutModal, and the compact QuestionCard redesign (dropdown left, note icon right, single-line default)
 
@@ -101,7 +101,7 @@ Full archive: [milestones/v1.0-ROADMAP.md](milestones/v1.0-ROADMAP.md)
 
 **Wave 1**
 
-- [ ] 13-01-PLAN.md — Store clear actions + DifficultyFilter (All row, dots, counts, labels) + SectionFilter (All row, icon, count badge)
+- [x] 13-01-PLAN.md — Store clear actions + DifficultyFilter (All row, dots, counts, labels) + SectionFilter (All row, icon, count badge)
 
 **UI hint**: yes
 
@@ -153,6 +153,6 @@ Full archive: [milestones/v1.0-ROADMAP.md](milestones/v1.0-ROADMAP.md)
 | 10. Chrome Web Store Submission | v1.0 | 3/3 (manual submission tasks pending user action) | Complete | 2026-06-18 |
 | 11. V4 Session Migration & Legacy Compat | v1.1 | 3/3 | Complete    | 2026-06-18 |
 | 12. UAT Defect Cleanup | v1.1 | 4/4 | Complete   | 2026-06-18 |
-| 13. Filter Overhaul | v1.1 | 0/1 | In progress | — |
+| 13. Filter Overhaul | v1.1 | 1/1 | Complete   | 2026-06-18 |
 | 14. Editable Bank & YAML Schema Expansion | v1.1 | 0/0 | Not started | — |
 | 15. Sidebar Shell Refactor & Compact QuestionCard | v1.1 | 0/0 | Not started | — |

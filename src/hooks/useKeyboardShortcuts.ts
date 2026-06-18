@@ -20,6 +20,14 @@ import { useAppStore } from '../store/app.js';
 export function useKeyboardShortcuts(): void {
   useEffect(() => {
     function handleKeyDown(e: KeyboardEvent) {
+      // Guard 0 (CR-04): never react to chorded shortcuts. Ctrl+/, Cmd+/,
+      // Ctrl+\, Cmd+\, Alt+Esc, etc. belong to the browser/OS — calling
+      // preventDefault() on them would clobber DevTools, accessibility
+      // zoom, and many app-level "show shortcuts" bindings.
+      if (e.ctrlKey || e.metaKey || e.altKey) {
+        return;
+      }
+
       // Guard 1: suppress all shortcuts when focus is in an editable element.
       const el = document.activeElement as HTMLElement | null;
       const tag = el?.tagName ?? '';

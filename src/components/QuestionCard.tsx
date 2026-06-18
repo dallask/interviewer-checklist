@@ -38,6 +38,11 @@ export function QuestionCard({ row }: Props) {
   const setScore = useAppStore((s) => s.setScore);
   const setNote = useAppStore((s) => s.setNote);
   const deleteCustomQuestion = useAppStore((s) => s.deleteCustomQuestion);
+  // printMode is set true by usePrintExpansion's beforeprint handler so that
+  // notes textareas with content are revealed for print (the HTML `hidden`
+  // attribute cannot be overridden by CSS print:* variants — see
+  // 09-RESEARCH.md Pitfall 5).
+  const printMode = useAppStore((s) => s.printMode);
 
   const difficultyClass =
     DIFFICULTY_CLASSES[question.level] ?? DIFFICULTY_CLASSES.novice;
@@ -96,7 +101,7 @@ export function QuestionCard({ row }: Props) {
               onClick={() =>
                 row.customId != null && deleteCustomQuestion(row.customId)
               }
-              className="text-xs text-red-600 dark:text-red-400 hover:text-red-800 dark:hover:text-red-300 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none ml-2"
+              className="text-xs text-red-600 dark:text-red-400 hover:text-red-800 dark:hover:text-red-300 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none ml-2 print:hidden"
             >
               ×
             </button>
@@ -104,8 +109,8 @@ export function QuestionCard({ row }: Props) {
         </div>
       </div>
 
-      {/* Score slider row — always visible (SCORE-01) */}
-      <div className="mt-2 flex items-center gap-3 min-h-[44px]">
+      {/* Score slider row — always visible (SCORE-01); hidden on print */}
+      <div className="mt-2 flex items-center gap-3 min-h-[44px] print:hidden">
         <input
           type="range"
           min={0}
@@ -123,6 +128,11 @@ export function QuestionCard({ row }: Props) {
           {score !== null ? `${score} / 10` : '— / 10'}
         </span>
       </div>
+      {/* Print-only score readout — replaces the hidden slider row on print
+          so the printed page still shows the captured score. */}
+      <div className="hidden print:block print:mt-1 text-sm font-normal text-gray-700">
+        Score: {score !== null ? `${score} / 10` : '— / 10'}
+      </div>
 
       {/* Notes section — toggle + textarea (SCORE-03) */}
       <div>
@@ -131,7 +141,7 @@ export function QuestionCard({ row }: Props) {
           aria-expanded={notesOpen}
           aria-controls={`notes-${questionId}`}
           onClick={() => setNotesOpen((prev) => !prev)}
-          className="text-xs text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none mt-1"
+          className="text-xs text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none mt-1 print:hidden"
         >
           {notesOpen ? 'Hide notes' : 'Add notes'}
         </button>
@@ -140,9 +150,9 @@ export function QuestionCard({ row }: Props) {
           aria-label={`Notes for ${question.q}`}
           value={localNote}
           onChange={(e) => handleNoteChange(e.target.value)}
-          hidden={!notesOpen}
+          hidden={!notesOpen && !localNote && !printMode}
           placeholder="Question notes…"
-          className="mt-2 w-full resize-y min-h-[80px] text-sm font-normal text-gray-900 dark:text-gray-100 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded p-2 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none placeholder:text-gray-400 dark:placeholder:text-gray-600"
+          className="mt-2 w-full resize-y min-h-[80px] text-sm font-normal text-gray-900 dark:text-gray-100 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded p-2 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none placeholder:text-gray-400 dark:placeholder:text-gray-600 print:h-auto print:overflow-visible print:resize-none print:border-0 print:p-0"
         />
       </div>
     </div>

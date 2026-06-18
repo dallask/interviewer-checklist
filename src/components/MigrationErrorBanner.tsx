@@ -29,7 +29,7 @@ export function MigrationErrorBanner({ failedCount, sessionIds: _sessionIds, onD
       <span>
         {failedCount} session{failedCount > 1 ? 's' : ''} couldn't be upgraded —
         your other sessions are loaded. A backup is stored at{' '}
-        <code>snapshot:&lt;id&gt;:pre-v4</code>.
+        <code>snapshot:&lt;id&gt;:pre-v4-&lt;timestamp&gt;</code>.
       </span>
       <button
         type="button"

@@ -209,18 +209,18 @@ describe('useAppStore — ScoringActions', () => {
   });
 
   it('setScore stores a numeric score', () => {
-    useAppStore.getState().setScore('topic1-0', 5);
-    expect(useAppStore.getState().scores['topic1-0']).toBe(5);
+    useAppStore.getState().setScore('topic1-q0', 5);
+    expect(useAppStore.getState().scores['topic1-q0']).toBe(5);
   });
 
   it('setScore stores null score', () => {
-    useAppStore.getState().setScore('topic1-0', null);
-    expect(useAppStore.getState().scores['topic1-0']).toBeNull();
+    useAppStore.getState().setScore('topic1-q0', null);
+    expect(useAppStore.getState().scores['topic1-q0']).toBeNull();
   });
 
   it('setScore stores 0 (not falsy-filtered)', () => {
-    useAppStore.getState().setScore('topic1-0', 0);
-    expect(useAppStore.getState().scores['topic1-0']).toBe(0);
+    useAppStore.getState().setScore('topic1-q0', 0);
+    expect(useAppStore.getState().scores['topic1-q0']).toBe(0);
   });
 
   it('setOverride stores a numeric override', () => {

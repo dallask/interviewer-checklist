@@ -66,7 +66,7 @@ export interface AppState {
   /** Dark mode enabled */
   darkMode: boolean;
   // --- ScoringState (Phase 5) ---
-  /** Per-question scores (questionId → score | null); key: "${topicId}-${questionIndex}" */
+  /** Per-question scores (questionId → score | null); key: "${topicId}-q${questionIndex}" (V4 format, D-04) */
   scores: Record<string, number | null>;
   /** Per-topic score overrides (topicId → override | null) */
   overrides: Record<string, number | null>;
@@ -153,6 +153,8 @@ export interface AppActions {
    *  STORE-05: storageAdapter.snapshot() is called BEFORE any mutation.
    *  overwriteActive=false: creates a new session; overwriteActive=true: applies to active session. */
   importSession: (data: ImportResult, overwriteActive: boolean) => Promise<void>;
+  /** Clear migration error state (reset migrationFailedCount and migrationFailedIds). */
+  clearMigrationError: () => void;
 }
 
 export const DEFAULT_STATE: AppState = {
@@ -541,6 +543,8 @@ export const useAppStore = create<AppState & AppActions>()((set) => ({
       await useAppStore.getState().switchSession(buf.sessionMeta.id);
     }
   },
+
+  clearMigrationError: () => set({ migrationFailedCount: 0, migrationFailedIds: [] }),
 
   // ---------------------------------------------------------------------------
   // importSession — Phase 7 (YAML-02 / YAML-03)

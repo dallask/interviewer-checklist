@@ -54,7 +54,7 @@ describe('computeTopicMark', () => {
   });
 
   it('score of 0 is valid and scores the question (not skipped)', () => {
-    const scores = { 'twig-0': 0 }; // novice q0 = 0
+    const scores = { 'twig-q0': 0 }; // novice q0 = 0
     const result = computeTopicMark(TWIG_TOPIC, scores);
     expect(result.mark).toBe(0); // 1.0*0 / 1.0 = 0
     expect(result.band).toBe('low');
@@ -66,7 +66,7 @@ describe('computeTopicMark', () => {
     // weightedSum = 1.0*8 + 1.5*6 = 8 + 9 = 17
     // coeffSum = 1.0 + 1.5 = 2.5
     // mark = 17/2.5 = 6.8
-    const scores = { 'twig-0': 8, 'twig-4': 6 };
+    const scores = { 'twig-q0': 8, 'twig-q4': 6 };
     const result = computeTopicMark(TWIG_TOPIC, scores);
     expect(result.mark).toBeCloseTo(6.8, 5);
     expect(result.band).toBe('good');
@@ -74,14 +74,14 @@ describe('computeTopicMark', () => {
   });
 
   it('override replaces computed mark', () => {
-    const scores = { 'twig-0': 3 };
+    const scores = { 'twig-q0': 3 };
     const result = computeTopicMark(TWIG_TOPIC, scores, 9);
     expect(result.mark).toBe(9);
     expect(result.band).toBe('high');
   });
 
   it('override preserves actual scoredCount from the scores map', () => {
-    const scores = { 'twig-0': 3 };
+    const scores = { 'twig-q0': 3 };
     const result = computeTopicMark(TWIG_TOPIC, scores, 9);
     expect(result.scoredCount).toBe(1);
     expect(result.totalCount).toBe(12);
@@ -94,20 +94,20 @@ describe('computeTopicMark', () => {
   });
 
   it('override of 0 is valid (not treated as null)', () => {
-    const scores = { 'twig-0': 10 };
+    const scores = { 'twig-q0': 10 };
     const result = computeTopicMark(TWIG_TOPIC, scores, 0);
     expect(result.mark).toBe(0);
     expect(result.band).toBe('low');
   });
 
   it('null override falls through to weighted average', () => {
-    const scores = { 'twig-0': 8, 'twig-4': 6 };
+    const scores = { 'twig-q0': 8, 'twig-q4': 6 };
     const result = computeTopicMark(TWIG_TOPIC, scores, null);
     expect(result.mark).toBeCloseTo(6.8, 5);
   });
 
   it('undefined override falls through to weighted average', () => {
-    const scores = { 'twig-0': 8, 'twig-4': 6 };
+    const scores = { 'twig-q0': 8, 'twig-q4': 6 };
     const result = computeTopicMark(TWIG_TOPIC, scores, undefined);
     expect(result.mark).toBeCloseTo(6.8, 5);
   });
@@ -121,21 +121,21 @@ describe('computeTopicMark', () => {
   });
 
   it('null value in scores map is treated as unscored', () => {
-    const scores = { 'twig-0': null };
+    const scores = { 'twig-q0': null };
     const result = computeTopicMark(TWIG_TOPIC, scores);
     expect(result.mark).toBeNull();
     expect(result.scoredCount).toBe(0);
   });
 
   it('NaN score is treated as unscored (does not corrupt mark)', () => {
-    const result = computeTopicMark(TWIG_TOPIC, { 'twig-0': NaN });
+    const result = computeTopicMark(TWIG_TOPIC, { 'twig-q0': NaN });
     expect(result.mark).toBeNull();
     expect(result.band).toBe('none');
     expect(result.scoredCount).toBe(0);
   });
 
   it('Infinity score is treated as unscored (does not corrupt mark)', () => {
-    const result = computeTopicMark(TWIG_TOPIC, { 'twig-0': Infinity });
+    const result = computeTopicMark(TWIG_TOPIC, { 'twig-q0': Infinity });
     expect(result.mark).toBeNull();
     expect(result.band).toBe('none');
     expect(result.scoredCount).toBe(0);

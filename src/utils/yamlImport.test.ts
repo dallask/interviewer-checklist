@@ -132,9 +132,9 @@ describe('parseStructural', () => {
     const session: V3Session = {
       version: 3,
       id: 'test-session',
-      scores: { 'twig-0': 8, 'twig-1': 6 },
+      scores: { 'twig-q0': 8, 'twig-q1': 6 },
       overrides: {},
-      notes: { 'twig-0': 'Good answer' },
+      notes: { 'twig-q0': 'Good answer' },
       topicNotes: {},
       customQuestions: [],
       candidate: null,
@@ -232,11 +232,11 @@ describe('reKeyImportResultToV4 — score key re-keying', () => {
       sessionName: '',
     };
     const rekeyed = reKeyImportResultToV4(result);
-    // custom-twig-1714000000000-0 does NOT match /^(.+)-(\d+)$/ because it ends in '-0'
-    // which IS a digit — but that is intentional: custom IDs should remain as-is.
-    // The regex matches them too — verify they come through in some form.
+    // custom-* keys are excluded from re-keying (starts with 'custom-' guard, CR-03).
+    // The key must pass through completely unchanged.
     const allKeys = Object.keys(rekeyed.scores);
     expect(allKeys).toHaveLength(1);
+    expect(Object.keys(rekeyed.scores)[0]).toBe('custom-twig-1714000000000-0');
   });
 });
 

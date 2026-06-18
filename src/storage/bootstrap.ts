@@ -6,6 +6,7 @@
 import * as v from 'valibot';
 import { storageAdapter } from './adapter.js';
 import { runMigrations } from './migrations/index.js';
+import { migrateV2ToV3 } from './migrations/v2-to-v3.js';
 import { migrateV3ToV4 } from './migrations/v3-to-v4.js';
 import type { V2Manifest, V4Session } from './types.js';
 import {
@@ -80,22 +81,20 @@ export async function bootstrap(): Promise<{
   if (typeof version === 'number' && version < 2) {
     try {
       const migrated = runMigrations(rawManifest);
-      // runMigrations returns {manifest, session} for v1→v2; V3Session for v2→v3.
-      // For version < 2 (v1 data), the v1→v2 migration returns {manifest, session}.
       if (
         migrated !== null &&
         'manifest' in migrated &&
         'session' in migrated
       ) {
+        const v3 = migrateV2ToV3(migrated.session);
+        const v4 = migrateV3ToV4(v3);
         await chrome.storage.local.set({
           manifest: migrated.manifest,
-          [`session:${migrated.session.id}`]: migrated.session,
+          [`session:${v4.id}`]: v4,
         });
         return {
           manifest: migrated.manifest,
-          sessions: {
-            [migrated.session.id]: createDefaultV4Session(migrated.session.id),
-          },
+          sessions: { [v4.id]: v4 },
           failedSessionIds: [],
         };
       }
@@ -108,7 +107,6 @@ export async function bootstrap(): Promise<{
         [`recovery:${Date.now()}`]: rawManifest,
       });
     }
-    // Migration returned null or threw — use default state
     return bootstrapDefaults();
   }
 

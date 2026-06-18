@@ -84,7 +84,7 @@ describe('QuestionCard', () => {
   it('displays "0 / 10" when score is 0', () => {
     mockUseAppStore.mockImplementation((selector: (s: unknown) => unknown) =>
       selector({
-        scores: { 'react-0': 0 },
+        scores: { 'react-q0': 0 },
         notes: {},
         setScore,
         setNote,
@@ -98,7 +98,7 @@ describe('QuestionCard', () => {
   it('displays "8 / 10" when score is 8', () => {
     mockUseAppStore.mockImplementation((selector: (s: unknown) => unknown) =>
       selector({
-        scores: { 'react-0': 8 },
+        scores: { 'react-q0': 8 },
         notes: {},
         setScore,
         setNote,
@@ -113,14 +113,14 @@ describe('QuestionCard', () => {
     render(<QuestionCard row={mockRow} />);
     const slider = screen.getByRole('slider', { name: 'What is JSX?' });
     fireEvent.change(slider, { target: { value: '7' } });
-    expect(setScore).toHaveBeenCalledWith('react-0', 7);
+    expect(setScore).toHaveBeenCalledWith('react-q0', 7);
   });
 
-  it('constructs questionId as topicId-index', () => {
+  it('constructs questionId as topicId-qIndex (V4 format)', () => {
     const row = { ...mockRow, topicId: 'twig', index: 4 };
     mockUseAppStore.mockImplementation((selector: (s: unknown) => unknown) =>
       selector({
-        scores: { 'twig-4': 5 },
+        scores: { 'twig-q4': 5 },
         notes: {},
         setScore,
         setNote,
@@ -141,7 +141,7 @@ describe('QuestionCard', () => {
   it('notes toggle button has aria-controls pointing to notes textarea id', () => {
     render(<QuestionCard row={mockRow} />);
     const toggleBtn = screen.getByRole('button', { name: /add notes/i });
-    expect(toggleBtn).toHaveAttribute('aria-controls', 'notes-react-0');
+    expect(toggleBtn).toHaveAttribute('aria-controls', 'notes-react-q0');
   });
 
   it('notes textarea has aria-label "Notes for {question.q}"', () => {
@@ -153,7 +153,7 @@ describe('QuestionCard', () => {
   it('notes textarea has id notes-{questionId}', () => {
     render(<QuestionCard row={mockRow} />);
     const textarea = screen.getByLabelText('Notes for What is JSX?');
-    expect(textarea).toHaveAttribute('id', 'notes-react-0');
+    expect(textarea).toHaveAttribute('id', 'notes-react-q0');
   });
 
   it('notes textarea has resize-y class', () => {

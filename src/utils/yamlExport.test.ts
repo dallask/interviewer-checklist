@@ -36,10 +36,10 @@ describe('exportSession — null and zero scores', () => {
   });
 
   it('includes `score: 0` for a question scored zero (not null)', () => {
-    // twig topic is in frontend section, question index 0 → key "twig-0"
+    // twig topic is in frontend section, question index 0 → key "twig-q0" (V4 format)
     const sessionWithZero: V3Session = {
       ...minimalSession,
-      scores: { 'twig-0': 0 },
+      scores: { 'twig-q0': 0 },
     };
     const result = exportSession(sessionWithZero, 'Test Session', DEFAULT_SECTIONS);
     expect(result).toContain('score: 0');
@@ -47,10 +47,10 @@ describe('exportSession — null and zero scores', () => {
 });
 
 describe('exportSession — round-trip score key format', () => {
-  it('score stored at key "twig-0" appears at the correct position in output YAML', () => {
+  it('score stored at key "twig-q0" appears at the correct position in output YAML', () => {
     const sessionWithScore: V3Session = {
       ...minimalSession,
-      scores: { 'twig-0': 8 },
+      scores: { 'twig-q0': 8 },
     };
     const result = exportSession(sessionWithScore, 'Test Session', DEFAULT_SECTIONS);
 

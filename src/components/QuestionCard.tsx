@@ -29,8 +29,8 @@ const DIFFICULTY_LABELS: Record<string, string> = {
 export function QuestionCard({ row }: Props) {
   const { question } = row;
 
-  // Derive question id: topicId-index (locked key scheme from scoring.ts)
-  const questionId = `${row.topicId}-${row.index}`;
+  // Derive question id: topicId-qIndex (V4 key scheme, D-04)
+  const questionId = `${row.topicId}-q${row.index}`;
 
   // Granular selectors to avoid re-renders on unrelated state changes
   const score = useAppStore((s) => s.scores[questionId] ?? null);

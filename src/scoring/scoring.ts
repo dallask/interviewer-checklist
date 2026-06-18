@@ -4,7 +4,7 @@ import { DIFFICULTY_COEFFICIENTS } from '../data/bank/types.js';
 /** Named tier for a computed or overridden mark. */
 export type MarkBand = 'none' | 'low' | 'mid' | 'good' | 'high';
 
-/** Map from question key (`${topicId}-${questionIndex}`) to score (0–10). null/absent = unscored. */
+/** Map from question key (`${topicId}-q${questionIndex}`) to score (0–10). null/absent = unscored. */
 export type ScoreMap = Record<string, number | null>;
 
 /** Result of scoring a single topic. */
@@ -36,7 +36,7 @@ export interface OverallResult {
 /**
  * Difficulty-weighted average of scored questions within a topic.
  *
- * Question key scheme (locked): `${topic.id}-${questionIndex}`
+ * Question key scheme (locked): `${topic.id}-q${questionIndex}`
  * Override replaces the computed mark entirely if provided (valid range 0–10, including 0).
  */
 export function computeTopicMark(
@@ -49,7 +49,7 @@ export function computeTopicMark(
   let scoredCount = 0;
 
   topic.questions.forEach((q, i) => {
-    const key = `${topic.id}-${i}`;
+    const key = `${topic.id}-q${i}`;
     const score = scores[key];
     // Use typeof + isFinite guard — admits score=0 as valid, skips null/undefined/missing/NaN/Infinity
     if (typeof score !== 'number' || !Number.isFinite(score)) return;

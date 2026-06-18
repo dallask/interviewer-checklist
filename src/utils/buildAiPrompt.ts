@@ -22,7 +22,7 @@ export interface AiPromptInput {
  *
  * Pure function — no side effects, no DOM calls, no React.
  *
- * Score key format: `${topicId}-${questionIndex}` (matches src/store/app.ts line 70).
+ * Score key format: `${topicId}-q${questionIndex}` (matches src/store/app.ts line 70).
  * Custom question score key: cq.id (e.g. 'custom-twig-1') — same as store.
  */
 export function buildAiPrompt(
@@ -84,7 +84,7 @@ export function buildAiPrompt(
 
       // Bank questions
       topic.questions.forEach((q, index) => {
-        const key = `${topic.id}-${index}`;
+        const key = `${topic.id}-q${index}`;
         const score = session.scores[key];
         const note = session.notes[key] ?? '';
         const scoreStr = typeof score === 'number' ? String(score) : 'skipped';

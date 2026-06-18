@@ -141,7 +141,7 @@ describe('TopicMarkDisplay', () => {
     // Score question 0 (intermediate 1.25x) with 8 → weighted = 10.0, coeffSum = 1.25 → mark = 8.0
     mockUseAppStore.mockImplementation((selector: (s: unknown) => unknown) =>
       selector({
-        scores: { 'react-0': 8 },
+        scores: { 'react-q0': 8 },
         overrides: {},
         customQuestions: [],
         setOverride,
@@ -154,7 +154,7 @@ describe('TopicMarkDisplay', () => {
   it('computed mark has a band color class', () => {
     mockUseAppStore.mockImplementation((selector: (s: unknown) => unknown) =>
       selector({
-        scores: { 'react-0': 8 },
+        scores: { 'react-q0': 8 },
         overrides: {},
         customQuestions: [],
         setOverride,

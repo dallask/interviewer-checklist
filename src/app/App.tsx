@@ -81,7 +81,7 @@ export function App() {
           <MigrationErrorBanner
             failedCount={migrationFailedCount}
             sessionIds={migrationFailedIds}
-            onDismiss={() => useAppStore.setState({ migrationFailedCount: 0, migrationFailedIds: [] })}
+            onDismiss={() => useAppStore.getState().clearMigrationError()}
           />
           {/* Update banner — sticky at top of the right column, above main. */}
           <UpdateBanner />

@@ -7,7 +7,6 @@ import {
   V3_SESSION_POPULATED,
 } from './migrations/fixtures/v3-session-fixture.js';
 import {
-  createDefaultSession,
   createDefaultV4Session,
   V2ManifestSchema,
   V2SessionSchema,
@@ -566,18 +565,9 @@ describe('bootstrap() — Scenario E: V3→V4 eager migration', () => {
     expect(parseResult.success).toBe(true);
   });
 
-  it('includes session in failedSessionIds when migration throws', async () => {
-    // Provide a V3 session where migrateV3ToV4 would fail — simulate by providing
-    // a session that passes V3SessionSchema but uses a crafted state that will pass
-    // through to the catch block via a mock that throws.
-    // We achieve this by directly providing valid V3 data and mocking the write to throw,
-    // but since we cannot easily make migrateV3ToV4 throw without patching the module,
-    // we verify the skip-and-continue path indirectly: a session that fails V4 validation
-    // after migration will push to failedSessionIds.
-    //
-    // The cleanest test is: provide a valid V2 manifest with 2 sessions; one V3 that
-    // migrates cleanly, one that is missing from storage — the missing one gets a
-    // default V4, not a failure. This test verifies the success path is correct.
+  it('two V3 sessions both migrate successfully — failedSessionIds is empty', async () => {
+    // Provide a valid V2 manifest with 2 sessions; both V3 sessions that migrate
+    // cleanly — verifies the success path with multiple sessions.
     const MANIFEST_TWO_SESSIONS = {
       version: 2 as const,
       activeSessionId: SESSION_ID,
@@ -687,7 +677,7 @@ describe('bootstrap() — Scenario E: V3→V4 eager migration', () => {
 // Scenario E: V3 session in storage → migration on bootstrap
 // ---------------------------------------------------------------------------
 
-describe('bootstrap() — Scenario E: V3 session migrated to V4 on bootstrap', () => {
+describe('bootstrap() — Scenario E2 (V3 populated session): V3 session migrated to V4 on bootstrap', () => {
   beforeEach(() => {
     vi.clearAllMocks();
   });

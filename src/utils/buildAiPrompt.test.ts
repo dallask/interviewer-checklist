@@ -20,8 +20,8 @@ const minimalSession: V3Session = {
 
 const sessionWithScore: V3Session = {
   ...minimalSession,
-  scores: { 'twig-0': 8 },
-  notes: { 'twig-0': 'Knows Twig basics well.' },
+  scores: { 'twig-q0': 8 },
+  notes: { 'twig-q0': 'Knows Twig basics well.' },
 };
 
 const sessionWithCandidate: V3Session = {
@@ -68,8 +68,8 @@ const sessionWithTopicNote: V3Session = {
 
 const sessionWithQuestionNote: V3Session = {
   ...minimalSession,
-  scores: { 'twig-0': 5 },
-  notes: { 'twig-0': 'Needs improvement on variable scope.' },
+  scores: { 'twig-q0': 5 },
+  notes: { 'twig-q0': 'Needs improvement on variable scope.' },
 };
 
 // ---------------------------------------------------------------------------
@@ -125,7 +125,7 @@ describe('buildAiPrompt — empty session / no scores', () => {
 });
 
 describe('buildAiPrompt — scored session', () => {
-  it('contains "[8]" for a question scored 8 (key twig-0)', () => {
+  it('contains "[8]" for a question scored 8 (key twig-q0)', () => {
     const result = buildAiPrompt(sessionWithScore, DEFAULT_SECTIONS);
     expect(result).toContain('[8]');
   });

@@ -92,10 +92,10 @@ describe('SectionFilter', () => {
   });
 
   it('shows a numeric mark (not "—") for first section when a question is scored', () => {
-    // Find first section and first topic to build a valid score key
+    // Find first section and first topic to build a valid score key (V4 format)
     const firstSection = DEFAULT_SECTIONS[0];
     const firstTopic = firstSection.items[0];
-    const scoreKey = `${firstTopic.id}-0`;
+    const scoreKey = `${firstTopic.id}-q0`;
 
     mockUseAppStore.mockImplementation((selector: (s: unknown) => unknown) =>
       selector({
@@ -118,7 +118,7 @@ describe('SectionFilter', () => {
   it('scored section mark has a band color class', () => {
     const firstSection = DEFAULT_SECTIONS[0];
     const firstTopic = firstSection.items[0];
-    const scoreKey = `${firstTopic.id}-0`;
+    const scoreKey = `${firstTopic.id}-q0`;
 
     mockUseAppStore.mockImplementation((selector: (s: unknown) => unknown) =>
       selector({

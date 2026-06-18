@@ -7,7 +7,7 @@ import type { V3Session } from '../storage/types.js';
  *
  * Pure function — no side effects, no DOM calls, no React.
  *
- * Score key format: `${topicId}-${questionIndex}` (0-based index within topic.questions).
+ * Score key format: `${topicId}-q${questionIndex}` (0-based index within topic.questions).
  * This matches the store key format confirmed at src/store/app.ts line 68.
  */
 export function exportSession(
@@ -36,7 +36,7 @@ export function exportSession(
           override: session.overrides[topic.id] ?? null,
           topicNote: session.topicNotes[topic.id] ?? '',
           questions: topic.questions.map((_, index) => {
-            const questionId = `${topic.id}-${index}`;
+            const questionId = `${topic.id}-q${index}`;
             return {
               index,
               score: session.scores[questionId] ?? null,

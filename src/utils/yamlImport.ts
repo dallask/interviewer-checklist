@@ -504,7 +504,7 @@ export function reKeyImportResultToV4(result: ImportResult): ImportResult {
   function remap<T>(record: Record<string, T>): Record<string, T> {
     const out: Record<string, T> = {};
     for (const [key, value] of Object.entries(record)) {
-      const match = /^(.+)-(\d+)$/.exec(key);
+      const match = !key.startsWith('custom-') && /^(.+)-(\d+)$/.exec(key);
       out[match ? `${match[1]}-q${match[2]}` : key] = value;
     }
     return out;

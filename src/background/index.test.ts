@@ -51,7 +51,7 @@ describe('service worker structural constraints (src/background/index.ts)', () =
 
   it('demo seed uses real topic IDs from DEFAULT_SECTIONS (POLISH-01)', () => {
     // Real IDs from src/data/bank/frontend.ts: 'js' (line 121) and 'twig' (line 9).
-    // The store key format is `${topicId}-${index}` (src/store/app.ts).
+    // The store key format is `${topicId}-q${index}` (V4 format, D-04, src/store/app.ts).
     expect(src).toContain("'js-0': 8");
     expect(src).toContain("'js-1': 7");
     expect(src).toContain("'twig-0': 6");

@@ -538,14 +538,49 @@ export function parseStructural(
           // T-14-04: skip colliding IDs to prevent default section corruption
           continue;
         }
-        // Minimal V4Section shape — unsafe cast; topics from user-provided YAML
+        // WR-03: validate each topic and question before pushing to prevent
+        // malformed YAML entries (missing id/name, non-array questions) from
+        // reaching downstream code that assumes well-shaped V4Section data.
         addedSections.push({
           id: s.id,
           label: typeof s.label === 'string' ? s.label : '',
           icon: typeof s.icon === 'string' ? s.icon : '🔧',
           isDefault: false,
           topics: Array.isArray(s.topics)
-            ? (s.topics as V4Section['topics'])
+            ? (s.topics as unknown[]).reduce<V4Section['topics']>((acc, rawTopic) => {
+                if (rawTopic == null || typeof rawTopic !== 'object') return acc;
+                const t = rawTopic as Record<string, unknown>;
+                if (typeof t.id !== 'string' || typeof t.name !== 'string') return acc;
+                acc.push({
+                  id: t.id,
+                  name: t.name,
+                  desc: typeof t.desc === 'string' ? t.desc : '',
+                  tag: typeof t.tag === 'string' ? t.tag : '',
+                  isDefault: false,
+                  questions: Array.isArray(t.questions)
+                    ? (t.questions as unknown[]).reduce<V4Section['topics'][number]['questions']>(
+                        (qs, rawQ) => {
+                          if (rawQ == null || typeof rawQ !== 'object') return qs;
+                          const qr = rawQ as Record<string, unknown>;
+                          if (typeof qr.id !== 'string' || typeof qr.text !== 'string') return qs;
+                          qs.push({
+                            id: qr.id,
+                            text: qr.text,
+                            level: ['novice', 'intermediate', 'advanced', 'expert'].includes(
+                              qr.level as string,
+                            )
+                              ? (qr.level as V4Section['topics'][number]['questions'][number]['level'])
+                              : 'novice',
+                            isDefault: false,
+                          });
+                          return qs;
+                        },
+                        [],
+                      )
+                    : [],
+                });
+                return acc;
+              }, [])
             : [],
         });
       }

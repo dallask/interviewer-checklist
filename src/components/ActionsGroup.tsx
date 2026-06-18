@@ -133,10 +133,13 @@ export function ActionsGroup() {
 
   const handleImportConfirm = async (overwriteActive: boolean) => {
     if (!importPreview) return;
-    await useAppStore
-      .getState()
-      .importSession(importPreview.result, overwriteActive);
-    setImportPreview(null);
+    try {
+      await useAppStore
+        .getState()
+        .importSession(importPreview.result, overwriteActive);
+    } finally {
+      setImportPreview(null);
+    }
   };
 
   return (

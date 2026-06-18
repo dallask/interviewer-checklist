@@ -11,6 +11,8 @@ export function SearchGroup() {
   const sectionOpen = useAppStore((s) => s.sectionOpen);
   // Phase 14: use store sections (V4Section[]) instead of DEFAULT_SECTIONS (Plan 01 pattern)
   const sections = useAppStore((s) => s.sections);
+  // WR-02: include removedDefaultQuestionIds so resultCount matches rendered rows
+  const removedDefaultQuestionIds = useAppStore((s) => s.removedDefaultQuestionIds);
   const [localValue, setLocalValue] = useState('');
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -46,6 +48,7 @@ export function SearchGroup() {
         searchQuery,
         selectedDifficulties,
         selectedSections,
+        removedDefaultQuestionIds, // WR-02: exclude removed questions from count
       }).filter((r) => r.type === 'question').length,
     [
       sections,
@@ -54,6 +57,7 @@ export function SearchGroup() {
       selectedSections,
       topicOpen,
       sectionOpen,
+      removedDefaultQuestionIds,
     ],
   );
 

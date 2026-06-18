@@ -102,9 +102,7 @@ export function SessionSwitcherModal({ dialogRef }: Props) {
 
       {/* Session list */}
       <ul
-        role="listbox"
         aria-label="Sessions"
-        aria-activedescendant={`session-row-${activeSessionId}`}
         className="flex-1 overflow-y-auto max-h-[352px] py-1"
       >
         {manifest?.sessions.map((session) => (

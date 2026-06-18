@@ -225,6 +225,33 @@ describe('SESS-05: SessionSwitcherModal backdrop click', () => {
   });
 });
 
+// ─── Shared QuestionCard row fixture ─────────────────────────────────────────
+
+const mockQuestionRow = {
+  type: 'question' as const,
+  topicId: 'topic-js',
+  index: 0,
+  question: {
+    q: 'What is a closure?',
+    level: 'intermediate' as const,
+  },
+  isCustom: false as const,
+  customId: undefined,
+};
+
+// ─── Shared TopicRow row fixture ──────────────────────────────────────────────
+
+const mockTopicRowData = {
+  type: 'topic' as const,
+  topic: {
+    id: 'topic-js',
+    name: 'JavaScript',
+    questions: [{ q: 'What is a closure?', level: 'intermediate' as const }],
+  },
+  isOpen: true,
+  questionCount: 1,
+};
+
 // ─── UI-09: hideNotes store state ────────────────────────────────────────────
 
 describe('UI-09: hideNotes store state (D-06, D-07)', () => {
@@ -247,5 +274,140 @@ describe('UI-09: hideNotes store state (D-06, D-07)', () => {
     expect(defaultHideNotes).toBe(false);
     // Not undefined — it's an explicit false (volatile reset, not missing field)
     expect(defaultHideNotes).not.toBeUndefined();
+  });
+});
+
+// ─── UI-09: QuestionCard note suppression ─────────────────────────────────────
+
+describe('UI-09: QuestionCard note suppression (D-08)', () => {
+  afterEach(() => {
+    cleanup();
+  });
+
+  it('QuestionCard with hideNotes=true has the note section wrapper with class "hidden"', () => {
+    mockUseAppStore.mockImplementation((selector: (s: unknown) => unknown) =>
+      selector({
+        scores: {},
+        notes: {},
+        setScore: vi.fn(),
+        setNote: vi.fn(),
+        deleteCustomQuestion: vi.fn(),
+        printMode: false,
+        hideNotes: true,
+      }),
+    );
+
+    render(<QuestionCard row={mockQuestionRow} />);
+
+    // The note toggle button (aria-controls="notes-topic-js-q0") is inside the notes wrapper
+    // When hideNotes=true, its parent wrapper div should have class "hidden"
+    const noteToggleButton = document.querySelector('button[aria-controls="notes-topic-js-q0"]');
+    expect(noteToggleButton).not.toBeNull();
+    const wrapper = noteToggleButton!.parentElement as HTMLElement;
+    expect(wrapper.className).toContain('hidden');
+  });
+
+  it('QuestionCard with hideNotes=true AND printMode=true does NOT suppress notes', () => {
+    mockUseAppStore.mockImplementation((selector: (s: unknown) => unknown) =>
+      selector({
+        scores: {},
+        notes: {},
+        setScore: vi.fn(),
+        setNote: vi.fn(),
+        deleteCustomQuestion: vi.fn(),
+        printMode: true,
+        hideNotes: true,
+      }),
+    );
+
+    render(<QuestionCard row={mockQuestionRow} />);
+
+    // In print mode, the notes section wrapper must NOT have the "hidden" class
+    const noteToggleButton = document.querySelector('button[aria-controls="notes-topic-js-q0"]');
+    expect(noteToggleButton).not.toBeNull();
+    const wrapper = noteToggleButton!.parentElement as HTMLElement;
+    expect(wrapper.className).not.toContain('hidden');
+  });
+
+  it('QuestionCard with hideNotes=false does NOT suppress notes', () => {
+    mockUseAppStore.mockImplementation((selector: (s: unknown) => unknown) =>
+      selector({
+        scores: {},
+        notes: {},
+        setScore: vi.fn(),
+        setNote: vi.fn(),
+        deleteCustomQuestion: vi.fn(),
+        printMode: false,
+        hideNotes: false,
+      }),
+    );
+
+    render(<QuestionCard row={mockQuestionRow} />);
+
+    // Notes section wrapper should not have class "hidden"
+    const noteToggleButton = document.querySelector('button[aria-controls="notes-topic-js-q0"]');
+    expect(noteToggleButton).not.toBeNull();
+    const wrapper = noteToggleButton!.parentElement as HTMLElement;
+    expect(wrapper.className).not.toContain('hidden');
+  });
+});
+
+// ─── UI-09: TopicRow note panel suppression ────────────────────────────────────
+
+describe('UI-09: TopicRow notes panel suppression (D-08)', () => {
+  afterEach(() => {
+    cleanup();
+  });
+
+  it('TopicRow with hideNotes=true has the notes panel wrapper with class "hidden"', () => {
+    mockUseAppStore.mockImplementation((selector: (s: unknown) => unknown) =>
+      selector({
+        toggleTopic: vi.fn(),
+        setTopicNote: vi.fn(),
+        printMode: false,
+        hideNotes: true,
+        topicNotes: {},
+        scores: {},
+        overrides: {},
+        setOverride: vi.fn(),
+        customQuestions: [],
+        addCustomQuestion: vi.fn(),
+      }),
+    );
+
+    render(<TopicRow row={mockTopicRowData} />);
+
+    // The topic notes panel outer div (which wraps both the toggle button and the textarea)
+    // should have class "hidden" when hideNotes=true
+    // The toggle button is aria-controls="topic-notes-topic-js"
+    const topicNoteToggle = document.querySelector('button[aria-controls="topic-notes-topic-js"]');
+    expect(topicNoteToggle).not.toBeNull();
+    const notesPanel = topicNoteToggle!.parentElement as HTMLElement;
+    expect(notesPanel.className).toContain('hidden');
+  });
+
+  it('TopicRow with hideNotes=true AND printMode=true does NOT suppress notes panel', () => {
+    mockUseAppStore.mockImplementation((selector: (s: unknown) => unknown) =>
+      selector({
+        toggleTopic: vi.fn(),
+        setTopicNote: vi.fn(),
+        printMode: true,
+        hideNotes: true,
+        topicNotes: {},
+        scores: {},
+        overrides: {},
+        setOverride: vi.fn(),
+        customQuestions: [],
+        addCustomQuestion: vi.fn(),
+      }),
+    );
+
+    render(<TopicRow row={mockTopicRowData} />);
+
+    // In printMode=true, the notes panel must NOT have "hidden" class
+    const topicNoteToggle = document.querySelector('button[aria-controls="topic-notes-topic-js"]');
+    expect(topicNoteToggle).not.toBeNull();
+    const notesPanel = topicNoteToggle!.parentElement as HTMLElement;
+    expect(notesPanel.className).not.toContain('hidden');
   });
 });

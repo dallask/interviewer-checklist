@@ -29,6 +29,8 @@ export function ActionsGroup() {
   const collapseAll = useAppStore((s) => s.collapseAll);
   const hideMarked = useAppStore((s) => s.hideMarked);
   const setHideMarked = useAppStore((s) => s.setHideMarked);
+  const hideNotes = useAppStore((s) => s.hideNotes);
+  const setHideNotes = useAppStore((s) => s.setHideNotes);
   const darkMode = useAppStore((s) => s.darkMode);
   const setDarkMode = useAppStore((s) => s.setDarkMode);
   const manifest = useAppStore((s) => s.manifest);
@@ -186,6 +188,16 @@ export function ActionsGroup() {
         className="w-full text-sm px-3 py-2 text-left text-gray-900 dark:text-gray-100 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none"
       >
         Hide marked topics
+      </button>
+      <button
+        type="button"
+        aria-pressed={hideNotes}
+        onClick={() => setHideNotes(!hideNotes)}
+        title="Hide notes"
+        aria-label="Hide notes"
+        className={`p-2 min-h-[44px] min-w-[44px] text-sm rounded focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none ${hideNotes ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300' : 'text-gray-900 dark:text-gray-100 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600'}`}
+      >
+        📝
       </button>
       <button
         type="button"

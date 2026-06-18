@@ -1,7 +1,8 @@
 import * as v from 'valibot';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { chrome } from 'vitest-chrome';
 import { bootstrap } from './bootstrap.js';
+import * as v3ToV4 from './migrations/v3-to-v4.js';
 import {
   V3_SESSION_POPULATED,
 } from './migrations/fixtures/v3-session-fixture.js';
@@ -596,17 +597,21 @@ describe('bootstrap() — Scenario E: V3 session migrated to V4 on bootstrap', (
 // ---------------------------------------------------------------------------
 
 describe('bootstrap() — Scenario F: failed migration → session excluded', () => {
+  let migrateSpy: ReturnType<typeof vi.spyOn>;
+
   beforeEach(() => {
     vi.clearAllMocks();
+    // Spy on migrateV3ToV4 and make it throw — simulates a migration failure (D-06)
+    migrateSpy = vi.spyOn(v3ToV4, 'migrateV3ToV4').mockImplementation(() => {
+      throw new Error('migration failed');
+    });
+  });
+
+  afterEach(() => {
+    migrateSpy.mockRestore();
   });
 
   it('excludes session from sessions map when migrateV3ToV4 throws', async () => {
-    vi.mock('./migrations/v3-to-v4.js', () => ({
-      migrateV3ToV4: vi.fn().mockImplementation(() => {
-        throw new Error('migration failed');
-      }),
-    }));
-
     chrome.storage.local.get.mockImplementation((keys, callback) => {
       const keysArr = Array.isArray(keys) ? keys : [keys];
       if (keysArr.includes('manifest')) {
@@ -625,17 +630,11 @@ describe('bootstrap() — Scenario F: failed migration → session excluded', ()
 
     const result = await bootstrap();
 
-    // Session must be excluded when migration fails
+    // Session must be excluded when migration fails (D-06: skip-and-continue)
     expect(result.sessions[SESSION_ID]).toBeUndefined();
   });
 
   it('includes session ID in failedSessionIds when migrateV3ToV4 throws', async () => {
-    vi.mock('./migrations/v3-to-v4.js', () => ({
-      migrateV3ToV4: vi.fn().mockImplementation(() => {
-        throw new Error('migration failed');
-      }),
-    }));
-
     chrome.storage.local.get.mockImplementation((keys, callback) => {
       const keysArr = Array.isArray(keys) ? keys : [keys];
       if (keysArr.includes('manifest')) {

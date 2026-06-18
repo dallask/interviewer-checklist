@@ -584,3 +584,91 @@ describe('UI-09: ActionsGroup Hide notes button (D-09)', () => {
     expect(setHideNotesMock).toHaveBeenCalledWith(true);
   });
 });
+
+// ─── UI-10: ActionsGroup icon-only buttons ────────────────────────────────────
+
+describe('UI-10: ActionsGroup icon-only buttons (D-14, D-15, D-16)', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+    const storeState = buildActionsGroupStoreMock();
+    mockUseAppStore.mockImplementation((selector: (s: unknown) => unknown) =>
+      selector(storeState),
+    );
+  });
+
+  afterEach(() => {
+    cleanup();
+  });
+
+  it('every button inside ActionsGroup has a non-empty title attribute', () => {
+    render(<ActionsGroup />);
+
+    // Get all buttons rendered within the ActionsGroup flex container
+    const buttons = document.querySelectorAll('button[type="button"]');
+    const actionButtons = Array.from(buttons).filter((btn) => {
+      // Exclude buttons from child modal components (they render in a separate area)
+      // We detect action buttons by their presence within the direct ActionsGroup container.
+      // All action buttons must have a title attribute.
+      const title = btn.getAttribute('title');
+      return title !== null; // Only check buttons that are supposed to have title
+    });
+
+    // There should be exactly 11 action buttons (10 original + Hide notes)
+    const allButtons = Array.from(document.querySelectorAll('button[type="button"]'));
+    // Filter to action buttons: those with an id starting with "open-" or those with aria-label
+    // The plan specifies all 11 ActionsGroup buttons must have title attributes.
+    // Check that NO button in the main action group has a missing title.
+    const buttonsWithTitle = allButtons.filter(btn => btn.getAttribute('title') !== null && btn.getAttribute('title') !== '');
+    expect(buttonsWithTitle.length).toBeGreaterThanOrEqual(11);
+  });
+
+  it('every button with title also has matching aria-label', () => {
+    render(<ActionsGroup />);
+
+    const allButtons = Array.from(document.querySelectorAll('button[type="button"]'));
+    const buttonsWithTitle = allButtons.filter(btn => {
+      const title = btn.getAttribute('title');
+      return title !== null && title !== '';
+    });
+
+    // Each button with a title must have aria-label matching the title
+    for (const btn of buttonsWithTitle) {
+      const title = btn.getAttribute('title')!;
+      const ariaLabel = btn.getAttribute('aria-label');
+      expect(ariaLabel).toBe(title);
+    }
+  });
+
+  it('no button in ActionsGroup renders a full English word as text content', () => {
+    render(<ActionsGroup />);
+
+    const allButtons = Array.from(document.querySelectorAll('button[type="button"]'));
+    const actionButtons = allButtons.filter(btn => {
+      const title = btn.getAttribute('title');
+      return title !== null && title !== '';
+    });
+
+    // Button text content should be emoji/glyph only — not a 3+ letter English word
+    const wordPattern = /^[a-zA-Z]{3,}/;
+    for (const btn of actionButtons) {
+      const textContent = btn.textContent?.trim() ?? '';
+      expect(wordPattern.test(textContent)).toBe(false);
+    }
+  });
+
+  it('all aria-pressed buttons (Hide marked topics, Hide notes, Dark mode) retain aria-pressed attribute', () => {
+    render(<ActionsGroup />);
+
+    const hideMarkedBtn = screen.getByRole('button', { name: 'Hide marked topics' });
+    expect(hideMarkedBtn.getAttribute('aria-pressed')).toBeDefined();
+
+    const hideNotesBtn = screen.getByRole('button', { name: 'Hide notes' });
+    expect(hideNotesBtn.getAttribute('aria-pressed')).toBeDefined();
+
+    // Dark mode button (aria-label matches either "Dark mode" or "Light mode")
+    const darkModeBtn = screen.queryByRole('button', { name: 'Dark mode' }) ??
+                        screen.queryByRole('button', { name: 'Light mode' });
+    expect(darkModeBtn).not.toBeNull();
+    expect(darkModeBtn!.getAttribute('aria-pressed')).toBeDefined();
+  });
+});

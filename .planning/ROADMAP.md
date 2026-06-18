@@ -261,7 +261,20 @@ Plans:
   4. The extension loads cleanly in a fresh Chrome profile (not the dev profile) and passes all manual checks
   5. The public Chrome Web Store listing is live with accurate description, screenshots, and linked privacy policy
 
-**Plans**: TBD
+**Plans**: 3 plans
+
+Plans:
+**Wave 1**
+
+- [ ] 10-01-PLAN.md — Generate CWS submission artifacts: PRIVACY.md + docs/cws-submission.md + cws-assets/CWS-SCREENSHOTS.md + cws-assets/CWS-SMOKE-TEST.md + .gitignore update (CWS-01, CWS-02, CWS-03, CWS-04)
+
+**Wave 2** *(blocked on Wave 1 completion)*
+
+- [ ] 10-02-PLAN.md — Build production dist.zip + user captures 3 screenshots + user runs fresh-profile smoke test (CWS-03, CWS-04, CWS-05)
+
+**Wave 3** *(blocked on Wave 2 completion)*
+
+- [ ] 10-03-PLAN.md — User publishes privacy policy to stable HTTPS URL + uploads dist.zip and submits to CWS dashboard (CWS-01, CWS-02, CWS-05)
 
 ## Progress
 
@@ -279,4 +292,4 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 →
 | 7. YAML Import & Export | 2/2 | Complete    | 2026-06-17 |
 | 8. AI Prompt Modal | 2/2 | Complete    | 2026-06-17 |
 | 9. Polish — Print, Keyboard, A11y, Welcome & Updates | 3/3 | Complete    | 2026-06-18 |
-| 10. Chrome Web Store Submission | 0/? | Not started | - |
+| 10. Chrome Web Store Submission | 0/3 | Not started | - |

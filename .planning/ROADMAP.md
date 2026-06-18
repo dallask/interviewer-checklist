@@ -75,7 +75,7 @@ Full archive: [milestones/v1.0-ROADMAP.md](milestones/v1.0-ROADMAP.md)
 
 **Wave 1** *(all independent — run in parallel)*
 
-- [ ] 12-01-PLAN.md — SCORE-07: TopicMarkDisplay fieldset stopPropagation; SESS-05: SessionSwitcherModal backdrop click close
+- [x] 12-01-PLAN.md — SCORE-07: TopicMarkDisplay fieldset stopPropagation; SESS-05: SessionSwitcherModal backdrop click close
 - [ ] 12-02-PLAN.md — UI-09: hideNotes store field + QuestionCard + TopicRow note suppression
 - [ ] 12-03-PLAN.md — UI-11: SidebarGroup icon prop + Sidebar icon pass-through; UI-12: remove md: breakpoint sidebar overrides
 
@@ -147,7 +147,7 @@ Full archive: [milestones/v1.0-ROADMAP.md](milestones/v1.0-ROADMAP.md)
 | 9. Polish | v1.0 | 3/3 | Complete | 2026-06-18 |
 | 10. Chrome Web Store Submission | v1.0 | 3/3 (manual submission tasks pending user action) | Complete | 2026-06-18 |
 | 11. V4 Session Migration & Legacy Compat | v1.1 | 3/3 | Complete    | 2026-06-18 |
-| 12. UAT Defect Cleanup | v1.1 | 0/4 | Not started | — |
+| 12. UAT Defect Cleanup | v1.1 | 1/4 | In Progress|  |
 | 13. Filter Overhaul | v1.1 | 0/0 | Not started | — |
 | 14. Editable Bank & YAML Schema Expansion | v1.1 | 0/0 | Not started | — |
 | 15. Sidebar Shell Refactor & Compact QuestionCard | v1.1 | 0/0 | Not started | — |

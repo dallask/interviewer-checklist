@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.1
 milestone_name: Post-UAT Fix + Polish
 status: executing
-stopped_at: Phase 12 context gathered
-last_updated: "2026-06-18T09:22:46.680Z"
-last_activity: 2026-06-18 -- Phase 12 planning complete
+stopped_at: Completed 12-uat-defect-cleanup-01-PLAN.md
+last_updated: "2026-06-18T09:28:24.477Z"
+last_activity: 2026-06-18 -- Phase 12 execution started
 progress:
   total_phases: 5
   completed_phases: 1
-  total_plans: 3
-  completed_plans: 3
+  total_plans: 7
+  completed_plans: 4
   percent: 20
 ---
 
@@ -21,14 +21,14 @@ progress:
 See: .planning/PROJECT.md (updated 2026-06-18)
 
 **Core value:** A single interviewer/candidate can run an end-to-end weighted scoring session — pick topics, score questions on 0–10 with difficulty weighting, capture notes, see live overall + per-group marks, and export a structured YAML / AI-feedback prompt — entirely inside a browser tab with no backend.
-**Current focus:** Phase 11 — V4 Session Migration & Legacy Compat
+**Current focus:** Phase 12 — uat-defect-cleanup
 
 ## Current Position
 
-Phase: 12
-Plan: Not started
+Phase: 12 (uat-defect-cleanup) — EXECUTING
+Plan: 2 of 4
 Status: Ready to execute
-Last activity: 2026-06-18 -- Phase 12 planning complete
+Last activity: 2026-06-18 -- Phase 12 execution started
 
 ## Performance Metrics
 
@@ -59,6 +59,7 @@ Last activity: 2026-06-18 -- Phase 12 planning complete
 - Trend: —
 
 *Updated after each plan completion*
+| Phase 12-uat-defect-cleanup P01 | 5min | 2 tasks | 3 files |
 
 ## Accumulated Context
 
@@ -73,6 +74,8 @@ Recent decisions affecting current work:
 - v1.1 sequencing: V3→V4 migration (Phase 11) precedes any phase consuming the V4 schema (filters, editable bank, sidebar shell, compact card)
 - Legacy progress-only YAML import path is a regression boundary — surfaced as a success criterion on Phase 11, not a separate requirement
 - SCORE-08 (compact QuestionCard) isolated with the sidebar shell refactor (Phase 15) to keep visual-redesign diff reviewable
+- [Phase ?]: stopPropagation on TopicMarkDisplay fieldset (both onClick and onMouseDown): prevents override clicks from triggering toggleTopic (SCORE-07)
+- [Phase ?]: Backdrop-click close on SessionSwitcherModal dialog using e.target === dialogRef.current guard; onClick chosen over onMouseDown per CandidateModal analog (SESS-05)
 
 ### Pending Todos
 
@@ -104,9 +107,9 @@ Phase 10 manual CWS submission (publish PRIVACY.md to HTTPS URL, capture 1280×8
 
 ## Session Continuity
 
-Last session: 2026-06-18T09:00:57.820Z
-Stopped at: Phase 12 context gathered
-Resume file: .planning/phases/12-uat-defect-cleanup/12-CONTEXT.md
+Last session: 2026-06-18T09:28:24.474Z
+Stopped at: Completed 12-uat-defect-cleanup-01-PLAN.md
+Resume file: None
 
 ## Operator Next Steps
 

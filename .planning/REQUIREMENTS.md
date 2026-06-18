@@ -12,12 +12,12 @@
 
 ### Scoring UI
 
-- [ ] **SCORE-07**: Manual topic-override control does not toggle the parent topic's expanded/collapsed state when opened or changed (fix for D1, test 5)
+- [x] **SCORE-07**: Manual topic-override control does not toggle the parent topic's expanded/collapsed state when opened or changed (fix for D1, test 5)
 - [ ] **SCORE-08**: Question card renders compactly — score control is a dropdown on the left (0–10 + skip), a note icon button on the right toggles a note textarea below the question, and the card collapses to a single line by default (E1; locked to screenshot spec Images #1–#3)
 
 ### Sessions
 
-- [ ] **SESS-05**: Session switcher modal can be closed by the user via Esc, backdrop click, and a visible Close button; modal renders as an overlay above (not inside) the sidebar (fix for D2, test 6)
+- [x] **SESS-05**: Session switcher modal can be closed by the user via Esc, backdrop click, and a visible Close button; modal renders as an overlay above (not inside) the sidebar (fix for D2, test 6)
 
 ### Sidebar Shell
 
@@ -47,8 +47,8 @@
 - [ ] **YAML-04**: YAML export schema for default questions includes per-question `text` and `level` fields in addition to `index`, `score`, and `note` (D4, test 7)
 - [ ] **YAML-05**: YAML export preserves per-custom-question notes that the user added (fix for D5, test 7)
 - [ ] **YAML-06**: YAML export/import schema represents user-added and user-removed sections/topics so that the editable-bank state round-trips through export → import (covers BANK-01..05 in YAML)
-- [ ] **DATA-01**: V3 → V4 session migration applies on load to materialize default sections/topics into the user-editable bank shape; V3 sessions hydrate without data loss; legacy progress-only YAML imports still work
-- [ ] **DATA-02**: Importing a v1.0-era full-structural YAML export (V3 schema) into v1.1 produces an equivalent V4 session with no loss of scores, notes, candidate details, or custom questions
+- [x] **DATA-01**: V3 → V4 session migration applies on load to materialize default sections/topics into the user-editable bank shape; V3 sessions hydrate without data loss; legacy progress-only YAML imports still work
+- [x] **DATA-02**: Importing a v1.0-era full-structural YAML export (V3 schema) into v1.1 produces an equivalent V4 session with no loss of scores, notes, candidate details, or custom questions
 
 ## v2 Requirements
 
@@ -76,9 +76,9 @@ Deferred. Not in v1.1 roadmap.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| SCORE-07 | Phase 12 | Pending |
+| SCORE-07 | Phase 12 | Complete |
 | SCORE-08 | Phase 15 | Pending |
-| SESS-05 | Phase 12 | Pending |
+| SESS-05 | Phase 12 | Complete |
 | UI-09 | Phase 12 | Pending |
 | UI-10 | Phase 12 | Pending |
 | UI-11 | Phase 12 | Pending |
@@ -96,15 +96,17 @@ Deferred. Not in v1.1 roadmap.
 | YAML-04 | Phase 14 | Pending |
 | YAML-05 | Phase 14 | Pending |
 | YAML-06 | Phase 14 | Pending |
-| DATA-01 | Phase 11 | Pending |
-| DATA-02 | Phase 11 | Pending |
+| DATA-01 | Phase 11 | Complete |
+| DATA-02 | Phase 11 | Complete |
 
 **Coverage:**
+
 - v1.1 requirements: 22 total
 - Mapped to phases: 22 ✓
 - Unmapped: 0 ✓
 
 **Phase distribution:**
+
 - Phase 11 (V4 Migration & Legacy Compat): 2 requirements — DATA-01, DATA-02
 - Phase 12 (UAT Defect Cleanup): 6 requirements — SCORE-07, SESS-05, UI-09, UI-10, UI-11, UI-12
 - Phase 13 (Filter Overhaul): 2 requirements — UI-16, UI-17

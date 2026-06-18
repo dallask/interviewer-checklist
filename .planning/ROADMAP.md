@@ -32,7 +32,7 @@ Full archive: [milestones/v1.0-ROADMAP.md](milestones/v1.0-ROADMAP.md)
 - [x] **Phase 12: UAT Defect Cleanup** — Six small-touch fixes: topic-override propagation, session modal close paths, hide-notes wiring, sidebar icon buttons + section icons, desktop sidebar toggle (completed 2026-06-18)
 - [x] **Phase 13: Filter Overhaul** — Difficulty and Section filters get "All" rows, colored/emoji indicators, and live per-row counts (completed 2026-06-18)
 - [x] **Phase 14: Editable Bank & YAML Schema Expansion** — Users can add/remove sections and topics, delete default questions; YAML round-trips the new editable-bank state with full per-question text/level/note fidelity (completed 2026-06-18)
-- [ ] **Phase 15: Sidebar Shell Refactor & Compact QuestionCard** — Sticky sidebar header (toggle + candidate button + final-mark progress line), credit footer + AboutModal, and the compact QuestionCard redesign (dropdown left, note icon right, single-line default)
+- [x] **Phase 15: Sidebar Shell Refactor & Compact QuestionCard** — Sticky sidebar header (toggle + candidate button + final-mark progress line), credit footer + AboutModal, and the compact QuestionCard redesign (dropdown left, note icon right, single-line default) (completed 2026-06-18)
 
 ## Phase Details
 
@@ -161,7 +161,7 @@ Full archive: [milestones/v1.0-ROADMAP.md](milestones/v1.0-ROADMAP.md)
 
 **Wave 2** *(blocked on Wave 1 completion)*
 
-- [ ] 15-04-PLAN.md — Tests: SidebarHeader.test.tsx (new), AboutModal.test.tsx (new), SidebarFooter.test.tsx (updated), Sidebar.test.tsx (updated), QuestionCard.test.tsx (updated)
+- [x] 15-04-PLAN.md — Tests: SidebarHeader.test.tsx (new), AboutModal.test.tsx (new), SidebarFooter.test.tsx (updated), Sidebar.test.tsx (updated), QuestionCard.test.tsx (updated)
 
 **UI hint**: yes
 
@@ -184,4 +184,4 @@ Full archive: [milestones/v1.0-ROADMAP.md](milestones/v1.0-ROADMAP.md)
 | 12. UAT Defect Cleanup | v1.1 | 4/4 | Complete   | 2026-06-18 |
 | 13. Filter Overhaul | v1.1 | 1/1 | Complete   | 2026-06-18 |
 | 14. Editable Bank & YAML Schema Expansion | v1.1 | 5/5 | Complete | 2026-06-18 |
-| 15. Sidebar Shell Refactor & Compact QuestionCard | v1.1 | 3/4 | In Progress|  |
+| 15. Sidebar Shell Refactor & Compact QuestionCard | v1.1 | 4/4 | Complete   | 2026-06-18 |

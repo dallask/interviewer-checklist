@@ -457,17 +457,17 @@ className="text-sm font-normal text-gray-900 dark:text-gray-100 bg-gray-100 dark
 
 ---
 
-## Open Questions
+## Open Questions (RESOLVED)
 
 1. **scrollToIndex timing: `useEffect` vs synchronous after store mutation**
    - What we know: Store mutation is synchronous; React re-renders asynchronously; `useEffect` fires after paint
    - What's unclear: Whether `rowVirtualizer.scrollToIndex` called inside a `useEffect` that watches `rows.length` will correctly target the newly measured row, or whether the virtualizer needs an additional render cycle to update internal measurements
-   - Recommendation: Implement with `useEffect` first; if scroll lands incorrectly, add `flushSync` around the store mutation (but `useFlushSync: false` is set on the virtualizer, so avoid `flushSync` in the component tree)
+   - RESOLVED: Implement with `useEffect` first; if scroll lands incorrectly, add `flushSync` around the store mutation (but `useFlushSync: false` is set on the virtualizer, so avoid `flushSync` in the component tree)
 
 2. **BUG-02 expand-then-scroll sequencing**
    - What we know: `setAddTopicOpenFor` is local state in `ContentTree`; `toggleSectionOpen` is a store action
    - What's unclear: Whether calling `toggleSectionOpen(sectionId)` to expand and then computing `rows.findIndex(...)` gives a valid index in the same render cycle
-   - Recommendation: The expand must happen first (in the `AddTopicForm` submission flow), and the scroll should happen in a subsequent `useEffect` that fires after rows reflect the expanded section
+   - RESOLVED: The expand must happen first (in the `AddTopicForm` submission flow), and the scroll should happen in a subsequent `useEffect` that fires after rows reflect the expanded section
 
 ---
 

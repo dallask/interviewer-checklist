@@ -160,13 +160,15 @@ describe('QuestionCard', () => {
     expect(btn).toHaveAttribute('aria-expanded', 'true');
   });
 
-  it('clicking note icon button shows the textarea', () => {
+  it('clicking note icon button shows the textarea (className toggle, not hidden attribute)', () => {
     render(<QuestionCard row={mockRow} />);
+    const textarea = screen.getByLabelText('Notes for What is JSX?');
+    expect(textarea.className).toContain('hidden');
     const btn = screen.getByRole('button', {
       name: /Toggle note for What is JSX\?/,
     });
     fireEvent.click(btn);
-    const textarea = screen.getByLabelText('Notes for What is JSX?');
+    expect(textarea.className).not.toContain('hidden');
     expect(textarea).not.toHaveAttribute('hidden');
   });
 

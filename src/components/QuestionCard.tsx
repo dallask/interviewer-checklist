@@ -133,9 +133,8 @@ export function QuestionCard({ row }: Props) {
           aria-label={`Notes for ${question.q}`}
           value={localNote}
           onChange={(e) => handleNoteChange(e.target.value)}
-          hidden={!notesOpen && !printMode}
           placeholder="Question notes…"
-          className="w-full resize-y min-h-[64px] text-sm font-normal text-gray-900 dark:text-gray-100 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded p-2 mx-3 mb-2 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none placeholder:text-gray-400 dark:placeholder:text-gray-600 print:h-auto print:overflow-visible print:resize-none print:border-0 print:p-0"
+          className={`w-full resize-y min-h-[64px] text-sm font-normal text-gray-900 dark:text-gray-100 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded p-2 mx-3 mb-2 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none placeholder:text-gray-400 dark:placeholder:text-gray-600 print:h-auto print:overflow-visible print:resize-none print:border-0 print:p-0${!notesOpen && !printMode ? ' hidden' : ''}`}
           style={{ width: 'calc(100% - 1.5rem)' }}
         />
       </div>

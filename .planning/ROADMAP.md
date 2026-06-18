@@ -28,7 +28,7 @@ Full archive: [milestones/v1.0-ROADMAP.md](milestones/v1.0-ROADMAP.md)
 
 ### v1.1 Post-UAT Fix + Polish (Phases 11–15) — ACTIVE
 
-- [ ] **Phase 11: V4 Session Migration & Legacy Compat** — Forward-only V3→V4 migration materializes default sections/topics into editable bank shape; legacy progress-only YAML imports keep working
+- [x] **Phase 11: V4 Session Migration & Legacy Compat** — Forward-only V3→V4 migration materializes default sections/topics into editable bank shape; legacy progress-only YAML imports keep working (completed 2026-06-18)
 - [ ] **Phase 12: UAT Defect Cleanup** — Six small-touch fixes: topic-override propagation, session modal close paths, hide-notes wiring, sidebar icon buttons + section icons, desktop sidebar toggle
 - [ ] **Phase 13: Filter Overhaul** — Difficulty and Section filters get "All" rows, colored/emoji indicators, and live per-row counts
 - [ ] **Phase 14: Editable Bank & YAML Schema Expansion** — Users can add/remove sections and topics, delete default questions; YAML round-trips the new editable-bank state with full per-question text/level/note fidelity
@@ -55,8 +55,8 @@ Full archive: [milestones/v1.0-ROADMAP.md](milestones/v1.0-ROADMAP.md)
 
 **Wave 2** *(blocked on Wave 1 completion)*
 
-- [ ] 11-02-PLAN.md — Bootstrap V3→V4 migration loop, store V4 wiring, MigrationErrorBanner, main.tsx hydration
-- [ ] 11-03-PLAN.md — YAML import V4 key re-keying, ActionsGroup wiring, integration test extensions
+- [x] 11-02-PLAN.md — Bootstrap V3→V4 migration loop, store V4 wiring, MigrationErrorBanner, main.tsx hydration
+- [x] 11-03-PLAN.md — YAML import V4 key re-keying, ActionsGroup wiring, integration test extensions
 
 ### Phase 12: UAT Defect Cleanup
 
@@ -135,7 +135,7 @@ Full archive: [milestones/v1.0-ROADMAP.md](milestones/v1.0-ROADMAP.md)
 | 8. AI Prompt Modal | v1.0 | 2/2 | Complete | 2026-06-17 |
 | 9. Polish | v1.0 | 3/3 | Complete | 2026-06-18 |
 | 10. Chrome Web Store Submission | v1.0 | 3/3 (manual submission tasks pending user action) | Complete | 2026-06-18 |
-| 11. V4 Session Migration & Legacy Compat | v1.1 | 1/3 | In Progress|  |
+| 11. V4 Session Migration & Legacy Compat | v1.1 | 3/3 | Complete   | 2026-06-18 |
 | 12. UAT Defect Cleanup | v1.1 | 0/0 | Not started | — |
 | 13. Filter Overhaul | v1.1 | 0/0 | Not started | — |
 | 14. Editable Bank & YAML Schema Expansion | v1.1 | 0/0 | Not started | — |

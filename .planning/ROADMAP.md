@@ -31,7 +31,7 @@ Full archive: [milestones/v1.0-ROADMAP.md](milestones/v1.0-ROADMAP.md)
 - [x] **Phase 11: V4 Session Migration & Legacy Compat** — Forward-only V3→V4 migration materializes default sections/topics into editable bank shape; legacy progress-only YAML imports keep working (completed 2026-06-18)
 - [x] **Phase 12: UAT Defect Cleanup** — Six small-touch fixes: topic-override propagation, session modal close paths, hide-notes wiring, sidebar icon buttons + section icons, desktop sidebar toggle (completed 2026-06-18)
 - [x] **Phase 13: Filter Overhaul** — Difficulty and Section filters get "All" rows, colored/emoji indicators, and live per-row counts (completed 2026-06-18)
-- [ ] **Phase 14: Editable Bank & YAML Schema Expansion** — Users can add/remove sections and topics, delete default questions; YAML round-trips the new editable-bank state with full per-question text/level/note fidelity
+- [x] **Phase 14: Editable Bank & YAML Schema Expansion** — Users can add/remove sections and topics, delete default questions; YAML round-trips the new editable-bank state with full per-question text/level/note fidelity (completed 2026-06-18)
 - [ ] **Phase 15: Sidebar Shell Refactor & Compact QuestionCard** — Sticky sidebar header (toggle + candidate button + final-mark progress line), credit footer + AboutModal, and the compact QuestionCard redesign (dropdown left, note icon right, single-line default)
 
 ## Phase Details
@@ -121,20 +121,20 @@ Full archive: [milestones/v1.0-ROADMAP.md](milestones/v1.0-ROADMAP.md)
 
 **Wave 1**
 
-- [ ] 14-01-PLAN.md — V4SessionSchema + removedDefaultQuestionIds + 5 store actions + subscribe/hydration wiring + App.tsx sections-from-store
+- [x] 14-01-PLAN.md — V4SessionSchema + removedDefaultQuestionIds + 5 store actions + subscribe/hydration wiring + App.tsx sections-from-store
 
 **Wave 2** *(blocked on 14-01, plans run in parallel)*
 
-- [ ] 14-02-PLAN.md — buildFlatRows: V4Section input, new VirtualRow types, removedDefaultQuestionIds filter, add-topic-trigger / add-section-trigger row emission
-- [ ] 14-03-PLAN.md — YAML v2: exportSession signature change (V4Session), text+level fields, bank block; importSession bank delta extraction; YAML-05 note fix
+- [x] 14-02-PLAN.md — buildFlatRows: V4Section input, new VirtualRow types, removedDefaultQuestionIds filter, add-topic-trigger / add-section-trigger row emission
+- [x] 14-03-PLAN.md — YAML v2: exportSession signature change (V4Session), text+level fields, bank block; importSession bank delta extraction; YAML-05 note fix
 
 **Wave 3** *(blocked on 14-02 + 14-03)*
 
-- [ ] 14-04-PLAN.md — UI: AddSectionForm, AddTopicForm, SectionRow/TopicRow delete buttons, QuestionCard BANK-05 extension, ContentTree ESTIMATE_SIZE + dispatch
+- [x] 14-04-PLAN.md — UI: AddSectionForm, AddTopicForm, SectionRow/TopicRow delete buttons, QuestionCard BANK-05 extension, ContentTree ESTIMATE_SIZE + dispatch
 
 **Wave 4** *(blocked on all prior waves)*
 
-- [ ] 14-05-PLAN.md — Tests: store actions (BANK-01..05), buildFlatRows filter + new rows, yamlExport v2 (YAML-04/06), yamlImport note round-trip + bank delta (YAML-05/06)
+- [x] 14-05-PLAN.md — Tests: store actions (BANK-01..05), buildFlatRows filter + new rows, yamlExport v2 (YAML-04/06), yamlImport note round-trip + bank delta (YAML-05/06)
 
 **UI hint**: yes
 
@@ -172,5 +172,5 @@ Full archive: [milestones/v1.0-ROADMAP.md](milestones/v1.0-ROADMAP.md)
 | 11. V4 Session Migration & Legacy Compat | v1.1 | 3/3 | Complete    | 2026-06-18 |
 | 12. UAT Defect Cleanup | v1.1 | 4/4 | Complete   | 2026-06-18 |
 | 13. Filter Overhaul | v1.1 | 1/1 | Complete   | 2026-06-18 |
-| 14. Editable Bank & YAML Schema Expansion | v1.1 | 0/5 | Not started | — |
+| 14. Editable Bank & YAML Schema Expansion | v1.1 | 5/5 | Complete | 2026-06-18 |
 | 15. Sidebar Shell Refactor & Compact QuestionCard | v1.1 | 0/0 | Not started | — |

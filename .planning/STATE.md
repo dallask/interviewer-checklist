@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v1.1
 milestone_name: Post-UAT Fix + Polish
 status: verifying
-stopped_at: Completed 13-filter-overhaul-01-PLAN.md
-last_updated: "2026-06-18T11:06:48.259Z"
-last_activity: 2026-06-18 -- Phase 12 marked complete
+stopped_at: Completed 14-editable-bank-yaml-schema-expansion-05-PLAN.md
+last_updated: "2026-06-18T16:00:00.000Z"
+last_activity: 2026-06-18 -- Phase 14 marked complete
 progress:
   total_phases: 5
-  completed_phases: 3
-  total_plans: 8
-  completed_plans: 8
-  percent: 60
+  completed_phases: 4
+  total_plans: 13
+  completed_plans: 13
+  percent: 80
 ---
 
 # Project State
@@ -21,14 +21,14 @@ progress:
 See: .planning/PROJECT.md (updated 2026-06-18)
 
 **Core value:** A single interviewer/candidate can run an end-to-end weighted scoring session — pick topics, score questions on 0–10 with difficulty weighting, capture notes, see live overall + per-group marks, and export a structured YAML / AI-feedback prompt — entirely inside a browser tab with no backend.
-**Current focus:** Phase 12 — uat-defect-cleanup
+**Current focus:** Phase 15 — sidebar-shell-refactor-compact-questioncard
 
 ## Current Position
 
-Phase: 12 — COMPLETE
-Plan: 4 of 4 (COMPLETE)
-Status: Phase complete — ready for verification
-Last activity: 2026-06-18 -- Phase 12 marked complete
+Phase: 14 — COMPLETE
+Plan: 5 of 5 (COMPLETE)
+Status: Phase complete — ready for Phase 15 (Sidebar Shell Refactor & Compact QuestionCard)
+Last activity: 2026-06-18 -- Phase 14 marked complete
 
 ## Performance Metrics
 

@@ -63,6 +63,8 @@ export interface AppState {
   selectedSections: Set<string>;
   /** Whether to hide topics with all questions already marked */
   hideMarked: boolean;
+  /** Whether to suppress all note areas (per-question and per-topic) — UI-only, not persisted */
+  hideNotes: boolean;
   /** Dark mode enabled */
   darkMode: boolean;
   // --- ScoringState (Phase 5) ---
@@ -113,6 +115,7 @@ export interface AppActions {
   toggleDifficulty: (d: Difficulty) => void;
   toggleSection: (id: string) => void;
   setHideMarked: (v: boolean) => void;
+  setHideNotes: (v: boolean) => void;
   setDarkMode: (dark: boolean) => void;
   // --- ScoringActions (Phase 5) ---
   /** Set a question score (clamped to [0, 10]; null clears the score). T-05-01-02 */
@@ -166,6 +169,7 @@ export const DEFAULT_STATE: AppState = {
   selectedDifficulties: new Set<Difficulty>(),
   selectedSections: new Set<string>(),
   hideMarked: false,
+  hideNotes: false,
   darkMode: false,
   // ScoringState defaults
   scores: {},
@@ -278,6 +282,8 @@ export const useAppStore = create<AppState & AppActions>()((set) => ({
     }),
 
   setHideMarked: (v) => set({ hideMarked: v }),
+
+  setHideNotes: (v) => set({ hideNotes: v }),
 
   setDarkMode: (dark) => {
     // Sync DOM immediately — T-04-01-01 mitigated by boolean type enforcement

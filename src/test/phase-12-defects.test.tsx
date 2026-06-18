@@ -302,11 +302,11 @@ describe('UI-09: QuestionCard note suppression (D-08)', () => {
 
     render(<QuestionCard row={mockQuestionRow} />);
 
-    // The note toggle button (aria-controls="notes-topic-js-q0") is inside the notes wrapper
-    // When hideNotes=true, its parent wrapper div should have class "hidden"
-    const noteToggleButton = document.querySelector('button[aria-controls="notes-topic-js-q0"]');
-    expect(noteToggleButton).not.toBeNull();
-    const wrapper = noteToggleButton!.parentElement as HTMLElement;
+    // Phase 15: compact card — notes wrapper is the textarea's parent div, not the
+    // note-icon button's parent (which is the compact row and carries print:hidden).
+    const textarea = document.getElementById('notes-topic-js-q0');
+    expect(textarea).not.toBeNull();
+    const wrapper = textarea!.parentElement as HTMLElement;
     expect(wrapper.className).toContain('hidden');
   });
 
@@ -326,9 +326,9 @@ describe('UI-09: QuestionCard note suppression (D-08)', () => {
     render(<QuestionCard row={mockQuestionRow} />);
 
     // In print mode, the notes section wrapper must NOT have the "hidden" class
-    const noteToggleButton = document.querySelector('button[aria-controls="notes-topic-js-q0"]');
-    expect(noteToggleButton).not.toBeNull();
-    const wrapper = noteToggleButton!.parentElement as HTMLElement;
+    const textarea = document.getElementById('notes-topic-js-q0');
+    expect(textarea).not.toBeNull();
+    const wrapper = textarea!.parentElement as HTMLElement;
     expect(wrapper.className).not.toContain('hidden');
   });
 
@@ -348,9 +348,9 @@ describe('UI-09: QuestionCard note suppression (D-08)', () => {
     render(<QuestionCard row={mockQuestionRow} />);
 
     // Notes section wrapper should not have class "hidden"
-    const noteToggleButton = document.querySelector('button[aria-controls="notes-topic-js-q0"]');
-    expect(noteToggleButton).not.toBeNull();
-    const wrapper = noteToggleButton!.parentElement as HTMLElement;
+    const textarea = document.getElementById('notes-topic-js-q0');
+    expect(textarea).not.toBeNull();
+    const wrapper = textarea!.parentElement as HTMLElement;
     expect(wrapper.className).not.toContain('hidden');
   });
 });
@@ -613,13 +613,10 @@ describe('UI-10: ActionsGroup icon-only buttons (D-14, D-15, D-16)', () => {
       return title !== null; // Only check buttons that are supposed to have title
     });
 
-    // There should be exactly 11 action buttons (10 original + Hide notes)
+    // Phase 15: "Candidate details" button moved to SidebarHeader — 10 buttons remain in ActionsGroup.
     const allButtons = Array.from(document.querySelectorAll('button[type="button"]'));
-    // Filter to action buttons: those with an id starting with "open-" or those with aria-label
-    // The plan specifies all 11 ActionsGroup buttons must have title attributes.
-    // Check that NO button in the main action group has a missing title.
     const buttonsWithTitle = allButtons.filter(btn => btn.getAttribute('title') !== null && btn.getAttribute('title') !== '');
-    expect(buttonsWithTitle.length).toBe(11);
+    expect(buttonsWithTitle.length).toBe(10);
   });
 
   it('every button with title also has matching aria-label', () => {

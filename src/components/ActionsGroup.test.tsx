@@ -158,6 +158,7 @@ describe('ActionsGroup', () => {
 
   it('ActionsGroup own buttons have focus-visible ring classes', () => {
     render(<ActionsGroup />);
+    // Phase 15: "Candidate details" button moved to SidebarHeader — not tested here
     const ownButtonNames = [
       /switch session/i,
       /ai feedback prompt/i,
@@ -165,7 +166,6 @@ describe('ActionsGroup', () => {
       /collapse all/i,
       /hide marked topics/i,
       /dark mode/i,
-      /candidate details/i,
       /import yaml/i,
       /export yaml/i,
       /reset all/i,
@@ -175,20 +175,6 @@ describe('ActionsGroup', () => {
       expect(btn.className).toContain('focus-visible:ring-2');
       expect(btn.className).toContain('focus-visible:ring-blue-500');
     }
-  });
-
-  it('renders "Candidate details" button with id="open-candidate-modal"', () => {
-    render(<ActionsGroup />);
-    const btn = screen.getByRole('button', { name: /candidate details/i });
-    expect(btn).toBeInTheDocument();
-    expect(btn).toHaveAttribute('id', 'open-candidate-modal');
-  });
-
-  it('"Candidate details" button has correct styling classes', () => {
-    render(<ActionsGroup />);
-    const btn = screen.getByRole('button', { name: /candidate details/i });
-    expect(btn.className).toContain('text-gray-900');
-    expect(btn.className).toContain('bg-gray-100');
   });
 
   it('renders "Reset all" button with id="open-reset-dialog"', () => {

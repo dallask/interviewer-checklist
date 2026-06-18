@@ -48,7 +48,7 @@ Full archive: [milestones/v1.0-ROADMAP.md](milestones/v1.0-ROADMAP.md)
   3. Importing a v1.0-era full-structural YAML export produces an equivalent V4 session with no loss of scores, notes, candidate details, or custom questions
   4. Importing a legacy progress-only YAML (v1.0 regression boundary) still matches by stable IDs and applies scores without losing the bank
 
-**Plans**: 3 plansPlans:
+**Plans**: 3 plans
 **Wave 1**
 
 - [x] 11-01-PLAN.md — V4 schema types, migrateV3ToV4() module, fixtures, unit tests, runMigrations() extension
@@ -71,7 +71,18 @@ Full archive: [milestones/v1.0-ROADMAP.md](milestones/v1.0-ROADMAP.md)
   4. The sidebar "Open sidebar" / toggle control changes sidebar visibility on every viewport — including ≥768px desktop — not only on mobile overlay
   5. Sidebar Actions buttons render as icon-only controls with hover/focus tooltips, and every sidebar section title (Search, Difficulty, Sections, Actions) shows a leading icon before its text
 
-**Plans**: TBD
+**Plans**: 4 plans
+
+**Wave 1** *(all independent — run in parallel)*
+
+- [ ] 12-01-PLAN.md — SCORE-07: TopicMarkDisplay fieldset stopPropagation; SESS-05: SessionSwitcherModal backdrop click close
+- [ ] 12-02-PLAN.md — UI-09: hideNotes store field + QuestionCard + TopicRow note suppression
+- [ ] 12-03-PLAN.md — UI-11: SidebarGroup icon prop + Sidebar icon pass-through; UI-12: remove md: breakpoint sidebar overrides
+
+**Wave 2** *(blocked on 12-02)*
+
+- [ ] 12-04-PLAN.md — UI-09: ActionsGroup Hide notes button; UI-10: all ActionsGroup buttons icon-only with title tooltips
+
 **UI hint**: yes
 
 ### Phase 13: Filter Overhaul
@@ -136,7 +147,7 @@ Full archive: [milestones/v1.0-ROADMAP.md](milestones/v1.0-ROADMAP.md)
 | 9. Polish | v1.0 | 3/3 | Complete | 2026-06-18 |
 | 10. Chrome Web Store Submission | v1.0 | 3/3 (manual submission tasks pending user action) | Complete | 2026-06-18 |
 | 11. V4 Session Migration & Legacy Compat | v1.1 | 3/3 | Complete    | 2026-06-18 |
-| 12. UAT Defect Cleanup | v1.1 | 0/0 | Not started | — |
+| 12. UAT Defect Cleanup | v1.1 | 0/4 | Not started | — |
 | 13. Filter Overhaul | v1.1 | 0/0 | Not started | — |
 | 14. Editable Bank & YAML Schema Expansion | v1.1 | 0/0 | Not started | — |
 | 15. Sidebar Shell Refactor & Compact QuestionCard | v1.1 | 0/0 | Not started | — |

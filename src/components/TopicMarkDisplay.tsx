@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import type { Topic } from '../data/bank/types.js';
 import {
   computeTopicMark,
@@ -45,6 +45,11 @@ export function TopicMarkDisplay({ topicId, topic }: Props) {
   const [overrideInput, setOverrideInput] = useState<string>(
     override !== null ? String(override) : '',
   );
+
+  // Re-sync overrideInput when override changes externally (session switch, undo-delete, YAML import)
+  useEffect(() => {
+    setOverrideInput(override !== null ? String(override) : '');
+  }, [override]);
 
   const displayBand = override !== null ? getMarkBand(override) : band;
   const colorClass = BAND_COLORS[displayBand];

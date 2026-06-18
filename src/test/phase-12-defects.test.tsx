@@ -479,7 +479,7 @@ describe('UI-09: TopicRow notes panel suppression (D-08)', () => {
   });
 });
 
-// ─── UI-09: ActionsGroup Hide notes button wiring ─────────────────────────────
+// ─── ActionsGroup store mock ──────────────────────────────────────────────────
 
 // A comprehensive store mock for ActionsGroup (which renders modals inline)
 function buildActionsGroupStoreMock(overrides: Record<string, unknown> = {}) {
@@ -502,8 +502,6 @@ function buildActionsGroupStoreMock(overrides: Record<string, unknown> = {}) {
     setHideMarked: vi.fn(),
     darkMode: false,
     setDarkMode: vi.fn(),
-    hideNotes: false,
-    setHideNotes: vi.fn(),
     manifest: mockManifest,
     activeSessionId: 'session-1',
     scores: {},
@@ -512,6 +510,8 @@ function buildActionsGroupStoreMock(overrides: Record<string, unknown> = {}) {
     topicNotes: {},
     customQuestions: [],
     candidate: null,
+    sections: [],
+    removedDefaultQuestionIds: new Set<string>(),
     createSession: vi.fn().mockResolvedValue(undefined),
     switchSession: vi.fn().mockResolvedValue(undefined),
     renameSession: vi.fn().mockResolvedValue(undefined),
@@ -520,70 +520,6 @@ function buildActionsGroupStoreMock(overrides: Record<string, unknown> = {}) {
     ...overrides,
   };
 }
-
-describe('UI-09: ActionsGroup Hide notes button (D-09)', () => {
-  beforeEach(() => {
-    vi.clearAllMocks();
-  });
-
-  afterEach(() => {
-    cleanup();
-  });
-
-  it('renders a button with aria-label="Hide notes"', () => {
-    const storeState = buildActionsGroupStoreMock();
-    mockUseAppStore.mockImplementation((selector: (s: unknown) => unknown) =>
-      selector(storeState),
-    );
-
-    render(<ActionsGroup />);
-
-    const hideNotesBtn = screen.getByRole('button', { name: 'Hide notes' });
-    expect(hideNotesBtn).toBeDefined();
-  });
-
-  it('button has aria-pressed=false when hideNotes=false', () => {
-    const storeState = buildActionsGroupStoreMock({ hideNotes: false });
-    mockUseAppStore.mockImplementation((selector: (s: unknown) => unknown) =>
-      selector(storeState),
-    );
-
-    render(<ActionsGroup />);
-
-    const hideNotesBtn = screen.getByRole('button', { name: 'Hide notes' });
-    expect(hideNotesBtn.getAttribute('aria-pressed')).toBe('false');
-  });
-
-  it('button has aria-pressed=true when hideNotes=true', () => {
-    const storeState = buildActionsGroupStoreMock({ hideNotes: true });
-    mockUseAppStore.mockImplementation((selector: (s: unknown) => unknown) =>
-      selector(storeState),
-    );
-
-    render(<ActionsGroup />);
-
-    const hideNotesBtn = screen.getByRole('button', { name: 'Hide notes' });
-    expect(hideNotesBtn.getAttribute('aria-pressed')).toBe('true');
-  });
-
-  it('clicking the button calls setHideNotes with the toggled value (!hideNotes)', () => {
-    const setHideNotesMock = vi.fn();
-    const storeState = buildActionsGroupStoreMock({
-      hideNotes: false,
-      setHideNotes: setHideNotesMock,
-    });
-    mockUseAppStore.mockImplementation((selector: (s: unknown) => unknown) =>
-      selector(storeState),
-    );
-
-    render(<ActionsGroup />);
-
-    const hideNotesBtn = screen.getByRole('button', { name: 'Hide notes' });
-    fireEvent.click(hideNotesBtn);
-
-    expect(setHideNotesMock).toHaveBeenCalledWith(true);
-  });
-});
 
 // ─── UI-10: ActionsGroup icon-only buttons ────────────────────────────────────
 
@@ -603,20 +539,12 @@ describe('UI-10: ActionsGroup icon-only buttons (D-14, D-15, D-16)', () => {
   it('every button inside ActionsGroup has a non-empty title attribute', () => {
     render(<ActionsGroup />);
 
-    // Get all buttons rendered within the ActionsGroup flex container
-    const buttons = document.querySelectorAll('button[type="button"]');
-    const actionButtons = Array.from(buttons).filter((btn) => {
-      // Exclude buttons from child modal components (they render in a separate area)
-      // We detect action buttons by their presence within the direct ActionsGroup container.
-      // All action buttons must have a title attribute.
-      const title = btn.getAttribute('title');
-      return title !== null; // Only check buttons that are supposed to have title
-    });
-
-    // Phase 15: "Candidate details" button moved to SidebarHeader — 10 buttons remain in ActionsGroup.
+    // Phase 15: "Candidate details" moved to SidebarHeader; "Hide notes" removed (per-question icon handles it).
+    // Remaining action buttons with title: Switch session, AI prompt, Dark mode, Expand all,
+    // Collapse all, Hide marked, Import YAML, Export YAML, Reset = 9.
     const allButtons = Array.from(document.querySelectorAll('button[type="button"]'));
     const buttonsWithTitle = allButtons.filter(btn => btn.getAttribute('title') !== null && btn.getAttribute('title') !== '');
-    expect(buttonsWithTitle.length).toBe(10);
+    expect(buttonsWithTitle.length).toBe(9);
   });
 
   it('every button with title also has matching aria-label', () => {
@@ -653,14 +581,11 @@ describe('UI-10: ActionsGroup icon-only buttons (D-14, D-15, D-16)', () => {
     }
   });
 
-  it('all aria-pressed buttons (Hide marked topics, Hide notes, Dark mode) retain aria-pressed attribute', () => {
+  it('all aria-pressed buttons (Hide marked topics, Dark mode) retain aria-pressed attribute', () => {
     render(<ActionsGroup />);
 
     const hideMarkedBtn = screen.getByRole('button', { name: 'Hide marked topics' });
     expect(hideMarkedBtn.getAttribute('aria-pressed')).toBeDefined();
-
-    const hideNotesBtn = screen.getByRole('button', { name: 'Hide notes' });
-    expect(hideNotesBtn.getAttribute('aria-pressed')).toBeDefined();
 
     // Dark mode button (aria-label matches either "Dark mode" or "Light mode")
     const darkModeBtn = screen.queryByRole('button', { name: 'Dark mode' }) ??

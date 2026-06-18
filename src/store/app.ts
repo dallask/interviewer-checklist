@@ -255,22 +255,26 @@ export const useAppStore = create<AppState & AppActions>()((set, get) => ({
 
   expandAll: () => {
     const topicOpen: Record<string, boolean> = {};
+    const sectionOpen: Record<string, boolean> = {};
     for (const section of get().sections) {
+      sectionOpen[section.id] = true;
       for (const topic of section.topics) {
         topicOpen[topic.id] = true;
       }
     }
-    set({ topicOpen });
+    set({ topicOpen, sectionOpen });
   },
 
   collapseAll: () => {
     const topicOpen: Record<string, boolean> = {};
+    const sectionOpen: Record<string, boolean> = {};
     for (const section of get().sections) {
+      sectionOpen[section.id] = false;
       for (const topic of section.topics) {
         topicOpen[topic.id] = false;
       }
     }
-    set({ topicOpen });
+    set({ topicOpen, sectionOpen });
   },
 
   setSearchQuery: (q) => set({ searchQuery: q }),

@@ -38,7 +38,6 @@ export function exportSession(
           .map((question, index) => ({ question, index }))
           .filter(({ question }) => !removedSet.has(question.id))
           .map(({ question, index }) => ({
-            index,
             text: question.text,
             level: question.level,
             score: session.scores[`${topic.id}-q${index}`] ?? null,

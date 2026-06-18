@@ -27,8 +27,6 @@ export function ActionsGroup() {
   const collapseAll = useAppStore((s) => s.collapseAll);
   const hideMarked = useAppStore((s) => s.hideMarked);
   const setHideMarked = useAppStore((s) => s.setHideMarked);
-  const hideNotes = useAppStore((s) => s.hideNotes);
-  const setHideNotes = useAppStore((s) => s.setHideNotes);
   const darkMode = useAppStore((s) => s.darkMode);
   const setDarkMode = useAppStore((s) => s.setDarkMode);
   const manifest = useAppStore((s) => s.manifest);
@@ -142,6 +140,9 @@ export function ActionsGroup() {
     }
   };
 
+  const btnBase = 'p-2 min-h-[36px] min-w-[36px] text-sm text-gray-900 dark:text-gray-100 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none';
+  const btnActive = 'p-2 min-h-[36px] min-w-[36px] text-sm rounded focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300';
+
   return (
     <div className="flex flex-col gap-2">
       <p
@@ -150,104 +151,105 @@ export function ActionsGroup() {
       >
         {activeSessionName}
       </p>
-      <button
-        type="button"
-        id="open-session-switcher"
-        title="Switch session"
-        aria-label="Switch session"
-        onClick={() => sessionSwitcherRef.current?.showModal()}
-        className="p-2 min-h-[44px] min-w-[44px] text-sm text-gray-900 dark:text-gray-100 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none"
-      >
-        🔄
-      </button>
-      <button
-        type="button"
-        id="open-ai-prompt"
-        title="AI feedback prompt"
-        aria-label="AI feedback prompt"
-        onClick={handleOpenAiPrompt}
-        className="p-2 min-h-[44px] min-w-[44px] text-sm text-gray-900 dark:text-gray-100 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none"
-      >
-        🤖
-      </button>
-      <hr className="border-gray-200 dark:border-gray-700 my-1" />
-      <button
-        type="button"
-        title="Expand all"
-        aria-label="Expand all"
-        onClick={expandAll}
-        className="p-2 min-h-[44px] min-w-[44px] text-sm text-gray-900 dark:text-gray-100 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none"
-      >
-        ↕
-      </button>
-      <button
-        type="button"
-        title="Collapse all"
-        aria-label="Collapse all"
-        onClick={collapseAll}
-        className="p-2 min-h-[44px] min-w-[44px] text-sm text-gray-900 dark:text-gray-100 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none"
-      >
-        ↔
-      </button>
-      <button
-        type="button"
-        title="Hide marked topics"
-        aria-label="Hide marked topics"
-        aria-pressed={hideMarked}
-        onClick={() => setHideMarked(!hideMarked)}
-        className={`p-2 min-h-[44px] min-w-[44px] text-sm rounded focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none ${hideMarked ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300' : 'text-gray-900 dark:text-gray-100 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600'}`}
-      >
-        👁
-      </button>
-      <button
-        type="button"
-        aria-pressed={hideNotes}
-        onClick={() => setHideNotes(!hideNotes)}
-        title="Hide notes"
-        aria-label="Hide notes"
-        className={`p-2 min-h-[44px] min-w-[44px] text-sm rounded focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none ${hideNotes ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300' : 'text-gray-900 dark:text-gray-100 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600'}`}
-      >
-        📝
-      </button>
-      <button
-        type="button"
-        title={darkMode ? 'Light mode' : 'Dark mode'}
-        aria-label={darkMode ? 'Light mode' : 'Dark mode'}
-        aria-pressed={darkMode}
-        onClick={() => setDarkMode(!darkMode)}
-        className={`p-2 min-h-[44px] min-w-[44px] text-sm rounded focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none ${darkMode ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300' : 'text-gray-900 dark:text-gray-100 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600'}`}
-      >
-        {darkMode ? '☀' : '🌙'}
-      </button>
-      <input
-        ref={importFileInputRef}
-        type="file"
-        accept=".yaml,.yml"
-        className="hidden"
-        onChange={(e) => {
-          void handleImportFileChange(e);
-        }}
-        data-testid="yaml-file-input"
-      />
-      <button
-        type="button"
-        id="open-import-yaml"
-        title="Import YAML"
-        aria-label="Import YAML"
-        onClick={handleOpenImportYaml}
-        className="p-2 min-h-[44px] min-w-[44px] text-sm text-gray-900 dark:text-gray-100 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none"
-      >
-        📥
-      </button>
-      <button
-        type="button"
-        title="Export YAML"
-        aria-label="Export YAML"
-        onClick={handleExportYaml}
-        className="p-2 min-h-[44px] min-w-[44px] text-sm text-gray-900 dark:text-gray-100 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none"
-      >
-        📤
-      </button>
+      <div className="grid grid-cols-3 gap-1.5">
+        <button
+          type="button"
+          id="open-session-switcher"
+          title="Switch session"
+          aria-label="Switch session"
+          onClick={() => sessionSwitcherRef.current?.showModal()}
+          className={btnBase}
+        >
+          🔄
+        </button>
+        <button
+          type="button"
+          id="open-ai-prompt"
+          title="AI feedback prompt"
+          aria-label="AI feedback prompt"
+          onClick={handleOpenAiPrompt}
+          className={btnBase}
+        >
+          🤖
+        </button>
+        <button
+          type="button"
+          title={darkMode ? 'Light mode' : 'Dark mode'}
+          aria-label={darkMode ? 'Light mode' : 'Dark mode'}
+          aria-pressed={darkMode}
+          onClick={() => setDarkMode(!darkMode)}
+          className={darkMode ? btnActive : btnBase}
+        >
+          {darkMode ? '☀' : '🌙'}
+        </button>
+        <button
+          type="button"
+          title="Expand all"
+          aria-label="Expand all"
+          onClick={expandAll}
+          className={btnBase}
+        >
+          ↕
+        </button>
+        <button
+          type="button"
+          title="Collapse all"
+          aria-label="Collapse all"
+          onClick={collapseAll}
+          className={btnBase}
+        >
+          ↔
+        </button>
+        <button
+          type="button"
+          title="Hide marked topics"
+          aria-label="Hide marked topics"
+          aria-pressed={hideMarked}
+          onClick={() => setHideMarked(!hideMarked)}
+          className={hideMarked ? btnActive : btnBase}
+        >
+          👁
+        </button>
+        <input
+          ref={importFileInputRef}
+          type="file"
+          accept=".yaml,.yml"
+          className="hidden"
+          onChange={(e) => {
+            void handleImportFileChange(e);
+          }}
+          data-testid="yaml-file-input"
+        />
+        <button
+          type="button"
+          id="open-import-yaml"
+          title="Import YAML"
+          aria-label="Import YAML"
+          onClick={handleOpenImportYaml}
+          className={btnBase}
+        >
+          📥
+        </button>
+        <button
+          type="button"
+          title="Export YAML"
+          aria-label="Export YAML"
+          onClick={handleExportYaml}
+          className={btnBase}
+        >
+          📤
+        </button>
+        <button
+          type="button"
+          id="open-reset-dialog"
+          title="Reset all"
+          aria-label="Reset all"
+          onClick={() => resetDialogRef.current?.showModal()}
+          className="p-2 min-h-[36px] min-w-[36px] text-sm text-red-600 dark:text-red-400 bg-gray-100 dark:bg-gray-700 hover:bg-red-50 dark:hover:bg-red-900/20 rounded focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none"
+        >
+          🗑
+        </button>
+      </div>
       {importError && (
         <p
           role="alert"
@@ -257,16 +259,6 @@ export function ActionsGroup() {
           {importError}
         </p>
       )}
-      <button
-        type="button"
-        id="open-reset-dialog"
-        title="Reset all"
-        aria-label="Reset all"
-        onClick={() => resetDialogRef.current?.showModal()}
-        className="p-2 min-h-[44px] min-w-[44px] text-sm text-red-600 dark:text-red-400 bg-gray-100 dark:bg-gray-700 hover:bg-red-50 dark:hover:bg-red-900/20 rounded focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none"
-      >
-        🗑
-      </button>
       <SessionSwitcherModal dialogRef={sessionSwitcherRef} />
       <ResetConfirmDialog dialogRef={resetDialogRef} />
       <AiPromptModal

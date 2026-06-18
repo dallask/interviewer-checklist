@@ -1,11 +1,8 @@
-import { act, cleanup, fireEvent, render } from '@testing-library/react';
+import { cleanup, render } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { chrome } from 'vitest-chrome';
 import { SidebarFooter } from './SidebarFooter.js';
 
-/**
- * POLISH-06: SidebarFooter tests.
- */
 describe('SidebarFooter', () => {
   beforeEach(() => {
     vi.clearAllMocks();
@@ -18,48 +15,6 @@ describe('SidebarFooter', () => {
 
   afterEach(() => {
     cleanup();
-  });
-
-  it('renders the "v{version}" string from chrome.runtime.getManifest()', () => {
-    const { getByText } = render(<SidebarFooter />);
-    expect(getByText('v1.0.0')).toBeInTheDocument();
-  });
-
-  it('"What\'s new" button toggles the ChangelogViewer visibility', () => {
-    const { getByText, container } = render(<SidebarFooter />);
-    // Initially closed — no <pre> rendered.
-    expect(container.querySelector('pre')).toBeNull();
-    fireEvent.click(getByText("What's new"));
-    expect(container.querySelector('pre')).not.toBeNull();
-    fireEvent.click(getByText("What's new"));
-    expect(container.querySelector('pre')).toBeNull();
-  });
-
-  it('dispatching open-changelog CustomEvent opens the ChangelogViewer', () => {
-    const { container } = render(<SidebarFooter />);
-    expect(container.querySelector('pre')).toBeNull();
-    act(() => {
-      window.dispatchEvent(new CustomEvent('open-changelog'));
-    });
-    expect(container.querySelector('pre')).not.toBeNull();
-  });
-
-  it('"What\'s new" button has aria-expanded reflecting open state', () => {
-    const { getByText } = render(<SidebarFooter />);
-    const btn = getByText("What's new");
-    expect(btn).toHaveAttribute('aria-expanded', 'false');
-    fireEvent.click(btn);
-    expect(btn).toHaveAttribute('aria-expanded', 'true');
-  });
-
-  it('removes the open-changelog listener on unmount', () => {
-    const removeSpy = vi.spyOn(window, 'removeEventListener');
-    const { unmount } = render(<SidebarFooter />);
-    unmount();
-    expect(removeSpy).toHaveBeenCalledWith(
-      'open-changelog',
-      expect.any(Function),
-    );
   });
 
   it('renders "Developed by" credit text', () => {
@@ -80,15 +35,23 @@ describe('SidebarFooter', () => {
     expect(link).toHaveAttribute('rel', 'noopener noreferrer');
   });
 
-  it('renders About button', () => {
+  it('renders About icon button with aria-label="About this app"', () => {
     const { getByRole } = render(<SidebarFooter />);
-    const btn = getByRole('button', { name: 'About' });
+    const btn = getByRole('button', { name: 'About this app' });
     expect(btn).toBeInTheDocument();
   });
 
   it('About button has data-about-trigger attribute', () => {
     const { getByRole } = render(<SidebarFooter />);
-    const btn = getByRole('button', { name: 'About' });
+    const btn = getByRole('button', { name: 'About this app' });
     expect(btn).toHaveAttribute('data-about-trigger');
+  });
+
+  it('does not render version string or "What\'s new" in the footer strip', () => {
+    const { container } = render(<SidebarFooter />);
+    // The footer strip (first child div) must not show the version or changelog link
+    const footerStrip = container.firstElementChild?.firstElementChild as HTMLElement | undefined;
+    expect(footerStrip?.textContent).not.toMatch(/v1\.0\.0/);
+    expect(container.textContent).not.toMatch(/What's new/);
   });
 });

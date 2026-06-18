@@ -75,8 +75,8 @@ describe('exportSession — round-trip score key format', () => {
     // The exported YAML should contain "score: 8" (the value at twig-q0)
     expect(result).toContain('score: 8');
 
-    // Verify "index: 0" appears in the output (first question of twig topic)
-    expect(result).toContain('index: 0');
+    // Index-free format: no explicit "index:" keys in output (positional order is canonical)
+    expect(result).not.toContain('index:');
   });
 });
 

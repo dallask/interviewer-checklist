@@ -273,10 +273,16 @@ export function parseStructural(
   // CR-02: also build a per-topic question count map so we can reject out-of-bounds
   // indices (e.g. index 9999 on a topic with 12 questions) before they reach storage.
   const topicQuestionCount = new Map<string, number>();
+  // Build text → original-index lookup for index-free YAML format (q.index absent).
+  // Keyed by `${topicId}::${lowerCaseText}` → original index.
+  const topicQuestionTextIndex = new Map<string, number>();
   for (const section of sections) {
     for (const topic of section.items) {
       topicIdSet.add(topic.id);
       topicQuestionCount.set(topic.id, topic.questions.length);
+      topic.questions.forEach((q, i) => {
+        topicQuestionTextIndex.set(`${topic.id}::${q.q.toLowerCase()}`, i);
+      });
     }
   }
 
@@ -417,12 +423,18 @@ export function parseStructural(
           const q = rawQ as Record<string, unknown>;
           // CR-02: require non-negative integer index to prevent orphan keys like
           // "twig-1.5" or "twig--3" from polluting the scores map permanently.
-          const index =
+          // Index-free format (new YAML schema): derive original index by matching
+          // question text against the canonical bank.
+          let index: number | null = null;
+          if (
             typeof q.index === 'number' &&
             Number.isInteger(q.index) &&
             q.index >= 0
-              ? q.index
-              : null;
+          ) {
+            index = q.index;
+          } else if (typeof q.text === 'string' && q.text !== '') {
+            index = topicQuestionTextIndex.get(`${topicId}::${q.text.toLowerCase()}`) ?? null;
+          }
           if (index === null) continue;
 
           // CR-02: reject indices that exceed the canonical question count for this

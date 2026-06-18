@@ -163,13 +163,13 @@ export function buildFlatRows(
       }
     }
 
-    // If no visible topics, skip this section entirely (but still track for add-section-trigger)
-    if (visibleTopics.length === 0) continue;
+    // If no visible topics AND the section has topics (all filtered out), skip it.
+    // Empty sections (no topics yet) are kept so the user can add topics to them.
+    if (visibleTopics.length === 0 && section.topics.length > 0) continue;
 
-    const totalQCount = visibleTopics.reduce(
-      (sum, t) => sum + t.filteredQuestions.length,
-      0,
-    );
+    const totalQCount = visibleTopics.length > 0
+      ? visibleTopics.reduce((sum, t) => sum + t.filteredQuestions.length, 0)
+      : 0;
 
     rows.push({
       type: 'section',

@@ -65,7 +65,7 @@ export function QuestionCard({ row }: Props) {
             const v = e.target.value;
             setScore(questionId, v === 'skip' ? null : Number(v));
           }}
-          className="text-xs font-normal bg-gray-100 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded px-1.5 py-1 min-w-[52px] focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none"
+          className="text-xs font-normal text-gray-900 dark:text-gray-100 bg-gray-100 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded px-1.5 py-1 min-w-[52px] focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none"
         >
           <option value="skip">Skip</option>
           {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((n) => (
@@ -133,7 +133,7 @@ export function QuestionCard({ row }: Props) {
           aria-label={`Notes for ${question.q}`}
           value={localNote}
           onChange={(e) => handleNoteChange(e.target.value)}
-          hidden={!notesOpen && !localNote && !printMode}
+          hidden={!notesOpen && !printMode}
           placeholder="Question notes…"
           className="w-full resize-y min-h-[64px] text-sm font-normal text-gray-900 dark:text-gray-100 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded p-2 mx-3 mb-2 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none placeholder:text-gray-400 dark:placeholder:text-gray-600 print:h-auto print:overflow-visible print:resize-none print:border-0 print:p-0"
           style={{ width: 'calc(100% - 1.5rem)' }}

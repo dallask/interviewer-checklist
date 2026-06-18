@@ -76,13 +76,25 @@ export function App() {
         Skip to main content
       </a>
       <div className="flex h-screen overflow-hidden bg-white dark:bg-gray-900">
-        {/* Backdrop — narrow viewports only */}
+        {/* Backdrop — mobile only */}
         {sidebarOpen && (
           <div
-            className="fixed inset-0 bg-black/40 z-40 print:hidden"
+            className="fixed inset-0 bg-black/40 z-40 md:hidden print:hidden"
             aria-hidden="true"
             onClick={() => setSidebarOpen(false)}
           />
+        )}
+        {/* Sidebar toggle — fixed at top-left, only visible when sidebar is closed */}
+        {!sidebarOpen && (
+          <button
+            type="button"
+            aria-expanded={false}
+            onClick={() => setSidebarOpen(true)}
+            aria-label="Open sidebar"
+            className="fixed top-2 left-2 z-50 p-2 min-h-[44px] min-w-[44px] text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-100 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none rounded print:hidden"
+          >
+            ☰
+          </button>
         )}
         <Sidebar />
         <div className="flex flex-col flex-1 overflow-hidden">
@@ -94,16 +106,6 @@ export function App() {
           />
           {/* Update banner — sticky at top of the right column, above main. */}
           <UpdateBanner />
-          {/* Sidebar toggle button */}
-          <button
-            type="button"
-            aria-expanded={sidebarOpen}
-            onClick={() => setSidebarOpen(!sidebarOpen)}
-            aria-label={sidebarOpen ? 'Close sidebar' : 'Open sidebar'}
-            className="self-start m-2 p-2 min-h-[44px] text-gray-600 dark:text-gray-300 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none rounded print:hidden"
-          >
-            ☰
-          </button>
           <main
             id="main-content"
             className="flex-1 overflow-y-auto bg-white dark:bg-gray-900"

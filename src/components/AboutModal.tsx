@@ -58,31 +58,40 @@ export function AboutModal({ dialogRef }: AboutModalProps) {
     >
       <h2
         id="about-modal-title"
-        className="text-base font-semibold text-gray-900 dark:text-gray-100 mb-4"
+        className="text-base font-semibold text-gray-900 dark:text-gray-100 mb-1"
       >
         Interviewer Checklist
       </h2>
-
-      <p className="text-sm font-normal text-gray-500 dark:text-gray-400 mb-2">
-        Version {version}
+      <p className="text-xs font-normal text-gray-400 dark:text-gray-500 mb-4">
+        v{version}
       </p>
 
-      <p className="text-sm font-normal text-gray-700 dark:text-gray-300 mb-4">
-        A browser-based weighted scoring session for technical interviews.
+      <p className="text-sm font-normal text-gray-700 dark:text-gray-300 mb-3">
+        A Chrome extension for structured technical interviews. Score candidates across topics, manage sessions, and export results as YAML.
       </p>
 
-      <div className="mb-4">
-        <p className="text-sm font-normal text-gray-700 dark:text-gray-300">
-          Developed by{' '}
-          <a
-            href="https://kivgila.pro"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-blue-600 dark:text-blue-400 underline hover:text-blue-800 dark:hover:text-blue-300 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none"
-          >
-            Ievgen Kyvgyla
-          </a>
-        </p>
+      <ul className="text-sm font-normal text-gray-600 dark:text-gray-400 mb-4 space-y-1 list-disc list-inside">
+        <li>Weighted per-topic scoring with manual override</li>
+        <li>Built-in question bank across 9 tech areas (Frontend, Backend, DevOps…)</li>
+        <li>Add custom sections, topics, and questions per session</li>
+        <li>Difficulty filter (Novice → Expert) and full-text search</li>
+        <li>Per-question notes with collapsible textarea</li>
+        <li>Multiple sessions — switch, rename, duplicate, delete</li>
+        <li>Export / import sessions as human-readable YAML</li>
+        <li>AI prompt generator for structured feedback</li>
+        <li>Dark mode, print-friendly layout</li>
+      </ul>
+
+      <div className="mb-4 text-sm font-normal text-gray-700 dark:text-gray-300">
+        Developed by{' '}
+        <a
+          href="https://kivgila.pro"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-blue-600 dark:text-blue-400 underline hover:text-blue-800 dark:hover:text-blue-300 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none"
+        >
+          Ievgen Kyvgyla
+        </a>
       </div>
 
       <div className="flex justify-end">

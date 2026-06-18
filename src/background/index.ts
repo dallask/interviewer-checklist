@@ -34,10 +34,14 @@ chrome.runtime.onInstalled.addListener((details) => {
             'session:demo': {
               version: 3,
               id: 'demo',
+              // POLISH-01: use real topic IDs from DEFAULT_SECTIONS
+              // (see src/data/bank/frontend.ts — `js`, `twig`). Earlier
+              // values used non-existent IDs that never rendered in the
+              // demo session.
               scores: {
-                'js-basics-fundamentals-0': 8,
-                'js-basics-fundamentals-1': 6,
-                'js-basics-closures-0': 7,
+                'js-0': 8,
+                'js-1': 7,
+                'twig-0': 6,
               },
               overrides: {},
               notes: {},

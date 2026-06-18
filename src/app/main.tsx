@@ -57,6 +57,9 @@ if (activeSessionId) {
   if (session) {
     useAppStore.setState({
       sections: session.sections ?? [],
+      // CR-02: restore removedDefaultQuestionIds from persisted session so
+      // removed questions stay filtered out after a page reload.
+      removedDefaultQuestionIds: new Set(session.removedDefaultQuestionIds ?? []),
       scores: session.scores ?? {},
       overrides: session.overrides ?? {},
       notes: session.notes ?? {},

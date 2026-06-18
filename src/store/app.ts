@@ -2,7 +2,7 @@ import { create } from 'zustand';
 import { DEFAULT_SECTIONS } from '../data/bank/index.js';
 import type { Difficulty } from '../data/bank/types.js';
 import { storageAdapter } from '../storage/index.js';
-import type { V2Manifest, V4Section, V4Session } from '../storage/types.js';
+import type { V2Manifest, V4Section, V4Session, V4Topic } from '../storage/types.js';
 import { createDefaultV4Session } from '../storage/types.js';
 import type { ImportResult } from '../utils/yamlImport.js';
 
@@ -98,6 +98,8 @@ export interface AppState {
   // --- V4 session fields (Phase 11) ---
   /** Materialized section/topic/question tree for the active V4 session; populated at bootstrap and on switchSession */
   sections: V4Section[];
+  /** IDs of default questions removed from the active session (D-01 Set-based filter model) */
+  removedDefaultQuestionIds: Set<string>;
   /** Number of sessions that failed V3→V4 migration; drives MigrationErrorBanner */
   migrationFailedCount: number;
   /** IDs of sessions that failed migration; for banner display */
@@ -134,6 +136,17 @@ export interface AppActions {
   deleteCustomQuestion: (id: string) => void;
   /** Update candidate details for the current session. */
   setCandidate: (candidate: CandidateDetails | null) => void;
+  // --- Bank mutation actions (Phase 14) ---
+  /** Add a new user-defined section to the active session (BANK-01). */
+  addSection: (section: V4Section) => void;
+  /** Remove a user-added section from the active session (BANK-02). */
+  removeSection: (sectionId: string) => void;
+  /** Add a new topic to a section (BANK-03). */
+  addTopic: (sectionId: string, topic: V4Topic) => void;
+  /** Remove a user-added topic from the active session (BANK-04). */
+  removeTopic: (topicId: string) => void;
+  /** Mark a default question as removed (adds to filter Set) (BANK-05). */
+  removeDefaultQuestion: (questionId: string) => void;
   /** Clear all scoring data for the current session (preserves activeSessionId and uiState). */
   resetAll: () => void;
   // --- Session management actions (Phase 6) ---
@@ -188,6 +201,8 @@ export const DEFAULT_STATE: AppState = {
   printMode: false,
   // Phase 11: V4 session fields
   sections: [],
+  // Phase 14: removedDefaultQuestionIds — bank shape filter (D-01)
+  removedDefaultQuestionIds: new Set<string>(),
   migrationFailedCount: 0,
   migrationFailedIds: [],
 };

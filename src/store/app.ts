@@ -114,6 +114,8 @@ export interface AppActions {
   setSearchQuery: (q: string) => void;
   toggleDifficulty: (d: Difficulty) => void;
   toggleSection: (id: string) => void;
+  clearDifficulties: () => void;
+  clearSections: () => void;
   setHideMarked: (v: boolean) => void;
   setHideNotes: (v: boolean) => void;
   setDarkMode: (dark: boolean) => void;
@@ -280,6 +282,9 @@ export const useAppStore = create<AppState & AppActions>()((set) => ({
       }
       return { selectedSections: next };
     }),
+
+  clearDifficulties: () => set({ selectedDifficulties: new Set() }),
+  clearSections: () => set({ selectedSections: new Set() }),
 
   setHideMarked: (v) => set({ hideMarked: v }),
 

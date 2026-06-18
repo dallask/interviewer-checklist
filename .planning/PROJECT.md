@@ -3,9 +3,38 @@
 ## Current State
 
 **Shipped:** v1.0 Chrome Extension Launch — 2026-06-18
-**Status:** Code complete with 515/515 tests passing; manual CWS submission tasks (privacy-policy hosting, screenshots, fresh-profile smoke test, dashboard upload) pending user action per `cws-assets/` checklists.
+**Active:** v1.1 Post-UAT Fix + Polish — closing the 14 gaps surfaced by the v1.0 CWS smoke-test UAT.
 
-**Next:** No active milestone. Run `/gsd-new-milestone` to plan v1.1.
+---
+
+## Current Milestone: v1.1 Post-UAT Fix + Polish
+
+**Goal:** Close the 14 gaps from v1.0 CWS smoke-test UAT — ship defect fixes and UX enhancements that turn v1.0 from "works" into "feels right" for real interviewer use.
+
+**Target features:**
+
+*Defects (8) — from `.planning/milestones/v1.0-phases/10-chrome-web-store-submission/10-UAT.md` Gaps section*
+- Manual topic override dropdown collapses parent section (test 5)
+- Session switcher modal cannot be closed via Esc / backdrop / close button (test 6)
+- "Hide notes" toggle is a no-op (test 6)
+- YAML default-question schema needs `text` + `level`; user can delete default questions like custom ones (test 7)
+- Custom-question notes dropped on YAML export (test 7)
+- Sidebar Actions buttons should be icons with hover tooltips (test 7)
+- Sidebar section titles need leading icons (Search/Difficulty/Sections/Actions) (test 7)
+- Desktop sidebar locked open at ≥768px; toggle is no-op above breakpoint (test 9)
+
+*Enhancements (6) — from same file, "Additional Enhancement Requests" section*
+- Compact QuestionCard: score dropdown on left, note icon on right, collapsed single-line default (locked to screenshot spec)
+- DifficultyFilter: "All levels" + color dot per difficulty + per-difficulty count
+- SectionFilter: "All sections" + per-section icon + per-section count
+- User-editable sections AND topics (add/remove, like custom questions today) — schema + store + UI
+- Sidebar footer with credit lockup + About button → AboutModal
+- Sticky sidebar header: toggle + candidate-detail button + final-mark progress line with mark badge
+
+**Key milestone constraints:**
+- v1.0 is live on the Chrome Web Store; v1.1 ships as a CWS update. Legacy v1.0 YAML exports must still import cleanly.
+- The YAML schema bump (D4) and user-editable sections/topics (E4) likely require a V3 → V4 session migration with a forward-only path.
+- Source of truth for every item is the gap list in `.planning/milestones/v1.0-phases/10-chrome-web-store-submission/10-UAT.md` (including the attached screenshots referenced as Image #1–#8).
 
 ---
 
@@ -147,4 +176,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-06-16 after milestone v1.0 started*
+*Last updated: 2026-06-18 after milestone v1.1 started*

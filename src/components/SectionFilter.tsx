@@ -35,7 +35,11 @@ export function SectionFilter() {
       >
         <span aria-hidden="true">📋</span>
         <span className="flex-1">All sections</span>
-        <span className="ml-auto text-xs tabular-nums text-gray-400 dark:text-gray-500">
+        <span className={`ml-auto text-xs tabular-nums ${
+          selectedSections.size === 0
+            ? 'text-blue-500 dark:text-blue-400'
+            : 'text-gray-400 dark:text-gray-500'
+        }`}>
           {totalCount}
         </span>
       </button>
@@ -57,7 +61,11 @@ export function SectionFilter() {
           >
             <span aria-hidden="true">{section.icon}</span>
             <span className="flex-1">{section.label}</span>
-            <span className="ml-auto text-xs tabular-nums text-gray-400 dark:text-gray-500">
+            <span className={`ml-auto text-xs tabular-nums ${
+              isSelected
+                ? 'text-blue-500 dark:text-blue-400'
+                : 'text-gray-400 dark:text-gray-500'
+            }`}>
               {sectionCounts[section.id] ?? 0}
             </span>
           </button>

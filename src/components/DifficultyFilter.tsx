@@ -64,7 +64,11 @@ export function DifficultyFilter() {
       >
         <span aria-hidden="true">∞</span>
         All levels
-        <span className="ml-auto text-xs tabular-nums text-gray-400 dark:text-gray-500">
+        <span className={`ml-auto text-xs tabular-nums ${
+          selectedDifficulties.size === 0
+            ? 'text-blue-200 dark:text-blue-300'
+            : 'text-gray-400 dark:text-gray-500'
+        }`}>
           {totalCount}
         </span>
       </button>
@@ -88,7 +92,11 @@ export function DifficultyFilter() {
               className={`w-2 h-2 rounded-full flex-shrink-0 ${DOT_CLASSES[difficulty]}`}
             />
             {DIFFICULTY_LABELS[difficulty]}
-            <span className="ml-auto text-xs tabular-nums text-gray-400 dark:text-gray-500">
+            <span className={`ml-auto text-xs tabular-nums ${
+              isSelected
+                ? 'text-blue-200 dark:text-blue-300'
+                : 'text-gray-400 dark:text-gray-500'
+            }`}>
               {questionCounts[difficulty]}
             </span>
           </button>

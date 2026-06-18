@@ -4,11 +4,20 @@ import { ContentTree } from '../components/ContentTree.js';
 import { Sidebar } from '../components/Sidebar.js';
 import { StorageToast } from '../components/StorageToast.js';
 import { UndoToast } from '../components/UndoToast.js';
+import { UpdateBanner } from '../components/UpdateBanner.js';
 import { DEFAULT_SECTIONS } from '../data/bank/index.js';
+import { useKeyboardShortcuts } from '../hooks/useKeyboardShortcuts.js';
+import { usePrintExpansion } from '../hooks/usePrintExpansion.js';
 import { useAppStore } from '../store/app.js';
 import { buildFlatRows } from '../utils/buildFlatRows.js';
 
 export function App() {
+  // Phase 9 polish hooks — both attach document/window listeners on mount
+  // and clean them up on unmount. Empty dependency arrays inside (state is
+  // read via useAppStore.getState() at event time).
+  useKeyboardShortcuts();
+  usePrintExpansion();
+
   const sidebarOpen = useAppStore((s) => s.sidebarOpen);
   const setSidebarOpen = useAppStore((s) => s.setSidebarOpen);
   const topicOpen = useAppStore((s) => s.topicOpen);
@@ -57,20 +66,22 @@ export function App() {
         {/* Backdrop — narrow viewports only */}
         {sidebarOpen && (
           <div
-            className="fixed inset-0 bg-black/40 z-40 md:hidden"
+            className="fixed inset-0 bg-black/40 z-40 md:hidden print:hidden"
             aria-hidden="true"
             onClick={() => setSidebarOpen(false)}
           />
         )}
         <Sidebar />
         <div className="flex flex-col flex-1 overflow-hidden">
+          {/* Update banner — sticky at top of the right column, above main. */}
+          <UpdateBanner />
           {/* Sidebar toggle button */}
           <button
             type="button"
             aria-expanded={sidebarOpen}
             onClick={() => setSidebarOpen(!sidebarOpen)}
             aria-label={sidebarOpen ? 'Close sidebar' : 'Open sidebar'}
-            className="self-start m-2 p-2 min-h-[44px] text-gray-600 dark:text-gray-300 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none rounded"
+            className="self-start m-2 p-2 min-h-[44px] text-gray-600 dark:text-gray-300 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none rounded print:hidden"
           >
             ☰
           </button>

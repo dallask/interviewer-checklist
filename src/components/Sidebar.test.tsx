@@ -1,5 +1,6 @@
 import { render, screen } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { chrome } from 'vitest-chrome';
 import { Sidebar } from './Sidebar.js';
 
 vi.mock('../store/app.js', () => ({
@@ -46,6 +47,14 @@ function makeState(overrides: Record<string, unknown> = {}) {
 describe('Sidebar', () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    // SidebarFooter (added in Phase 9 Plan 09-02) calls
+    // chrome.runtime.getManifest() synchronously during render; provide a
+    // default mock so the Sidebar test suite continues to render the tree.
+    chrome.runtime.getManifest.mockReturnValue({
+      name: 'Interviewer Checklist',
+      manifest_version: 3,
+      version: '1.0.0',
+    } as chrome.runtime.Manifest);
     mockUseAppStore.mockImplementation((selector: (s: unknown) => unknown) =>
       selector(makeState()),
     );

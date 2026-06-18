@@ -89,17 +89,13 @@ describe('Sidebar', () => {
     expect(aside.className).toContain('motion-reduce:transition-none');
   });
 
-  it('renders backdrop with aria-hidden="true" when sidebarOpen=true', () => {
+  // CR-03 (REVIEW.md): backdrop ownership moved to App.tsx — Sidebar no
+  // longer renders its own `fixed inset-0` overlay. Backdrop visibility is
+  // exercised by App-level tests/UAT, not by this component test suite.
+  it('does not render a backdrop (owned by App.tsx after CR-03)', () => {
     render(<Sidebar />);
-    const backdrop = document.querySelector('[aria-hidden="true"]');
-    expect(backdrop).toBeInTheDocument();
-  });
-
-  it('does not render backdrop when sidebarOpen=false', () => {
-    mockUseAppStore.mockImplementation((selector: (s: unknown) => unknown) =>
-      selector(makeState({ sidebarOpen: false })),
-    );
-    render(<Sidebar />);
+    // The aside itself uses aria-label="Filters"; nothing inside Sidebar
+    // should carry aria-hidden="true" anymore.
     const backdrop = document.querySelector('[aria-hidden="true"]');
     expect(backdrop).not.toBeInTheDocument();
   });

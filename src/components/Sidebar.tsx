@@ -8,21 +8,15 @@ import { SidebarGroup } from './SidebarGroup.js';
 
 export function Sidebar() {
   const sidebarOpen = useAppStore((s) => s.sidebarOpen);
-  const setSidebarOpen = useAppStore((s) => s.setSidebarOpen);
   const groupOpen = useAppStore((s) => s.groupOpen);
   const toggleGroup = useAppStore((s) => s.toggleGroup);
 
+  // Backdrop is owned by App.tsx (the layout shell) — see CR-03 (REVIEW.md):
+  // rendering it here too caused two `fixed inset-0` overlays to stack,
+  // doubling visible opacity and creating two click targets for the same
+  // close action. Single backdrop now lives in App.tsx.
   return (
     <>
-      {/* Backdrop — narrow viewports only; click to close */}
-      {sidebarOpen && (
-        <div
-          className="fixed inset-0 bg-black/40 z-40 md:hidden"
-          aria-hidden="true"
-          onClick={() => setSidebarOpen(false)}
-        />
-      )}
-
       <aside
         aria-label="Filters"
         className={`w-[280px] flex-shrink-0 bg-gray-100 dark:bg-gray-800 flex flex-col overflow-y-auto transition-transform duration-200 ease-in-out motion-reduce:transition-none md:relative md:translate-x-0 fixed inset-y-0 left-0 z-50 print:hidden ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}`}

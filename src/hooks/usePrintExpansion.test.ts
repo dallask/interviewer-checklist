@@ -23,16 +23,22 @@ describe('usePrintExpansion', () => {
     vi.restoreAllMocks();
   });
 
-  it('beforeprint calls expandAll() and sets printMode=true', () => {
-    const expandSpy = vi.spyOn(useAppStore.getState(), 'expandAll');
+  it('beforeprint expands all topics, opens all sections, and sets printMode=true', () => {
     renderHook(() => usePrintExpansion());
 
     window.dispatchEvent(new Event('beforeprint'));
 
-    expect(expandSpy).toHaveBeenCalledTimes(1);
+    // WR-02 fix: a single coalesced setState now writes topicOpen,
+    // sectionOpen, and printMode together (no expandAll() call). Assert
+    // on the observable result rather than the method invocation.
     expect(useAppStore.getState().printMode).toBe(true);
     // sectionOpen is reset to {} so every section renders open.
     expect(useAppStore.getState().sectionOpen).toEqual({});
+    // topicOpen should be a non-empty record with every value === true.
+    const topicOpen = useAppStore.getState().topicOpen;
+    const values = Object.values(topicOpen);
+    expect(values.length).toBeGreaterThan(0);
+    expect(values.every((v) => v === true)).toBe(true);
   });
 
   it('afterprint restores topicOpen and sectionOpen and clears printMode', () => {

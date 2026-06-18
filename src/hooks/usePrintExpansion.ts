@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import { DEFAULT_SECTIONS } from '../data/bank/index.js';
 import { useAppStore } from '../store/app.js';
 
 /**
@@ -24,16 +25,24 @@ export function usePrintExpansion(): void {
       const state = useAppStore.getState();
       savedTopicOpen = { ...state.topicOpen };
       savedSectionOpen = { ...state.sectionOpen };
-      // expandAll() opens every topic by writing `topicOpen[id] = true` for
-      // every topic in DEFAULT_SECTIONS.
-      state.expandAll();
+      // WR-02: collapse all three writes into a single setState. The
+      // previous code issued three separate set() calls (expandAll +
+      // sectionOpen + printMode), each of which fires the module-level
+      // subscribe in store/app.ts that writes uiState/manifest/session to
+      // chrome.storage — three writes per print, plus a race window where
+      // the browser could snapshot the page between updates.
+      const topicOpen: Record<string, boolean> = {};
+      for (const section of DEFAULT_SECTIONS) {
+        for (const topic of section.items) {
+          topicOpen[topic.id] = true;
+        }
+      }
       // sectionOpen `{}` means "all sections open by default" — clearing it
-      // ensures every section is visible during print.
-      useAppStore.setState({ sectionOpen: {} });
-      // printMode flag lets QuestionCard / TopicRow notes render even when
-      // their notesOpen toggle is closed (the HTML `hidden` attribute cannot
-      // be overridden by CSS).
-      useAppStore.setState({ printMode: true });
+      // ensures every section is visible during print. printMode flag lets
+      // QuestionCard / TopicRow notes render even when their notesOpen
+      // toggle is closed (the HTML `hidden` attribute cannot be overridden
+      // by CSS).
+      useAppStore.setState({ topicOpen, sectionOpen: {}, printMode: true });
     }
 
     function handleAfterPrint() {

@@ -1,9 +1,17 @@
 # Interviewer Checklist — Chrome Extension
 
-## Current State
+## Current Milestone: v1.2 UAT Closure & Visual Polish
 
-**Shipped:** v1.1 Post-UAT Fix + Polish — 2026-06-18
-**Between milestones.** Run `/gsd-new-milestone` to start v1.2.
+**Goal:** Close all remaining UAT gaps from v1.1 — fix two blocking bugs, then layer in the visual enhancements the UAT surfaced (difficulty indicators, icon library, density/transitions).
+
+**Target features:**
+- Bug: add section/topic — new items not appearing in tree after submit
+- Bug: note icon — can't collapse textarea when note has text
+- Polish: score dropdown dark mode contrast
+- Visual: QuestionCard difficulty left-border + badge chip
+- Visual: Material-like icon library (replace ad-hoc emoji)
+- Polish: Font 13px + compact density throughout
+- Polish: CSS transitions/animations throughout
 
 ---
 
@@ -79,7 +87,15 @@ A single interviewer/candidate can run an end-to-end weighted scoring session �
 
 ### Active
 
-<!-- No active requirements — between milestones. Run `/gsd-new-milestone` to define v1.2 scope. -->
+<!-- v1.2 scope — UAT closure and visual polish -->
+
+- [ ] Add section/topic form submits and new item appears in the tree immediately
+- [ ] Note icon toggles textarea closed even when note text is present
+- [ ] Score dropdown is clearly readable in dark mode
+- [ ] QuestionCard shows a thick left border colored by difficulty + a difficulty badge chip
+- [ ] All icon glyphs use a consistent material-like icon pack (no ad-hoc emoji in UI chrome)
+- [ ] Base font is 13px; interface is more compact throughout
+- [ ] Key interactions use CSS transitions/animations for a smooth feel
 
 ### Out of Scope
 
@@ -143,4 +159,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-06-18 after milestone v1.1 complete*
+*Last updated: 2026-06-18 after milestone v1.2 started*

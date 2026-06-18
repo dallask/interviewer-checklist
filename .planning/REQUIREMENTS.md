@@ -68,13 +68,13 @@
 
 ### Polish & Onboarding (POLISH)
 
-- [ ] **POLISH-01**: First-run welcome tab opens on `chrome.runtime.onInstalled` reason==='install'; welcome page includes a seeded demo session start action, pin-to-toolbar visual nudge, and explanation of the two audience flows (interviewer / candidate); fires once via a `chrome.storage.local` "hasSeenWelcome" flag
-- [ ] **POLISH-02**: `chrome.commands` with `_execute_action` global keyboard shortcut declared in manifest
-- [ ] **POLISH-03**: In-app keyboard shortcuts: `/` focuses search, `\` toggles sidebar, `Esc` clears search / closes active modal; shortcuts ignore when focus is inside an input/textarea
-- [ ] **POLISH-04**: All modals (candidate details, AI prompt, confirm dialogs, session switcher) use a focus-trap primitive (Radix Dialog or Headless UI Dialog) that traps Tab/Shift+Tab within the modal and restores focus to the trigger element on close
-- [ ] **POLISH-05**: Print stylesheet — expands all collapsed topic/question cards, hides sidebar and controls, uses stable selectors (`.no-print`, `data-collapsed`, `data-hidden`); textarea heights auto-expand
-- [ ] **POLISH-06**: App version (from `chrome.runtime.getManifest().version`) displayed in a footer or about area with a link to the bundled `CHANGELOG.md` viewer
-- [ ] **POLISH-07**: Update-detected dismissible banner shown on first open after a minor+ version bump (detected via `chrome.runtime.onInstalled` reason==='update' + `previousVersion` comparison); does NOT auto-open a new tab
+- [x] **POLISH-01**: First-run welcome tab opens on `chrome.runtime.onInstalled` reason==='install'; welcome page includes a seeded demo session start action, pin-to-toolbar visual nudge, and explanation of the two audience flows (interviewer / candidate); fires once via a `chrome.storage.local` "hasSeenWelcome" flag
+- [x] **POLISH-02**: `chrome.commands` with `_execute_action` global keyboard shortcut declared in manifest
+- [x] **POLISH-03**: In-app keyboard shortcuts: `/` focuses search, `\` toggles sidebar, `Esc` clears search / closes active modal; shortcuts ignore when focus is inside an input/textarea
+- [x] **POLISH-04**: All modals (candidate details, AI prompt, confirm dialogs, session switcher) use a focus-trap primitive (Radix Dialog or Headless UI Dialog) that traps Tab/Shift+Tab within the modal and restores focus to the trigger element on close
+- [x] **POLISH-05**: Print stylesheet — expands all collapsed topic/question cards, hides sidebar and controls, uses stable selectors (`.no-print`, `data-collapsed`, `data-hidden`); textarea heights auto-expand
+- [x] **POLISH-06**: App version (from `chrome.runtime.getManifest().version`) displayed in a footer or about area with a link to the bundled `CHANGELOG.md` viewer
+- [x] **POLISH-07**: Update-detected dismissible banner shown on first open after a minor+ version bump (detected via `chrome.runtime.onInstalled` reason==='update' + `previousVersion` comparison); does NOT auto-open a new tab
 
 ### Chrome Web Store (CWS)
 

@@ -58,33 +58,35 @@ export function TopicRow({ row }: Props) {
 
   return (
     <div>
-      {/* Topic header button */}
-      <button
-        type="button"
-        aria-expanded={row.isOpen}
-        onClick={() => toggleTopic(topicId)}
-        className="bg-white dark:bg-gray-900 px-4 py-2 pl-8 font-normal text-sm border-b border-gray-100 dark:border-gray-800 w-full flex items-center justify-between cursor-pointer text-gray-900 dark:text-gray-100 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none print:cursor-default print:px-0 print:pl-0"
-      >
-        <span className="flex-1 text-left">{row.topic.name}</span>
-        <span className="flex items-center gap-2">
-          <span className="text-xs text-gray-500 dark:text-gray-400">
-            {row.questionCount} q
+      {/* WR-01: topic header — split into container div + toggle button + sibling
+           delete button to avoid invalid nested <button> HTML (§4.8.2). */}
+      <div className="bg-white dark:bg-gray-900 font-normal text-sm border-b border-gray-100 dark:border-gray-800 w-full flex items-center text-gray-900 dark:text-gray-100 print:px-0 print:pl-0">
+        <button
+          type="button"
+          aria-expanded={row.isOpen}
+          onClick={() => toggleTopic(topicId)}
+          className="flex-1 flex items-center justify-between px-4 py-2 pl-8 cursor-pointer focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none text-left print:cursor-default"
+        >
+          <span className="flex-1 text-left">{row.topic.name}</span>
+          <span className="flex items-center gap-2">
+            <span className="text-xs text-gray-500 dark:text-gray-400">
+              {row.questionCount} q
+            </span>
+            {/* TopicMarkDisplay replaces the Phase 4 "—" stub (SCORE-02) */}
+            <TopicMarkDisplay topicId={topicId} topic={row.topic} />
           </span>
-          {/* TopicMarkDisplay replaces the Phase 4 "—" stub (SCORE-02) */}
-          <TopicMarkDisplay topicId={topicId} topic={row.topic} />
-          {/* HTML: delete button inside topic toggle button — stopPropagation prevents toggle (see UI-SPEC phase-specific constraint 2) */}
-          {row.topic.isDefault === false && (
-            <button
-              type="button"
-              aria-label={`Remove topic ${row.topic.name}`}
-              onClick={(e) => { e.stopPropagation(); removeTopic(row.topic.id); }}
-              className="text-xs text-red-600 dark:text-red-400 hover:text-red-800 dark:hover:text-red-300 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none ml-2 print:hidden"
-            >
-              ×
-            </button>
-          )}
-        </span>
-      </button>
+        </button>
+        {row.topic.isDefault === false && (
+          <button
+            type="button"
+            aria-label={`Remove topic ${row.topic.name}`}
+            onClick={() => removeTopic(row.topic.id)}
+            className="text-xs text-red-600 dark:text-red-400 hover:text-red-800 dark:hover:text-red-300 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none px-4 py-2 print:hidden"
+          >
+            ×
+          </button>
+        )}
+      </div>
 
       {/* Topic notes panel — outside the button for correct semantics (SCORE-03) */}
       {/* hideNotes=true hides this panel; printMode overrides to keep notes visible (D-08) */}

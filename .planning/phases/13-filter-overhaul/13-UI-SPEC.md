@@ -37,7 +37,7 @@ Declared values (multiples of 4 only):
 | xs | 4px | Icon gap within filter row (`gap-1`) |
 | sm | 8px | Vertical gap between filter buttons (`gap-2`) |
 | md | 16px | Horizontal padding inside filter buttons (`px-4` on section rows) |
-| lg | 24px | SidebarGroup inner padding-bottom (`pb-3` → 12px, kept from existing pattern) |
+| lg | 24px | — |
 | xl | 32px | — |
 | 2xl | 48px | — |
 | 3xl | 64px | — |
@@ -91,6 +91,12 @@ Difficulty color dots (accent-adjacent — not blue, specific semantic colors):
 > Source: CONTEXT.md D-06; existing DifficultyFilter.tsx and SectionFilter.tsx color classes.
 
 Count badge color: `text-gray-400 dark:text-gray-500` (matches existing `text-xs tabular-nums` right-side display in SectionFilter; same weight as old score display being replaced per D-07).
+
+### Visual Hierarchy
+
+**Primary visual anchor:** the pressed-state "All levels" / "All sections" row with full blue fill (DifficultyFilter) or blue left-border + tinted background (SectionFilter). When no filter is active, both "All" rows appear pressed — this is the default resting state and the strongest visual signal in the widget.
+
+Individual rows draw the eye through secondary signals: color dots (difficulty — green/blue/orange/pink) and emoji icons (sections — from `section.icon`). Count badges are lowest-weight (`text-gray-400`) — supplementary context, not hierarchy anchors.
 
 ---
 

@@ -153,41 +153,51 @@ export function ActionsGroup() {
       <button
         type="button"
         id="open-session-switcher"
+        title="Switch session"
+        aria-label="Switch session"
         onClick={() => sessionSwitcherRef.current?.showModal()}
-        className="w-full text-sm px-3 py-2 text-left text-gray-900 dark:text-gray-100 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none"
+        className="p-2 min-h-[44px] min-w-[44px] text-sm text-gray-900 dark:text-gray-100 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none"
       >
-        Switch session
+        🔄
       </button>
       <button
         type="button"
         id="open-ai-prompt"
+        title="AI feedback prompt"
+        aria-label="AI feedback prompt"
         onClick={handleOpenAiPrompt}
-        className="w-full text-sm px-3 py-2 text-left text-gray-900 dark:text-gray-100 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none"
+        className="p-2 min-h-[44px] min-w-[44px] text-sm text-gray-900 dark:text-gray-100 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none"
       >
-        AI feedback prompt
+        🤖
       </button>
       <hr className="border-gray-200 dark:border-gray-700 my-1" />
       <button
         type="button"
+        title="Expand all"
+        aria-label="Expand all"
         onClick={expandAll}
-        className="w-full text-sm px-3 py-2 text-left text-gray-900 dark:text-gray-100 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none"
+        className="p-2 min-h-[44px] min-w-[44px] text-sm text-gray-900 dark:text-gray-100 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none"
       >
-        Expand all
+        ↕
       </button>
       <button
         type="button"
+        title="Collapse all"
+        aria-label="Collapse all"
         onClick={collapseAll}
-        className="w-full text-sm px-3 py-2 text-left text-gray-900 dark:text-gray-100 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none"
+        className="p-2 min-h-[44px] min-w-[44px] text-sm text-gray-900 dark:text-gray-100 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none"
       >
-        Collapse all
+        ↔
       </button>
       <button
         type="button"
+        title="Hide marked topics"
+        aria-label="Hide marked topics"
         aria-pressed={hideMarked}
         onClick={() => setHideMarked(!hideMarked)}
-        className="w-full text-sm px-3 py-2 text-left text-gray-900 dark:text-gray-100 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none"
+        className={`p-2 min-h-[44px] min-w-[44px] text-sm rounded focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none ${hideMarked ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300' : 'text-gray-900 dark:text-gray-100 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600'}`}
       >
-        Hide marked topics
+        👁
       </button>
       <button
         type="button"
@@ -201,19 +211,23 @@ export function ActionsGroup() {
       </button>
       <button
         type="button"
+        title={darkMode ? 'Light mode' : 'Dark mode'}
+        aria-label={darkMode ? 'Light mode' : 'Dark mode'}
         aria-pressed={darkMode}
         onClick={() => setDarkMode(!darkMode)}
-        className="w-full text-sm px-3 py-2 text-left text-gray-900 dark:text-gray-100 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none"
+        className={`p-2 min-h-[44px] min-w-[44px] text-sm rounded focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none ${darkMode ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300' : 'text-gray-900 dark:text-gray-100 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600'}`}
       >
-        {darkMode ? 'Light mode' : 'Dark mode'}
+        {darkMode ? '☀' : '🌙'}
       </button>
       <button
         type="button"
         id="open-candidate-modal"
+        title="Candidate details"
+        aria-label="Candidate details"
         onClick={() => candidateDialogRef.current?.showModal()}
-        className="w-full text-sm px-3 py-2 text-left text-gray-900 dark:text-gray-100 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none"
+        className="p-2 min-h-[44px] min-w-[44px] text-sm text-gray-900 dark:text-gray-100 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none"
       >
-        Candidate details
+        👤
       </button>
       <input
         ref={importFileInputRef}
@@ -228,17 +242,21 @@ export function ActionsGroup() {
       <button
         type="button"
         id="open-import-yaml"
+        title="Import YAML"
+        aria-label="Import YAML"
         onClick={handleOpenImportYaml}
-        className="w-full text-sm px-3 py-2 text-left text-gray-900 dark:text-gray-100 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none"
+        className="p-2 min-h-[44px] min-w-[44px] text-sm text-gray-900 dark:text-gray-100 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none"
       >
-        Import YAML
+        📥
       </button>
       <button
         type="button"
+        title="Export YAML"
+        aria-label="Export YAML"
         onClick={handleExportYaml}
-        className="w-full text-sm px-3 py-2 text-left text-gray-900 dark:text-gray-100 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none"
+        className="p-2 min-h-[44px] min-w-[44px] text-sm text-gray-900 dark:text-gray-100 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none"
       >
-        Export YAML
+        📤
       </button>
       {importError && (
         <p
@@ -252,10 +270,12 @@ export function ActionsGroup() {
       <button
         type="button"
         id="open-reset-dialog"
+        title="Reset all"
+        aria-label="Reset all"
         onClick={() => resetDialogRef.current?.showModal()}
-        className="w-full text-sm px-3 py-2 text-left text-red-600 dark:text-red-400 bg-gray-100 dark:bg-gray-700 hover:bg-red-50 dark:hover:bg-red-900/20 rounded focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none"
+        className="p-2 min-h-[44px] min-w-[44px] text-sm text-red-600 dark:text-red-400 bg-gray-100 dark:bg-gray-700 hover:bg-red-50 dark:hover:bg-red-900/20 rounded focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none"
       >
-        Reset all
+        🗑
       </button>
       <SessionSwitcherModal dialogRef={sessionSwitcherRef} />
       <CandidateModal dialogRef={candidateDialogRef} />

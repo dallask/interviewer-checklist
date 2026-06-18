@@ -239,7 +239,7 @@ Plans:
 Plans:
 **Wave 1**
 
-- [ ] 09-01-PLAN.md — Manifest commands key + onInstalled handler (welcome tab, demo seed, lastSeenVersion) + focus trap WR-02 guards + tests (POLISH-01, POLISH-02, POLISH-04, POLISH-07)
+- [x] 09-01-PLAN.md — Manifest commands key + onInstalled handler (welcome tab, demo seed, lastSeenVersion) + focus trap WR-02 guards + tests (POLISH-01, POLISH-02, POLISH-04, POLISH-07)
 
 **Wave 2** *(blocked on Wave 1 completion)*
 
@@ -278,5 +278,5 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 →
 | 6. Multiple Named Sessions & Switcher | 3/3 | Complete   | 2026-06-17 |
 | 7. YAML Import & Export | 2/2 | Complete    | 2026-06-17 |
 | 8. AI Prompt Modal | 2/2 | Complete    | 2026-06-17 |
-| 9. Polish — Print, Keyboard, A11y, Welcome & Updates | 0/3 | Not started | - |
+| 9. Polish — Print, Keyboard, A11y, Welcome & Updates | 1/3 | In Progress|  |
 | 10. Chrome Web Store Submission | 0/? | Not started | - |

@@ -38,6 +38,7 @@ export function QuestionCard({ row }: Props) {
   const setScore = useAppStore((s) => s.setScore);
   const setNote = useAppStore((s) => s.setNote);
   const deleteCustomQuestion = useAppStore((s) => s.deleteCustomQuestion);
+  const removeDefaultQuestion = useAppStore((s) => s.removeDefaultQuestion);
   // printMode is set true by usePrintExpansion's beforeprint handler so that
   // notes textareas with content are revealed for print (the HTML `hidden`
   // attribute cannot be overridden by CSS print:* variants — see
@@ -96,14 +97,18 @@ export function QuestionCard({ row }: Props) {
           >
             {difficultyLabel}
           </span>
-          {/* Delete button for custom questions */}
-          {row.isCustom === true && (
+          {/* Delete button for custom questions and default questions (BANK-05) */}
+          {(row.isCustom === true || row.isDefaultQuestion === true) && (
             <button
               type="button"
-              aria-label="Delete custom question"
-              onClick={() =>
-                row.customId != null && deleteCustomQuestion(row.customId)
-              }
+              aria-label={row.isCustom ? 'Delete custom question' : 'Remove question'}
+              onClick={() => {
+                if (row.isCustom && row.customId != null) {
+                  deleteCustomQuestion(row.customId);
+                } else if (row.isDefaultQuestion && row.questionBankId != null) {
+                  removeDefaultQuestion(row.questionBankId);
+                }
+              }}
               className="text-xs text-red-600 dark:text-red-400 hover:text-red-800 dark:hover:text-red-300 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none ml-2 print:hidden"
             >
               ×

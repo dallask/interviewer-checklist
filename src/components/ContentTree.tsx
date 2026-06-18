@@ -1,17 +1,23 @@
 import { useVirtualizer } from '@tanstack/react-virtual';
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 import { useAppStore } from '../store/app.js';
 import type { VirtualRow } from '../utils/buildFlatRows.js';
+import { AddSectionForm } from './AddSectionForm.js';
+import { AddTopicForm } from './AddTopicForm.js';
 import { QuestionCard } from './QuestionCard.js';
 import { SectionRow } from './SectionRow.js';
 import { TopicRow } from './TopicRow.js';
 
 // Estimated heights per row type in pixels — measureElement refines these at runtime.
-// See RESEARCH.md Pitfall 6: use realistic estimates to prevent zero-height collisions.
+// Conservative estimates for trigger rows cover both trigger and open-form states.
+// See RESEARCH.md Pitfall 2: trigger rows must have a height large enough to accommodate
+// the inline form when open (addSectionOpen / addTopicOpenFor toggle replaces trigger UI).
 const ESTIMATE_SIZE: Record<VirtualRow['type'], number> = {
   section: 52,
   topic: 44,
   question: 72,
+  'add-topic-trigger': 120,
+  'add-section-trigger': 120,
 };
 
 interface Props {
@@ -20,6 +26,10 @@ interface Props {
 
 export function ContentTree({ rows }: Props) {
   const parentRef = useRef<HTMLDivElement>(null);
+  // addSectionOpen: controls whether the "+ Add section" trigger shows or AddSectionForm renders
+  const [addSectionOpen, setAddSectionOpen] = useState(false);
+  // addTopicOpenFor: null = no section form open; sectionId = that section's add-topic form is open
+  const [addTopicOpenFor, setAddTopicOpenFor] = useState<string | null>(null);
   const candidate = useAppStore((s) => s.candidate);
   const candidateName = candidate?.name ?? '';
   const candidateRole = candidate?.role ?? '';
@@ -76,6 +86,35 @@ export function ContentTree({ rows }: Props) {
               {row.type === 'section' && <SectionRow row={row} />}
               {row.type === 'topic' && <TopicRow row={row} />}
               {row.type === 'question' && <QuestionCard row={row} />}
+              {row.type === 'add-section-trigger' && (
+                addSectionOpen ? (
+                  <AddSectionForm onDismiss={() => setAddSectionOpen(false)} />
+                ) : (
+                  <button
+                    type="button"
+                    onClick={() => setAddSectionOpen(true)}
+                    className="text-xs text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none px-4 py-2 print:hidden"
+                  >
+                    + Add section
+                  </button>
+                )
+              )}
+              {row.type === 'add-topic-trigger' && (
+                addTopicOpenFor === row.sectionId ? (
+                  <AddTopicForm
+                    sectionId={row.sectionId}
+                    onDismiss={() => setAddTopicOpenFor(null)}
+                  />
+                ) : (
+                  <button
+                    type="button"
+                    onClick={() => setAddTopicOpenFor(row.sectionId)}
+                    className="text-xs text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none px-8 py-2 print:hidden"
+                  >
+                    + Add topic
+                  </button>
+                )
+              )}
             </div>
           );
         })}

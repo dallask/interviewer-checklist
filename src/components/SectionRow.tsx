@@ -8,6 +8,7 @@ interface Props {
 export function SectionRow({ row }: Props) {
   const toggleSectionOpen = useAppStore((s) => s.toggleSectionOpen);
   const sectionOpen = useAppStore((s) => s.sectionOpen);
+  const removeSection = useAppStore((s) => s.removeSection);
 
   const isCollapsed = sectionOpen[row.id] === false;
 
@@ -21,8 +22,21 @@ export function SectionRow({ row }: Props) {
       <span>
         {row.icon} {row.label}
       </span>
-      <span className="text-sm font-normal text-gray-500 dark:text-gray-400">
-        {row.questionCount} questions
+      <span className="flex items-center gap-2">
+        <span className="text-sm font-normal text-gray-500 dark:text-gray-400">
+          {row.questionCount} questions
+        </span>
+        {/* HTML: delete button nested inside section toggle button — stopPropagation mitigates toggle side-effect */}
+        {row.isDefault === false && (
+          <button
+            type="button"
+            aria-label={`Remove section ${row.label}`}
+            onClick={(e) => { e.stopPropagation(); removeSection(row.id); }}
+            className="text-xs text-red-600 dark:text-red-400 hover:text-red-800 dark:hover:text-red-300 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none ml-2 print:hidden"
+          >
+            ×
+          </button>
+        )}
       </span>
     </button>
   );

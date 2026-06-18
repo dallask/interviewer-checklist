@@ -10,6 +10,7 @@ interface Props {
 
 export function TopicRow({ row }: Props) {
   const toggleTopic = useAppStore((s) => s.toggleTopic);
+  const removeTopic = useAppStore((s) => s.removeTopic);
   const setTopicNote = useAppStore((s) => s.setTopicNote);
   // printMode is set true by usePrintExpansion's beforeprint handler so that
   // topic notes with content are revealed for print (the HTML `hidden`
@@ -71,6 +72,17 @@ export function TopicRow({ row }: Props) {
           </span>
           {/* TopicMarkDisplay replaces the Phase 4 "—" stub (SCORE-02) */}
           <TopicMarkDisplay topicId={topicId} topic={row.topic} />
+          {/* HTML: delete button inside topic toggle button — stopPropagation prevents toggle (see UI-SPEC phase-specific constraint 2) */}
+          {row.topic.isDefault === false && (
+            <button
+              type="button"
+              aria-label={`Remove topic ${row.topic.name}`}
+              onClick={(e) => { e.stopPropagation(); removeTopic(row.topic.id); }}
+              className="text-xs text-red-600 dark:text-red-400 hover:text-red-800 dark:hover:text-red-300 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none ml-2 print:hidden"
+            >
+              ×
+            </button>
+          )}
         </span>
       </button>
 

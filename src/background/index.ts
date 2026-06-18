@@ -35,9 +35,15 @@ chrome.runtime.onInstalled.addListener(async (details) => {
           },
         },
       });
+      // On first install, seed `lastSeenVersion` to the current manifest
+      // version so the UpdateBanner does not fire spuriously on day one.
+      const currentVersion = chrome.runtime.getManifest().version;
+      await chrome.storage.local.set({ lastSeenVersion: currentVersion });
     }
-    const currentVersion = chrome.runtime.getManifest().version;
-    await chrome.storage.local.set({ lastSeenVersion: currentVersion });
+    // On `update` / `chrome_update`: do NOT touch `lastSeenVersion` here.
+    // UpdateBanner reads it, compares to the manifest version, renders the
+    // banner, and writes `lastSeenVersion = currentVersion` after the user
+    // dismisses it (so the banner does not re-appear on next launch).
   } catch (err) {
     console.error('[interviewer-checklist] onInstalled handler failed:', err);
   }

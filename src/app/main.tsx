@@ -60,6 +60,23 @@ if (activeSessionId) {
   }
 }
 
+// Honor activeSessionOverride written by the Welcome page's "View demo session"
+// CTA. The override is a one-shot signal: switch sessions after bootstrap, then
+// clear the key so the next app load behaves normally. Failures here are
+// non-fatal — the user still sees the app, just on whatever session was active.
+try {
+  const overrideRaw = await chrome.storage.local.get('activeSessionOverride');
+  const overrideId = overrideRaw.activeSessionOverride as string | undefined;
+  if (overrideId && overrideId !== activeSessionId) {
+    await useAppStore.getState().switchSession(overrideId);
+  }
+  if (overrideId) {
+    await chrome.storage.local.remove('activeSessionOverride');
+  }
+} catch (err) {
+  console.error('[interviewer-checklist] activeSessionOverride failed:', err);
+}
+
 createRoot(rootEl).render(
   <StrictMode>
     <App />

@@ -100,6 +100,22 @@ describe('useAppStore — actions', () => {
   });
 
   it('expandAll() sets all topic IDs to true in topicOpen', () => {
+    // Phase 14: expandAll now reads from get().sections (not DEFAULT_SECTIONS).
+    // Pre-populate sections so the action has topics to iterate.
+    useAppStore.setState({
+      sections: [
+        {
+          id: 'sec1',
+          label: 'Section 1',
+          icon: '',
+          isDefault: true,
+          topics: [
+            { id: 'topic1', name: 'T1', desc: '', tag: '', isDefault: true, questions: [] },
+            { id: 'topic2', name: 'T2', desc: '', tag: '', isDefault: true, questions: [] },
+          ],
+        },
+      ],
+    });
     useAppStore.getState().expandAll();
     const { topicOpen } = useAppStore.getState();
     expect(Object.keys(topicOpen).length).toBeGreaterThan(0);
@@ -109,6 +125,22 @@ describe('useAppStore — actions', () => {
   });
 
   it('collapseAll() sets all topic IDs to false in topicOpen', () => {
+    // Phase 14: collapseAll now reads from get().sections (not DEFAULT_SECTIONS).
+    // Pre-populate sections so the action has topics to iterate.
+    useAppStore.setState({
+      sections: [
+        {
+          id: 'sec1',
+          label: 'Section 1',
+          icon: '',
+          isDefault: true,
+          topics: [
+            { id: 'topic1', name: 'T1', desc: '', tag: '', isDefault: true, questions: [] },
+            { id: 'topic2', name: 'T2', desc: '', tag: '', isDefault: true, questions: [] },
+          ],
+        },
+      ],
+    });
     useAppStore.getState().collapseAll();
     const { topicOpen } = useAppStore.getState();
     expect(Object.keys(topicOpen).length).toBeGreaterThan(0);

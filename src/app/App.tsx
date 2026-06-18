@@ -6,7 +6,6 @@ import { Sidebar } from '../components/Sidebar.js';
 import { StorageToast } from '../components/StorageToast.js';
 import { UndoToast } from '../components/UndoToast.js';
 import { UpdateBanner } from '../components/UpdateBanner.js';
-import { DEFAULT_SECTIONS } from '../data/bank/index.js';
 import { useKeyboardShortcuts } from '../hooks/useKeyboardShortcuts.js';
 import { usePrintExpansion } from '../hooks/usePrintExpansion.js';
 import { useAppStore } from '../store/app.js';
@@ -31,14 +30,16 @@ export function App() {
   const customQuestions = useAppStore((s) => s.customQuestions);
   const migrationFailedCount = useAppStore((s) => s.migrationFailedCount);
   const migrationFailedIds = useAppStore((s) => s.migrationFailedIds);
+  const sections = useAppStore((s) => s.sections);
 
   // Compute set of topic IDs that have at least one scored question.
   // A topic is "marked" when it has a score != null — used by hideMarked toggle.
   // Phase 11: score keys use V4 format '${topicId}-q${idx}' (D-04 stable ID format).
+  // Phase 14: iterate state.sections (from store) instead of DEFAULT_SECTIONS.
   const markedTopicIds = useMemo(() => {
     const marked = new Set<string>();
-    for (const section of DEFAULT_SECTIONS) {
-      for (const topic of section.items) {
+    for (const section of sections) {
+      for (const topic of section.topics) {
         const hasScore = topic.questions.some((_, i) => {
           const key = `${topic.id}-q${i}`;
           return scores[key] !== null && scores[key] !== undefined;
@@ -47,9 +48,10 @@ export function App() {
       }
     }
     return marked;
-  }, [scores]);
+  }, [scores, sections]);
 
-  const rows = buildFlatRows(DEFAULT_SECTIONS, topicOpen, sectionOpen, {
+  // TODO(14-02): remove cast after buildFlatRows is updated to accept V4Section[]
+  const rows = buildFlatRows(sections as any, topicOpen, sectionOpen, {
     searchQuery,
     selectedDifficulties,
     selectedSections,

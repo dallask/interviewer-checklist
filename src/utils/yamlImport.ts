@@ -1,6 +1,6 @@
 import { load } from 'js-yaml';
 import type { Section } from '../data/bank/types.js';
-import type { CandidateDetails, CustomQuestion } from '../storage/types.js';
+import type { CandidateDetails, CustomQuestion, V4Section } from '../storage/types.js';
 
 // ---------------------------------------------------------------------------
 // Security: maximum YAML file size (1 MB) to prevent DoS via memory allocation.
@@ -25,6 +25,10 @@ export interface ImportResult {
   customQuestions: CustomQuestion[];
   candidate: CandidateDetails | null;
   sessionName: string;
+  /** User-added sections from YAML v2 bank delta (populated by Plan 03 YAML import) */
+  sections?: V4Section[];
+  /** IDs of removed default questions from YAML v2 bank delta (populated by Plan 03 YAML import) */
+  removedDefaultQuestionIds?: string[];
 }
 
 /**

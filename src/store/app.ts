@@ -1,5 +1,4 @@
 import { create } from 'zustand';
-import { DEFAULT_SECTIONS } from '../data/bank/index.js';
 import type { Difficulty } from '../data/bank/types.js';
 import { storageAdapter } from '../storage/index.js';
 import type { V2Manifest, V4Section, V4Session, V4Topic } from '../storage/types.js';
@@ -227,7 +226,7 @@ function nextSessionName(sessions: V2Manifest['sessions']): string {
 // rapid double-delete and enables cancellation when undo is triggered manually.
 let undoTimer: ReturnType<typeof setTimeout> | null = null;
 
-export const useAppStore = create<AppState & AppActions>()((set) => ({
+export const useAppStore = create<AppState & AppActions>()((set, get) => ({
   ...DEFAULT_STATE,
 
   setSidebarOpen: (open) => set({ sidebarOpen: open }),
@@ -256,8 +255,8 @@ export const useAppStore = create<AppState & AppActions>()((set) => ({
 
   expandAll: () => {
     const topicOpen: Record<string, boolean> = {};
-    for (const section of DEFAULT_SECTIONS) {
-      for (const topic of section.items) {
+    for (const section of get().sections) {
+      for (const topic of section.topics) {
         topicOpen[topic.id] = true;
       }
     }
@@ -266,8 +265,8 @@ export const useAppStore = create<AppState & AppActions>()((set) => ({
 
   collapseAll: () => {
     const topicOpen: Record<string, boolean> = {};
-    for (const section of DEFAULT_SECTIONS) {
-      for (const topic of section.items) {
+    for (const section of get().sections) {
+      for (const topic of section.topics) {
         topicOpen[topic.id] = false;
       }
     }
@@ -346,6 +345,40 @@ export const useAppStore = create<AppState & AppActions>()((set) => ({
       customQuestions: s.customQuestions.filter((cq) => cq.id !== id),
     })),
 
+  // --- Bank mutation actions (Phase 14) ---
+
+  addSection: (section) =>
+    set((s) => ({ sections: [...s.sections, section] })),
+
+  removeSection: (sectionId) =>
+    set((s) => ({
+      sections: s.sections.filter((sec) => sec.id !== sectionId),
+    })),
+
+  addTopic: (sectionId, topic) =>
+    set((s) => ({
+      sections: s.sections.map((sec) =>
+        sec.id === sectionId
+          ? { ...sec, topics: [...sec.topics, topic] }
+          : sec,
+      ),
+    })),
+
+  removeTopic: (topicId) =>
+    set((s) => ({
+      sections: s.sections.map((sec) => ({
+        ...sec,
+        topics: sec.topics.filter((t) => t.id !== topicId),
+      })),
+    })),
+
+  removeDefaultQuestion: (questionId) =>
+    set((s) => {
+      const next = new Set(s.removedDefaultQuestionIds);
+      next.add(questionId);
+      return { removedDefaultQuestionIds: next };
+    }),
+
   setCandidate: (candidate) => set({ candidate }),
 
   resetAll: () =>
@@ -361,6 +394,7 @@ export const useAppStore = create<AppState & AppActions>()((set) => ({
       searchQuery: '',
       hideMarked: false,
       // activeSessionId is NOT reset — session identity must persist across resets
+      // removedDefaultQuestionIds intentionally not cleared — bank shape is separate from scoring state (D-01)
     }),
 
   // ---------------------------------------------------------------------------
@@ -393,6 +427,7 @@ export const useAppStore = create<AppState & AppActions>()((set) => ({
         ? { ...s.manifest, activeSessionId: targetId }
         : s.manifest,
       sections: session?.sections ?? [],
+      removedDefaultQuestionIds: new Set(session?.removedDefaultQuestionIds ?? []),
       scores: session?.scores ?? {},
       overrides: session?.overrides ?? {},
       notes: session?.notes ?? {},
@@ -622,6 +657,8 @@ export const useAppStore = create<AppState & AppActions>()((set) => ({
         topicNotes: data.topicNotes,
         customQuestions: data.customQuestions,
         candidate: data.candidate,
+        sections: data.sections ?? [],
+        removedDefaultQuestionIds: new Set(data.removedDefaultQuestionIds ?? []),
         selectedDifficulties: new Set(),
         selectedSections: new Set(),
         searchQuery: '',
@@ -645,6 +682,8 @@ export const useAppStore = create<AppState & AppActions>()((set) => ({
         topicNotes: data.topicNotes,
         customQuestions: data.customQuestions,
         candidate: data.candidate,
+        sections: data.sections ?? [],
+        removedDefaultQuestionIds: new Set(data.removedDefaultQuestionIds ?? []),
         selectedDifficulties: new Set(),
         selectedSections: new Set(),
         searchQuery: '',
@@ -709,13 +748,14 @@ useAppStore.subscribe((state) => {
         version: 4,
         id: state.activeSessionId,
         sections: state.sections,
+        removedDefaultQuestionIds: [...state.removedDefaultQuestionIds],
         scores: state.scores,
         overrides: state.overrides,
         notes: state.notes,
         topicNotes: state.topicNotes,
         customQuestions: state.customQuestions,
         candidate: state.candidate,
-      },
+      } satisfies V4Session,
     });
   }
 });

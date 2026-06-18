@@ -14,6 +14,7 @@ import {
   parseLegacy,
   parseStructural,
   parseYaml,
+  reKeyImportResultToV4,
   type ImportPreview,
 } from '../utils/yamlImport.js';
 import type { V3Session } from '../storage/types.js';
@@ -124,7 +125,8 @@ export function ActionsGroup() {
       e.target.value = '';
       return;
     }
-    setImportPreview(preview);
+    const v4Preview = { ...preview, result: reKeyImportResultToV4(preview.result) };
+    setImportPreview(v4Preview);
     importDialogRef.current?.showModal();
     // Allow re-import of the same file
     e.target.value = '';

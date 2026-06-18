@@ -479,3 +479,42 @@ export function parseStructural(
     result,
   };
 }
+
+// ---------------------------------------------------------------------------
+// reKeyImportResultToV4 — convert V3-format score/note keys to V4 format
+// ---------------------------------------------------------------------------
+
+/**
+ * Re-keys an ImportResult's scores and notes from V3 format (${topicId}-N)
+ * to V4 format (${topicId}-qN). Called by ActionsGroup after parseLegacy /
+ * parseStructural. Does NOT modify the parsers — they remain V3-key-based.
+ *
+ * - scores: keys matching /^(.+)-(\d+)$/ → '${match[1]}-q${match[2]}'
+ * - notes: same re-keying as scores
+ * - overrides: NOT re-keyed (topicId keys have no integer suffix)
+ * - topicNotes: NOT re-keyed (same reason)
+ * - customQuestions: passed through unchanged
+ * - Other fields: passed through unchanged
+ *
+ * Returns a new ImportResult — does not mutate input.
+ *
+ * D-08 / RESEARCH.md Pattern 4 / PATTERNS.md §yamlImport.ts
+ */
+export function reKeyImportResultToV4(result: ImportResult): ImportResult {
+  function remap<T>(record: Record<string, T>): Record<string, T> {
+    const out: Record<string, T> = {};
+    for (const [key, value] of Object.entries(record)) {
+      const match = /^(.+)-(\d+)$/.exec(key);
+      out[match ? `${match[1]}-q${match[2]}` : key] = value;
+    }
+    return out;
+  }
+  return {
+    ...result,
+    scores: remap(result.scores),
+    notes: remap(result.notes),
+    // overrides: topicId-keyed — no re-key needed
+    // topicNotes: topicId-keyed — no re-key needed
+    // customQuestions: custom-* IDs — pass through unchanged
+  };
+}

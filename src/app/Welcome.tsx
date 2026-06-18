@@ -1,12 +1,12 @@
-import { useEffect } from 'react';
 import './styles.css';
 
 /**
  * Welcome page rendered as a standalone Vite entry point (welcome.html).
  *
  * Opens on first install via background/index.ts onInstalled handler.
- * Marks itself as seen on mount so the background handler won't re-open
- * the page on later install events / Chrome reloads.
+ * Marks itself as seen only when the user clicks a CTA (WR-03 fix), so a
+ * user who closes the tab mid-install still gets the page re-offered on
+ * the next install event.
  *
  * Per UI-SPEC section 1: page title, subtitle, version, pin-to-toolbar
  * section, two audience cards, and primary + secondary CTA buttons.
@@ -14,17 +14,14 @@ import './styles.css';
 export function Welcome() {
   const { version } = chrome.runtime.getManifest();
 
-  useEffect(() => {
-    // Mark welcome as seen so the background `onInstalled` flow doesn't
-    // re-open it. Failures here are non-fatal (page still renders).
-    try {
-      chrome.storage.local.set({ hasSeenWelcome: true });
-    } catch (err) {
-      console.error('[interviewer-checklist] hasSeenWelcome set failed:', err);
-    }
-  }, []);
-
   function handleOpenExtension() {
+    // WR-03: mark hasSeenWelcome only on real CTA interaction — closing
+    // the tab without clicking does not count as "seen".
+    chrome.storage.local
+      .set({ hasSeenWelcome: true })
+      .catch((err) =>
+        console.error('[interviewer-checklist] hasSeenWelcome set failed:', err),
+      );
     const url = chrome.runtime.getURL('src/app/app.html');
     chrome.tabs.create({ url });
   }
@@ -32,6 +29,7 @@ export function Welcome() {
   function handleViewDemo() {
     // Signal main.tsx to switch to the demo session after bootstrap.
     chrome.storage.local.set({ activeSessionOverride: 'demo' });
+    chrome.storage.local.set({ hasSeenWelcome: true });
     const url = chrome.runtime.getURL('src/app/app.html');
     chrome.tabs.create({ url });
   }

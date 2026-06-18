@@ -6,26 +6,6 @@ interface Props {
   row: QuestionRow;
 }
 
-// All 4 difficulty class strings declared as complete string literals
-// so Tailwind's content scanner includes them at build time.
-// Never use dynamic class construction like "bg-" + level + "-100".
-const DIFFICULTY_CLASSES: Record<string, string> = {
-  novice:
-    'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400',
-  intermediate:
-    'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400',
-  advanced:
-    'bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400',
-  expert: 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400',
-};
-
-const DIFFICULTY_LABELS: Record<string, string> = {
-  novice: 'Beginner',
-  intermediate: 'Intermediate',
-  advanced: 'Advanced',
-  expert: 'Expert',
-};
-
 export function QuestionCard({ row }: Props) {
   const { question } = row;
 
@@ -47,10 +27,6 @@ export function QuestionCard({ row }: Props) {
   // hideNotes suppresses all note areas globally (UI-09). Not persisted (D-07).
   // Print mode takes priority: hideNotes && !printMode (D-08).
   const hideNotes = useAppStore((s) => s.hideNotes);
-
-  const difficultyClass =
-    DIFFICULTY_CLASSES[question.level] ?? DIFFICULTY_CLASSES.novice;
-  const difficultyLabel = DIFFICULTY_LABELS[question.level] ?? question.level;
 
   // Notes state — local value for immediate typing feedback; store write is debounced
   const [notesOpen, setNotesOpen] = useState(false);
@@ -78,90 +54,81 @@ export function QuestionCard({ row }: Props) {
   }
 
   return (
-    <div className="bg-white dark:bg-gray-900 px-4 py-3 pl-12 border-b border-gray-100 dark:border-gray-800">
-      {/* Question header: text + difficulty pill + custom badge/delete */}
-      <div className="flex items-start justify-between gap-2">
-        <span className="text-sm font-normal text-gray-900 dark:text-gray-100 flex-1">
+    <div className="bg-white dark:bg-gray-900 border-b border-gray-100 dark:border-gray-800">
+      {/* Single-line compact row — hidden on print */}
+      <div className="px-3 py-1.5 pl-10 flex items-center gap-2 min-h-[44px] group print:hidden">
+        {/* Score dropdown (left) */}
+        <select
+          aria-label={`${question.q} score`}
+          value={score !== null ? String(score) : 'skip'}
+          onChange={(e) => {
+            const v = e.target.value;
+            setScore(questionId, v === 'skip' ? null : Number(v));
+          }}
+          className="text-xs font-normal bg-gray-100 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded px-1.5 py-1 min-w-[52px] focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none"
+        >
+          <option value="skip">Skip</option>
+          {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((n) => (
+            <option key={n} value={String(n)}>
+              {n}
+            </option>
+          ))}
+        </select>
+
+        {/* Question text (flex-1, truncates) */}
+        <span className="text-sm font-normal text-gray-900 dark:text-gray-100 flex-1 truncate">
           {question.q}
         </span>
-        <div className="flex items-center gap-1 flex-shrink-0">
-          {/* Custom badge */}
-          {row.isCustom === true && (
-            <span className="text-xs font-normal px-2 py-1 rounded bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400">
-              custom
-            </span>
-          )}
-          {/* Difficulty pill */}
-          <span
-            className={`text-xs font-normal px-2 py-0.5 rounded-full ${difficultyClass}`}
-          >
-            {difficultyLabel}
-          </span>
-          {/* Delete button for custom questions and default questions (BANK-05) */}
-          {(row.isCustom === true || row.isDefaultQuestion === true) && (
-            <button
-              type="button"
-              aria-label={row.isCustom ? 'Delete custom question' : 'Remove question'}
-              onClick={() => {
-                if (row.isCustom && row.customId != null) {
-                  deleteCustomQuestion(row.customId);
-                } else if (row.isDefaultQuestion && row.questionBankId != null) {
-                  removeDefaultQuestion(row.questionBankId);
-                }
-              }}
-              className="text-xs text-red-600 dark:text-red-400 hover:text-red-800 dark:hover:text-red-300 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none ml-2 print:hidden"
-            >
-              ×
-            </button>
-          )}
-        </div>
-      </div>
 
-      {/* Score slider row — always visible (SCORE-01); hidden on print */}
-      <div className="mt-2 flex items-center gap-3 min-h-[44px] print:hidden">
-        <input
-          type="range"
-          min={0}
-          max={10}
-          step={1}
-          aria-label={question.q}
-          aria-valuenow={score ?? 0}
-          aria-valuemin={0}
-          aria-valuemax={10}
-          value={score ?? 0}
-          onChange={(e) => setScore(questionId, Number(e.target.value))}
-          className="flex-1 h-2 accent-blue-600 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
-        />
-        <span className="text-xs text-gray-500 dark:text-gray-400 w-10 text-right tabular-nums">
-          {score !== null ? `${score} / 10` : '— / 10'}
-        </span>
-      </div>
-      {/* Print-only score readout — replaces the hidden slider row on print
-          so the printed page still shows the captured score. */}
-      <div className="hidden print:block print:mt-1 text-sm font-normal text-gray-700">
-        Score: {score !== null ? `${score} / 10` : '— / 10'}
-      </div>
-
-      {/* Notes section — toggle + textarea (SCORE-03) */}
-      {/* hideNotes=true hides this wrapper; printMode overrides to keep notes visible (D-08) */}
-      <div className={hideNotes && !printMode ? 'hidden' : ''}>
+        {/* Note icon button (right) */}
         <button
           type="button"
+          aria-label={`Toggle note for ${question.q}`}
           aria-expanded={notesOpen}
           aria-controls={`notes-${questionId}`}
           onClick={() => setNotesOpen((prev) => !prev)}
-          className="text-xs text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none mt-1 print:hidden"
+          className={`p-1.5 min-h-[44px] min-w-[44px] flex items-center justify-center focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none ${notesOpen || localNote ? 'text-blue-600 dark:text-blue-400' : 'text-gray-400 dark:text-gray-500 hover:text-gray-700 dark:hover:text-gray-200'}`}
         >
-          {notesOpen ? 'Hide notes' : 'Add notes'}
+          📝
         </button>
+
+        {/* Delete button — custom and default questions only, hover-revealed */}
+        {(row.isCustom === true || row.isDefaultQuestion === true) && (
+          <button
+            type="button"
+            aria-label={row.isCustom ? 'Delete custom question' : 'Remove question'}
+            onClick={() => {
+              if (row.isCustom && row.customId != null) {
+                deleteCustomQuestion(row.customId);
+              } else if (row.isDefaultQuestion && row.questionBankId != null) {
+                removeDefaultQuestion(row.questionBankId);
+              }
+            }}
+            className="p-1.5 min-h-[44px] min-w-[44px] flex items-center justify-center text-gray-400 dark:text-gray-500 hover:text-red-600 dark:hover:text-red-400 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none opacity-0 group-hover:opacity-100 focus-visible:opacity-100 print:hidden"
+          >
+            ×
+          </button>
+        )}
+      </div>
+
+      {/* Print-only score readout — replaces the hidden dropdown row on print */}
+      <div className="hidden print:flex print:items-center print:gap-2 print:px-3 print:py-1.5 print:pl-10">
+        <span className="text-sm font-normal text-gray-900">{question.q}</span>
+        <span className="ml-auto text-sm font-normal text-gray-700">
+          Score: {score !== null ? `${score} / 10` : '— / 10'}
+        </span>
+      </div>
+
+      {/* Notes section — hideNotes=true hides this wrapper; printMode overrides (D-08) */}
+      <div id={`notes-${questionId}`} className={hideNotes && !printMode ? 'hidden' : ''}>
         <textarea
-          id={`notes-${questionId}`}
           aria-label={`Notes for ${question.q}`}
           value={localNote}
           onChange={(e) => handleNoteChange(e.target.value)}
           hidden={!notesOpen && !localNote && !printMode}
           placeholder="Question notes…"
-          className="mt-2 w-full resize-y min-h-[80px] text-sm font-normal text-gray-900 dark:text-gray-100 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded p-2 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none placeholder:text-gray-400 dark:placeholder:text-gray-600 print:h-auto print:overflow-visible print:resize-none print:border-0 print:p-0"
+          className="w-full resize-y min-h-[64px] text-sm font-normal text-gray-900 dark:text-gray-100 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded p-2 mx-3 mb-2 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none placeholder:text-gray-400 dark:placeholder:text-gray-600 print:h-auto print:overflow-visible print:resize-none print:border-0 print:p-0"
+          style={{ width: 'calc(100% - 1.5rem)' }}
         />
       </div>
     </div>

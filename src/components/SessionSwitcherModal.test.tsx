@@ -51,18 +51,22 @@ describe('SessionSwitcherModal', () => {
     const ref = createRef<HTMLDialogElement>();
     render(<SessionSwitcherModal dialogRef={ref} />);
     ref.current?.showModal();
-    expect(screen.getByRole('option', { name: /session 1/i, hidden: true })).toBeInTheDocument();
-    expect(screen.getByRole('option', { name: /session 2/i, hidden: true })).toBeInTheDocument();
+    // role="option" removed (WR-01): <ul> is no longer a listbox, so option role
+    // is orphaned. Assert via the switch button accessible name instead.
+    expect(screen.getByRole('button', { name: /switch to session 1/i, hidden: true })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /switch to session 2/i, hidden: true })).toBeInTheDocument();
   });
 
-  it('active session row has aria-selected="true"', () => {
+  it('active session row has blue background class (no aria-selected)', () => {
     const ref = createRef<HTMLDialogElement>();
     render(<SessionSwitcherModal dialogRef={ref} />);
     ref.current?.showModal();
+    // aria-selected removed (WR-01): active state is conveyed via bg-blue-50 class.
     const activeRow = document.getElementById('session-row-session-1');
-    expect(activeRow).toHaveAttribute('aria-selected', 'true');
+    expect(activeRow).not.toHaveAttribute('aria-selected');
+    expect(activeRow?.className).toContain('bg-blue-50');
     const inactiveRow = document.getElementById('session-row-session-2');
-    expect(inactiveRow).toHaveAttribute('aria-selected', 'false');
+    expect(inactiveRow).not.toHaveAttribute('aria-selected');
   });
 
   it('"New session" button calls createSession action', async () => {

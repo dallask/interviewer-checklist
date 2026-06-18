@@ -72,8 +72,6 @@ export function SessionRow({ session, isActive, onSwitch, onRename, onDuplicate,
   return (
     <li
       id={`session-row-${session.id}`}
-      role="option"
-      aria-selected={isActive}
       className={liClass}
     >
       <span className={checkmarkClass} aria-hidden="true">

@@ -35,7 +35,7 @@ describe('SessionRow', () => {
     expect(switchBtn).toHaveTextContent('Session 1');
   });
 
-  it('active: li has aria-selected="true"', () => {
+  it('active: li has bg-blue-50 class (no aria-selected after WR-01 fix)', () => {
     render(
       <SessionRow
         session={mockSession}
@@ -46,11 +46,14 @@ describe('SessionRow', () => {
         onDelete={onDelete}
       />,
     );
+    // aria-selected removed (WR-01): role="option" was orphaned after listbox removal.
+    // Active state is now conveyed via bg-blue-50 class on the li element.
     const li = document.getElementById('session-row-session-1');
-    expect(li).toHaveAttribute('aria-selected', 'true');
+    expect(li).not.toHaveAttribute('aria-selected');
+    expect(li?.className).toContain('bg-blue-50');
   });
 
-  it('inactive: li has aria-selected="false"', () => {
+  it('inactive: li does not have bg-blue-50 class (no aria-selected after WR-01 fix)', () => {
     render(
       <SessionRow
         session={mockSession}
@@ -61,8 +64,10 @@ describe('SessionRow', () => {
         onDelete={onDelete}
       />,
     );
+    // aria-selected removed (WR-01): inactive row has no blue background.
     const li = document.getElementById('session-row-session-1');
-    expect(li).toHaveAttribute('aria-selected', 'false');
+    expect(li).not.toHaveAttribute('aria-selected');
+    expect(li?.className).not.toContain('bg-blue-50');
   });
 
   it('active: checkmark span does not have text-transparent class', () => {

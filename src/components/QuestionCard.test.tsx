@@ -220,6 +220,9 @@ describe('QuestionCard', () => {
     expect(
       screen.queryByRole('button', { name: 'Delete custom question' }),
     ).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole('button', { name: 'Remove question' }),
+    ).not.toBeInTheDocument();
   });
 
   it('renders delete button with aria-label "Delete custom question" for custom questions', () => {

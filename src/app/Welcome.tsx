@@ -27,9 +27,22 @@ export function Welcome() {
   }
 
   function handleViewDemo() {
-    // Signal main.tsx to switch to the demo session after bootstrap.
-    chrome.storage.local.set({ activeSessionOverride: 'demo' });
-    chrome.storage.local.set({ hasSeenWelcome: true });
+    // WR-04: chrome.storage.local.set returns a Promise in MV3 — attach
+    // .catch() so rejections (quota, IO) surface instead of becoming
+    // unhandled-rejection noise.
+    chrome.storage.local
+      .set({ activeSessionOverride: 'demo' })
+      .catch((err) =>
+        console.error(
+          '[interviewer-checklist] activeSessionOverride set failed:',
+          err,
+        ),
+      );
+    chrome.storage.local
+      .set({ hasSeenWelcome: true })
+      .catch((err) =>
+        console.error('[interviewer-checklist] hasSeenWelcome set failed:', err),
+      );
     const url = chrome.runtime.getURL('src/app/app.html');
     chrome.tabs.create({ url });
   }

@@ -1,5 +1,31 @@
 # Milestones
 
+## v1.1 Post-UAT Fix + Polish (Shipped: 2026-06-18)
+
+**Phases completed:** 5 phases, 17 plans, 28 tasks
+
+**Key accomplishments:**
+
+- V4SessionSchema (valibot) with materialized sections, isDefault flags (D-02), and stable question IDs (D-04) — migrateV3ToV4() remaps score/note keys from ${topicId}-N to ${topicId}-qN
+- V3→V4 eager migration loop in bootstrap() with pre-migration snapshot (D-05), skip-and-continue (D-06), and double-migration guard — AppState wired with V4Session fields, MigrationErrorBanner mounted above UpdateBanner
+- reKeyImportResultToV4() exported from yamlImport.ts and wired in ActionsGroup — YAML imports now produce V4-format score/note keys (topicId-qN); bootstrap.test.ts extended with Scenarios E/F/G for V4 migration coverage
+- DOM event isolation for topic override fieldset (stopPropagation) and backdrop-click close for session switcher modal (e.target guard on dialog onClick)
+- hideNotes boolean Zustand field wired to QuestionCard and TopicRow wrappers, suppressing all note areas on screen while preserving print-mode visibility
+- 1. [Rule 1 - Bug] Fixed Sidebar.test.tsx backdrop selector after UI-11 icon spans introduced aria-hidden
+- Hide notes button (📝) wired to setHideNotes with aria-pressed, plus all 11 ActionsGroup buttons converted to icon-only emoji glyphs with native title tooltips and 44px touch targets
+- Added "All levels"/"All sections" rows with ∞/📋 icons, color dots for difficulties, section.icon emojis, question count badges via useMemo, and clearDifficulties/clearSections Zustand actions, replacing score marks in SectionFilter.
+- V4SessionSchema + AppState extended with removedDefaultQuestionIds Set, 5 Zustand bank-mutation actions added, App.tsx wired to store sections instead of DEFAULT_SECTIONS
+- buildFlatRows.ts updated to accept V4Section[], emit add-topic-trigger/add-section-trigger rows, filter removedDefaultQuestionIds, and expose QuestionRow.questionBankId for BANK-05 delete wiring
+- YAML schema v2: exportSession migrated to V4Session with schemaVersion 2, text/level on default questions, and bank delta block; parseStructural extended to extract bank delta for round-trip import
+- Two new inline form components (AddSectionForm, AddTopicForm) + delete buttons on SectionRow/TopicRow/QuestionCard + ContentTree extended to dispatch all four trigger/form row states — completing BANK-01 through BANK-05
+- 18 new Zustand store action tests in app.test.ts completing the automated acceptance gate for all 8 Phase 14 requirements (BANK-01..05, YAML-04..06)
+- Sticky sidebar header with toggle/candidate buttons, live mark badge (BAND_COLORS), and thin progress bar via computeOverallMark across all V4 topics
+- Native `<dialog>` AboutModal with focus trap + CandidateModal pattern; SidebarFooter extended with credit lockup, kivgila.pro link, and About button wired via `aboutDialogRef`
+- QuestionCard rewritten to compact single-line layout — score `<select>` dropdown (Skip + 0-10) left, question text center, note icon (📝) and hover-revealed delete button right, per SCORE-08 spec
+- Unit test coverage for all Phase 15 components: 2 new test files (SidebarHeader, AboutModal) + 3 updated files (SidebarFooter, Sidebar, QuestionCard) with 56 passing tests; compact card dropdown, note icon, and dialog accessibility fully covered
+
+---
+
 ## v1.0 Chrome Extension Launch (Shipped: 2026-06-18)
 
 **Phases completed:** 11 phases, 30 plans, 36 tasks

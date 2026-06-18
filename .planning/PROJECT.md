@@ -2,43 +2,18 @@
 
 ## Current State
 
-**Shipped:** v1.0 Chrome Extension Launch — 2026-06-18
-**Active:** v1.1 Post-UAT Fix + Polish — closing the 14 gaps surfaced by the v1.0 CWS smoke-test UAT.
+**Shipped:** v1.1 Post-UAT Fix + Polish — 2026-06-18
+**Between milestones.** Run `/gsd-new-milestone` to start v1.2.
 
 ---
 
-## Current Milestone: v1.1 Post-UAT Fix + Polish
+## Previous Milestones
 
-**Goal:** Close the 14 gaps from v1.0 CWS smoke-test UAT — ship defect fixes and UX enhancements that turn v1.0 from "works" into "feels right" for real interviewer use.
+### v1.1 Post-UAT Fix + Polish (shipped 2026-06-18)
 
-**Target features:**
+**Goal:** Closed 14 gaps from v1.0 CWS smoke-test UAT — 8 defects + 6 UX enhancements across Phases 11–15. V3→V4 session schema migration, fully user-editable bank, compact QuestionCard, sticky sidebar header, AboutModal, filter overhaul. Full archive: [milestones/v1.1-ROADMAP.md](milestones/v1.1-ROADMAP.md)
 
-*Defects (8) — from `.planning/milestones/v1.0-phases/10-chrome-web-store-submission/10-UAT.md` Gaps section*
-- Manual topic override dropdown collapses parent section (test 5)
-- Session switcher modal cannot be closed via Esc / backdrop / close button (test 6)
-- "Hide notes" toggle is a no-op (test 6)
-- YAML default-question schema needs `text` + `level`; user can delete default questions like custom ones (test 7)
-- Custom-question notes dropped on YAML export (test 7)
-- Sidebar Actions buttons should be icons with hover tooltips (test 7)
-- Sidebar section titles need leading icons (Search/Difficulty/Sections/Actions) (test 7)
-- Desktop sidebar locked open at ≥768px; toggle is no-op above breakpoint (test 9)
-
-*Enhancements (6) — from same file, "Additional Enhancement Requests" section*
-- Compact QuestionCard: score dropdown on left, note icon on right, collapsed single-line default (locked to screenshot spec)
-- DifficultyFilter: "All levels" + color dot per difficulty + per-difficulty count
-- SectionFilter: "All sections" + per-section icon + per-section count
-- User-editable sections AND topics (add/remove, like custom questions today) — schema + store + UI
-- Sidebar footer with credit lockup + About button → AboutModal
-- Sticky sidebar header: toggle + candidate-detail button + final-mark progress line with mark badge
-
-**Key milestone constraints:**
-- v1.0 is live on the Chrome Web Store; v1.1 ships as a CWS update. Legacy v1.0 YAML exports must still import cleanly.
-- The YAML schema bump (D4) and user-editable sections/topics (E4) likely require a V3 → V4 session migration with a forward-only path.
-- Source of truth for every item is the gap list in `.planning/milestones/v1.0-phases/10-chrome-web-store-submission/10-UAT.md` (including the attached screenshots referenced as Image #1–#8).
-
----
-
-## Previous Milestone: v1.0 Chrome Extension Launch
+### v1.0 Chrome Extension Launch (shipped 2026-06-18)
 
 **Goal:** Build and ship the complete Interviewer Checklist Chrome MV3 extension — full feature parity with the stack-checklist.html prototype — to the public Chrome Web Store.
 
@@ -87,30 +62,24 @@ A single interviewer/candidate can run an end-to-end weighted scoring session �
 - ✓ Accessibility: focus traps in all 6 modals, ARIA labels, focus-visible rings — v1.0
 - ✓ Print stylesheet (expands all topics via JS hook due to virtualizer; hides controls) — v1.0
 - ◆ Published listing on the Chrome Web Store — v1.0 artifacts ready (PRIVACY.md, docs/cws-submission.md, dist.zip 120K); manual submission pending
+- ✓ V3→V4 session schema migration materializes default sections/topics into fully user-editable bank; V3 sessions hydrate without data loss — v1.1
+- ✓ Importing a v1.0-era structural YAML export produces an equivalent V4 session with no loss of scores, notes, candidate details, or custom questions — v1.1
+- ✓ Manual topic-override dropdown no longer collapses the parent section when opened or changed — v1.1
+- ✓ Session switcher modal closes via Esc, backdrop click, and a visible Close button — v1.1
+- ✓ Hide notes toggle suppresses all rendered note areas and restores them when toggled off — v1.1
+- ✓ Sidebar Actions buttons icon-only with hover/focus tooltips; sidebar section titles each show a leading icon — v1.1
+- ✓ Sidebar collapse/expand works on all viewports including ≥768px desktop — v1.1
+- ✓ DifficultyFilter: "All levels" row + color dot per difficulty + live per-difficulty question counts — v1.1
+- ✓ SectionFilter: "All sections" row + section emoji icons + live per-section counts; wired to live store.sections — v1.1
+- ✓ User can add/remove sections and topics; delete default questions using the same affordance as custom questions — v1.1
+- ✓ YAML schema v2: text/level on default questions, custom-question notes preserved, bank delta block for round-trip import/export — v1.1
+- ✓ Sticky sidebar header (toggle + candidate button + final-mark progress line with mark badge) — v1.1
+- ✓ Sidebar footer credit lockup; About button opens native `<dialog>` AboutModal — v1.1
+- ✓ Compact QuestionCard: score dropdown left, note icon right, single-line default — v1.1
 
 ### Active
 
-<!-- Current scope. Building toward these. -->
-
-- [ ] Chrome MV3 extension with toolbar action that opens the checklist in a new full-page tab
-- [ ] React + Vite + TypeScript build that bundles into the extension
-- [ ] Full feature parity with `stack-checklist.html` (three-level group/topic/question hierarchy, 9 groups / ~86 topics / ~1000+ questions built-in bank, 4 difficulty levels with coefficients 1.00 / 1.25 / 1.50 / 1.75)
-- [ ] 0–10 per-question scoring with difficulty-weighted topic marks, manual topic overrides, plain-mean overall and group marks, live recompute, colored mark bands
-- [ ] Per-question and per-topic notes, persisted with state
-- [ ] Candidate details modal (name, email, role, date, interviewer, free-text details) with Save/Cancel/Reset
-- [ ] Custom questions per topic with difficulty selection, "custom" badge, deletion, full participation in scoring/sorting/filtering/export
-- [ ] Sidebar with collapsible Search / Difficulty / Sections / Actions groups; debounced search across names/desc/tags/question text; multi-select difficulty filter with live counts; multi-select section filter showing per-group marks; view toolbar (Expand all, Collapse all, Hide already-marked topics)
-- [ ] AI candidate-feedback prompt modal — generates tool-agnostic editable prompt embedding candidate details, marks, per-topic detail, weighting explanation, and structured task spec; copy-to-clipboard with manual-select fallback
-- [ ] YAML export (full structural — meta, candidate, sections with id/title/icon/topics/questions/scores/overrides/notes/custom flag) and YAML import supporting both structural and legacy progress-only formats; ID derivation and de-duplication
-- [ ] Multiple named sessions stored as slots in `chrome.storage.local` with an in-app session switcher; YAML export/import operates on the active session
-- [ ] Dark mode toggle (respects OS preference with manual override)
-- [ ] All state persisted to `chrome.storage.local` with schema-migration on load
-- [ ] Reset all (with confirmation) clears scores, overrides, notes, custom questions, candidate details, filters, imported structure
-- [ ] Keyboard shortcuts: `/` focus search, `\` toggle sidebar, `Esc` clear search / close modal
-- [ ] Foldable sidebar, collapsible sub-groups with remembered state, responsive overlay on narrow screens
-- [ ] Accessibility: real `<button>` / `<select>`, ARIA roles/labels, aria-expanded/pressed/checked, visible focus rings, labelled inputs
-- [ ] Print stylesheet (expands all topics/questions, hides controls)
-- [ ] Published listing on the Chrome Web Store (public)
+<!-- No active requirements — between milestones. Run `/gsd-new-milestone` to define v1.2 scope. -->
 
 ### Out of Scope
 
@@ -126,14 +95,10 @@ A single interviewer/candidate can run an end-to-end weighted scoring session �
 
 ## Context
 
-- **Shipped state:** 17,862 LOC TypeScript across 38 test files with 515/515 passing tests. 30 plans executed across 11 phases (including audit closure Phase 7.1). Stack: React 19 + Vite 8 + CRXJS 2.6 + TypeScript 6 + Biome 2.5 + Vitest 4 + Tailwind 4 + Zustand + js-yaml 4.2 + @tanstack/react-virtual. Zero new dependencies after Phase 7 (js-yaml installation).
-- **Known deferred:** 5 phases (5, 6, 7, 8, 9) have `human_needed` verifications deferred during execution — manual browser-level UAT not performed. 3 UAT scenarios pending (phases 3, 5, 6). All are documented in STATE.md Deferred Items.
-- **Final manual actions for CWS launch:** publish PRIVACY.md to stable HTTPS URL (GitHub Pages), capture 3 screenshots at 1280×800 per `cws-assets/CWS-SCREENSHOTS.md`, run smoke test per `cws-assets/CWS-SMOKE-TEST.md`, upload `dist.zip` to CWS dashboard with copy from `docs/cws-submission.md`.
-- **Source artifact:** `stack-checklist.html` at the repo root is the behavioral source of truth for parity features. The 3,053-line file ships the built-in bank, the scoring engine, the AI prompt builder, the YAML import/export, and the sidebar UX. Requirements phase will derive REQ-IDs by reading it.
-- **Current persistence:** the prototype uses `localStorage` under a single key. The extension will migrate that semantically to `chrome.storage.local` plus session slots, and continue to honor legacy progress-only YAML imports.
-- **Distribution intent:** Chrome Web Store, public listing. Implies CWS review checklist (manifest, permissions justification, privacy policy, screenshots) as a v1 release blocker.
-- **Permissions posture:** likely only `storage` is needed; aim to ship with the smallest possible permission set to ease store review.
-- **Two-audience UX:** interviewers and candidates use the same UI. Multiple named sessions support an interviewer running one per candidate while a candidate has their own prep slot.
+- **Shipped state (v1.1):** ~21,995 LOC TypeScript with 675/675 passing tests. 47 plans executed across 16 phases (v1.0 Phases 1–10 + 7.1; v1.1 Phases 11–15). Stack: React 19 + Vite 8 + CRXJS 2.6 + TypeScript 6 + Biome 2.5 + Vitest 4 + Tailwind 4 + Zustand 5 + js-yaml 4.2 + valibot + @tanstack/react-virtual. valibot added in v1.1 for V4SessionSchema validation; all other dependencies locked since v1.0.
+- **Known deferred:** Browser-level UAT for Phases 12–15 `human_needed` verifications acknowledged as deferred at v1.1 close — 675/675 unit/integration tests pass. v1.0 deferred items (Phases 5, 6, 7, 8, 9 human_needed; 3 UAT scenarios) remain open. Documented in STATE.md.
+- **CWS manual actions outstanding (v1.0):** publish PRIVACY.md to stable HTTPS URL, capture 1280×800 screenshots, run smoke test per `cws-assets/CWS-SMOKE-TEST.md`, upload `dist.zip` to CWS dashboard with copy from `docs/cws-submission.md`.
+- **Two-audience UX:** interviewers and candidates share the same UI. Multiple named sessions support an interviewer running one per candidate while a candidate has their own prep slot. Fully user-editable bank (v1.1) lets users customize sections, topics, and questions per session and export/import the full bank state via YAML.
 
 ## Constraints
 
@@ -150,13 +115,15 @@ A single interviewer/candidate can run an end-to-end weighted scoring session �
 
 | Decision | Rationale | Outcome |
 |----------|-----------|---------|
-| Rebuild in React + Vite + TS rather than wrap the existing HTML | The HTML is 3k lines of inlined JS; multiple named sessions + dark mode + ongoing maintenance need real component architecture and a build pipeline | — Pending |
-| Surface = toolbar action opens full-page tab (not popup / side panel / new tab override) | Full screen real estate for the dense checklist UX; no need to interact with arbitrary pages; less intrusive than new-tab override | — Pending |
-| Persistence = `chrome.storage.local` (not `chrome.storage.sync`, not cloud) | Question bank exceeds the 100KB sync quota; no backend means no infra, no auth, no privacy-policy complications beyond local data | — Pending |
-| Multiple named sessions as in-storage slots with in-app switcher (YAML export/import is per-active-session) | Interviewers run one session per candidate; candidates have their own prep slot; YAML stays a portability/backup mechanism | — Pending |
-| Both interviewers and candidates share the same UI (no role-switch screen) | Same data model and controls serve both flows; reduces UX surface | — Pending |
-| Ship v1 to the public Chrome Web Store | Distribution path of record; review compliance is part of "done" | — Pending |
-| Strict feature parity with `stack-checklist.html` is the parity baseline for v1, plus dark mode and named sessions as the only added scope | Keeps v1 small enough to ship; the existing HTML is already a thorough product spec | — Pending |
+| Rebuild in React + Vite + TS rather than wrap the existing HTML | The HTML is 3k lines of inlined JS; multiple named sessions + dark mode + ongoing maintenance need real component architecture and a build pipeline | Done — shipped v1.0 |
+| Surface = toolbar action opens full-page tab (not popup / side panel / new tab override) | Full screen real estate for the dense checklist UX; no need to interact with arbitrary pages; less intrusive than new-tab override | Done — locked in v1.0 |
+| Persistence = `chrome.storage.local` (not `chrome.storage.sync`, not cloud) | Question bank exceeds the 100KB sync quota; no backend means no infra, no auth, no privacy-policy complications beyond local data | Done — locked in v1.0 |
+| Multiple named sessions as in-storage slots with in-app switcher (YAML export/import is per-active-session) | Interviewers run one session per candidate; candidates have their own prep slot; YAML stays a portability/backup mechanism | Done — shipped v1.0 |
+| Both interviewers and candidates share the same UI (no role-switch screen) | Same data model and controls serve both flows; reduces UX surface | Done — confirmed v1.0 |
+| Ship v1 to the public Chrome Web Store | Distribution path of record; review compliance is part of "done" | Artifacts ready; manual CWS submission pending |
+| Strict feature parity with `stack-checklist.html` is the parity baseline for v1, plus dark mode and named sessions as the only added scope | Keeps v1 small enough to ship; the existing HTML is already a thorough product spec | Done — shipped v1.0 |
+| V3→V4 forward-only schema migration required for v1.1 editable-bank feature | YAML schema bump (text/level on default questions) and user-editable sections/topics required materializing the bank into session state | Done — shipped v1.1 |
+| valibot added for V4SessionSchema validation | Validates session shape at bootstrap and on YAML import; chosen over zod for tree-shaking characteristics | Done — v1.1 |
 
 ## Evolution
 
@@ -176,4 +143,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-06-18 after milestone v1.1 started*
+*Last updated: 2026-06-18 after milestone v1.1 complete*

@@ -35,9 +35,15 @@ export function useKeyboardShortcuts(): void {
         return;
       }
 
-      // Guard 2: suppress non-Escape keys when a modal dialog is open.
+      // Guard 2 (WR-01): suppress ALL shortcuts when a modal dialog is open,
+      // including Escape. Previously Escape was let through so the native
+      // dialog could close, but the Escape branch below also wiped
+      // searchQuery as a side effect — losing the user's search when they
+      // dismissed an unrelated modal (CandidateModal, DeleteSessionConfirm,
+      // ResetConfirm, ...). The browser still closes <dialog open> on Esc
+      // because the keydown propagates without preventDefault().
       const openDialog = document.querySelector('dialog[open]');
-      if (openDialog && e.key !== 'Escape') {
+      if (openDialog) {
         return;
       }
 

@@ -44,8 +44,6 @@ Declared values (multiples of 4 only):
 
 Exceptions:
 - Touch target minimum: `min-h-[44px]` on SidebarGroup toggle buttons (existing Phase 12 pattern; applies to "All" rows by same rule)
-- DifficultyFilter button vertical padding: `py-1.5` (6px) — existing pattern; retained to preserve pill height
-- SectionFilter button vertical padding: `py-2` (8px) — existing pattern; retained for section row height
 
 > Source: DifficultyFilter.tsx and SectionFilter.tsx existing classes; SidebarGroup.tsx min-h-[44px] pattern from Phase 12.
 
@@ -101,7 +99,7 @@ Count badge color: `text-gray-400 dark:text-gray-500` (matches existing `text-xs
 ### DifficultyFilter (modified)
 
 **"All levels" row** — prepended before difficulty rows:
-- Layout: `flex items-center gap-2 text-sm px-3 py-1.5 rounded-full text-left`
+- Layout: `flex items-center gap-2 text-sm px-3 py-2 rounded-full text-left`
 - Icon: Unicode `∞` in `<span aria-hidden="true">` — no SVG import (per CONTEXT.md specifics)
 - Label text: `All levels`
 - Right slot: total question count across all difficulties — `<span className="ml-auto text-xs tabular-nums text-gray-400 dark:text-gray-500">`
@@ -111,7 +109,7 @@ Count badge color: `text-gray-400 dark:text-gray-500` (matches existing `text-xs
 - Click handler: calls `clearDifficulties()` if `selectedDifficulties.size > 0`; no-op if already empty (D-01)
 
 **Difficulty rows** (modified from existing):
-- Layout: unchanged pill style `flex items-center gap-2 text-sm px-3 py-1.5 rounded-full text-left`
+- Layout: unchanged pill style `flex items-center gap-2 text-sm px-3 py-2 rounded-full text-left`
 - Icon slot: `<span aria-hidden="true" className="w-2 h-2 rounded-full flex-shrink-0 {dot-class}">` — 8×8px color dot (D-06)
 - Label text: normalized — `Novice` / `Intermediate` / `Advanced` / `Expert` (drop multiplier, D-04)
 - Right slot: per-difficulty question count — same count badge style as "All levels" row

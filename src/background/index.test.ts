@@ -129,7 +129,7 @@ describe('service worker onInstalled behavioral tests', () => {
     expect(chrome.tabs.create).not.toHaveBeenCalled();
   });
 
-  it('on any reason: chrome.storage.local.set is called with lastSeenVersion string', async () => {
+  it('on update: does NOT touch lastSeenVersion (CR-01) — UpdateBanner needs the stale value', async () => {
     chrome.storage.local.get.mockImplementation(
       (
         _keys: string | string[] | Record<string, unknown> | null,
@@ -146,16 +146,17 @@ describe('service worker onInstalled behavioral tests', () => {
       id: undefined,
     });
 
-    await vi.waitFor(() => {
-      const setCalls = (chrome.storage.local.set as ReturnType<typeof vi.fn>).mock.calls;
-      const hasLastVersion = setCalls.some(
-        (call: unknown[]) =>
-          call[0] !== null &&
-          typeof call[0] === 'object' &&
-          'lastSeenVersion' in (call[0] as object),
-      );
-      expect(hasLastVersion).toBe(true);
-    });
+    // Give the (now-IIFE-wrapped, WR-06) async body a moment to settle.
+    await new Promise((resolve) => setTimeout(resolve, 50));
+
+    const setCalls = (chrome.storage.local.set as ReturnType<typeof vi.fn>).mock.calls;
+    const hasLastVersion = setCalls.some(
+      (call: unknown[]) =>
+        call[0] !== null &&
+        typeof call[0] === 'object' &&
+        'lastSeenVersion' in (call[0] as object),
+    );
+    expect(hasLastVersion).toBe(false);
   });
 
   it('on reason=update: chrome.tabs.create is NOT called', async () => {

@@ -3,6 +3,7 @@ import type { ReactNode } from 'react';
 export interface SidebarGroupProps {
   groupId: string;
   label: string;
+  icon?: ReactNode;
   isOpen: boolean;
   onToggle: () => void;
   children: ReactNode;
@@ -10,6 +11,7 @@ export interface SidebarGroupProps {
 
 export function SidebarGroup({
   label,
+  icon,
   isOpen,
   onToggle,
   children,
@@ -22,7 +24,10 @@ export function SidebarGroup({
         onClick={onToggle}
         className="min-h-[44px] w-full flex items-center justify-between px-4 font-semibold text-base text-gray-900 dark:text-gray-100 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none"
       >
-        <span>{label}</span>
+        <span className="flex items-center gap-2">
+          {icon && <span aria-hidden="true">{icon}</span>}
+          {label}
+        </span>
         <span
           className={`transition-transform duration-200 motion-reduce:transition-none ${isOpen ? 'rotate-180' : ''}`}
         >

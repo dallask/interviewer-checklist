@@ -24,6 +24,7 @@ export function Sidebar() {
         <SidebarGroup
           groupId="search"
           label="Search"
+          icon="🔍"
           isOpen={groupOpen.search ?? true}
           onToggle={() => toggleGroup('search')}
         >
@@ -33,6 +34,7 @@ export function Sidebar() {
         <SidebarGroup
           groupId="difficulty"
           label="Difficulty"
+          icon="🎯"
           isOpen={groupOpen.difficulty ?? true}
           onToggle={() => toggleGroup('difficulty')}
         >
@@ -42,6 +44,7 @@ export function Sidebar() {
         <SidebarGroup
           groupId="sections"
           label="Sections"
+          icon="📋"
           isOpen={groupOpen.sections ?? true}
           onToggle={() => toggleGroup('sections')}
         >
@@ -51,6 +54,7 @@ export function Sidebar() {
         <SidebarGroup
           groupId="actions"
           label="Actions"
+          icon="⚡"
           isOpen={groupOpen.actions ?? true}
           onToggle={() => toggleGroup('actions')}
         >

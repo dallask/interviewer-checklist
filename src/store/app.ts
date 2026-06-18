@@ -400,7 +400,7 @@ export const useAppStore = create<AppState & AppActions>()((set) => ({
       updatedAt: now,
     };
     const updatedManifest: V2Manifest = state.manifest
-      ? { ...state.manifest, sessions: [...state.manifest.sessions, newMeta] }
+      ? { ...state.manifest, activeSessionId: id, sessions: [...state.manifest.sessions, newMeta] }
       : {
           version: 2,
           activeSessionId: id,

@@ -135,7 +135,7 @@ Full archive: [milestones/v1.0-ROADMAP.md](milestones/v1.0-ROADMAP.md)
 | 8. AI Prompt Modal | v1.0 | 2/2 | Complete | 2026-06-17 |
 | 9. Polish | v1.0 | 3/3 | Complete | 2026-06-18 |
 | 10. Chrome Web Store Submission | v1.0 | 3/3 (manual submission tasks pending user action) | Complete | 2026-06-18 |
-| 11. V4 Session Migration & Legacy Compat | v1.1 | 3/3 | Complete   | 2026-06-18 |
+| 11. V4 Session Migration & Legacy Compat | v1.1 | 3/3 | Complete    | 2026-06-18 |
 | 12. UAT Defect Cleanup | v1.1 | 0/0 | Not started | — |
 | 13. Filter Overhaul | v1.1 | 0/0 | Not started | — |
 | 14. Editable Bank & YAML Schema Expansion | v1.1 | 0/0 | Not started | — |

@@ -96,12 +96,17 @@ describe('SessionSwitcherModal', () => {
     expect(switcherDialog).toHaveAttribute('aria-labelledby', 'session-switcher-title');
   });
 
-  it('ul has role="listbox" with aria-activedescendant pointing to active session row', () => {
+  it('ul has aria-label="Sessions" (plain list, no invalid listbox role)', () => {
     const ref = createRef<HTMLDialogElement>();
     render(<SessionSwitcherModal dialogRef={ref} />);
     ref.current?.showModal();
-    const listbox = screen.getByRole('listbox', { hidden: true });
-    expect(listbox).toHaveAttribute('aria-activedescendant', 'session-row-session-1');
+    // role="listbox" was removed (WR-02): listbox requires non-interactive leaf
+    // option children, but SessionRow contains focusable buttons which is invalid.
+    // The list is now a plain <ul aria-label="Sessions">.
+    const list = screen.getByRole('list', { name: 'Sessions', hidden: true });
+    expect(list).toBeDefined();
+    expect(list).not.toHaveAttribute('role', 'listbox');
+    expect(list).not.toHaveAttribute('aria-activedescendant');
   });
 
   it('focus restore: after dialog close event, focus targets #open-session-switcher', () => {

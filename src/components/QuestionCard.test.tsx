@@ -266,7 +266,7 @@ describe('QuestionCard', () => {
     expect(removeDefaultQuestion).toHaveBeenCalledWith('q-react-001');
   });
 
-  it('does NOT render delete button for default question when questionBankId is null', () => {
+  it('delete button for default question with undefined questionBankId renders but is a no-op', () => {
     const rowNoId = { ...mockDefaultRow, questionBankId: undefined };
     render(<QuestionCard row={rowNoId as typeof mockDefaultRow} />);
     // The delete button renders (isDefaultQuestion===true triggers button visibility),

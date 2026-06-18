@@ -619,7 +619,7 @@ describe('UI-10: ActionsGroup icon-only buttons (D-14, D-15, D-16)', () => {
     // The plan specifies all 11 ActionsGroup buttons must have title attributes.
     // Check that NO button in the main action group has a missing title.
     const buttonsWithTitle = allButtons.filter(btn => btn.getAttribute('title') !== null && btn.getAttribute('title') !== '');
-    expect(buttonsWithTitle.length).toBeGreaterThanOrEqual(11);
+    expect(buttonsWithTitle.length).toBe(11);
   });
 
   it('every button with title also has matching aria-label', () => {

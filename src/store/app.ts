@@ -85,6 +85,14 @@ export interface AppState {
   manifest: V2Manifest | null;
   /** In-memory undo buffer for session delete — never persisted. */
   undoBuffer: UndoBuffer | null;
+  /**
+   * Phase 9 (POLISH-05): true while a `beforeprint` event has fired and the
+   * subsequent `afterprint` event has not yet restored state. Used by note
+   * textareas to render even when their notesOpen toggle is closed, so the
+   * print snapshot includes content normally hidden via the `hidden` HTML
+   * attribute (which CSS cannot override).
+   */
+  printMode: boolean;
 }
 
 export interface AppActions {
@@ -161,6 +169,8 @@ export const DEFAULT_STATE: AppState = {
   // Session management defaults (Phase 6)
   manifest: null,
   undoBuffer: null,
+  // Phase 9: print expansion flag — only true between beforeprint and afterprint.
+  printMode: false,
 };
 
 // ---------------------------------------------------------------------------

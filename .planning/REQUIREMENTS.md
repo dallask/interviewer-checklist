@@ -76,34 +76,41 @@ Deferred. Not in v1.1 roadmap.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| SCORE-07 | TBD | Pending |
-| SCORE-08 | TBD | Pending |
-| SESS-05 | TBD | Pending |
-| UI-09 | TBD | Pending |
-| UI-10 | TBD | Pending |
-| UI-11 | TBD | Pending |
-| UI-12 | TBD | Pending |
-| UI-13 | TBD | Pending |
-| UI-14 | TBD | Pending |
-| UI-15 | TBD | Pending |
-| UI-16 | TBD | Pending |
-| UI-17 | TBD | Pending |
-| BANK-01 | TBD | Pending |
-| BANK-02 | TBD | Pending |
-| BANK-03 | TBD | Pending |
-| BANK-04 | TBD | Pending |
-| BANK-05 | TBD | Pending |
-| YAML-04 | TBD | Pending |
-| YAML-05 | TBD | Pending |
-| YAML-06 | TBD | Pending |
-| DATA-01 | TBD | Pending |
-| DATA-02 | TBD | Pending |
+| SCORE-07 | Phase 12 | Pending |
+| SCORE-08 | Phase 15 | Pending |
+| SESS-05 | Phase 12 | Pending |
+| UI-09 | Phase 12 | Pending |
+| UI-10 | Phase 12 | Pending |
+| UI-11 | Phase 12 | Pending |
+| UI-12 | Phase 12 | Pending |
+| UI-13 | Phase 15 | Pending |
+| UI-14 | Phase 15 | Pending |
+| UI-15 | Phase 15 | Pending |
+| UI-16 | Phase 13 | Pending |
+| UI-17 | Phase 13 | Pending |
+| BANK-01 | Phase 14 | Pending |
+| BANK-02 | Phase 14 | Pending |
+| BANK-03 | Phase 14 | Pending |
+| BANK-04 | Phase 14 | Pending |
+| BANK-05 | Phase 14 | Pending |
+| YAML-04 | Phase 14 | Pending |
+| YAML-05 | Phase 14 | Pending |
+| YAML-06 | Phase 14 | Pending |
+| DATA-01 | Phase 11 | Pending |
+| DATA-02 | Phase 11 | Pending |
 
 **Coverage:**
 - v1.1 requirements: 22 total
-- Mapped to phases: 0 (filled by roadmapper)
-- Unmapped: 22 ⚠️ (will be 0 after roadmap)
+- Mapped to phases: 22 ✓
+- Unmapped: 0 ✓
+
+**Phase distribution:**
+- Phase 11 (V4 Migration & Legacy Compat): 2 requirements — DATA-01, DATA-02
+- Phase 12 (UAT Defect Cleanup): 6 requirements — SCORE-07, SESS-05, UI-09, UI-10, UI-11, UI-12
+- Phase 13 (Filter Overhaul): 2 requirements — UI-16, UI-17
+- Phase 14 (Editable Bank & YAML Schema Expansion): 8 requirements — BANK-01, BANK-02, BANK-03, BANK-04, BANK-05, YAML-04, YAML-05, YAML-06
+- Phase 15 (Sidebar Shell Refactor & Compact QuestionCard): 4 requirements — SCORE-08, UI-13, UI-14, UI-15
 
 ---
 *Requirements defined: 2026-06-18*
-*Last updated: 2026-06-18 after v1.1 requirements definition*
+*Last updated: 2026-06-18 after v1.1 roadmap traceability filled in*

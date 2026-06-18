@@ -3,10 +3,10 @@ gsd_state_version: 1.0
 milestone: v1.1
 milestone_name: Post-UAT Fix + Polish
 status: planning
-last_updated: "2026-06-18T07:19:29.939Z"
+last_updated: "2026-06-18T10:25:00.000Z"
 last_activity: 2026-06-18
 progress:
-  total_phases: 0
+  total_phases: 5
   completed_phases: 0
   total_plans: 0
   completed_plans: 0
@@ -17,17 +17,17 @@ progress:
 
 ## Project Reference
 
-See: .planning/PROJECT.md (updated 2026-06-16)
+See: .planning/PROJECT.md (updated 2026-06-18)
 
 **Core value:** A single interviewer/candidate can run an end-to-end weighted scoring session — pick topics, score questions on 0–10 with difficulty weighting, capture notes, see live overall + per-group marks, and export a structured YAML / AI-feedback prompt — entirely inside a browser tab with no backend.
-**Current focus:** Phase 09 — polish-print-keyboard-a11y-welcome-updates
+**Current focus:** Phase 11 — V4 Session Migration & Legacy Compat
 
 ## Current Position
 
-Phase: Not started (defining requirements)
+Phase: Phase 11 — V4 Session Migration & Legacy Compat (not started)
 Plan: —
-Status: Defining requirements
-Last activity: 2026-06-18 — Milestone v1.1 started
+Status: Roadmap written; ready to plan Phase 11
+Last activity: 2026-06-18 — v1.1 roadmap created, 22/22 requirements mapped across Phases 11–15
 
 ## Performance Metrics
 
@@ -68,6 +68,9 @@ Recent decisions affecting current work:
 - Stack locked: CRXJS 2.6 + Vite 8 + React 19 + TS + Biome 2.3 + Zustand 5 + valibot + yaml (eemeli) + Tailwind v4
 - Permissions locked: `["storage"]` only; no host_permissions, no scripting
 - Surface locked: toolbar action opens full-page tab; no popup / side panel / new-tab override
+- v1.1 sequencing: V3→V4 migration (Phase 11) precedes any phase consuming the V4 schema (filters, editable bank, sidebar shell, compact card)
+- Legacy progress-only YAML import path is a regression boundary — surfaced as a success criterion on Phase 11, not a separate requirement
+- SCORE-08 (compact QuestionCard) isolated with the sidebar shell refactor (Phase 15) to keep visual-redesign diff reviewable
 
 ### Pending Todos
 
@@ -75,22 +78,9 @@ None yet.
 
 ### Blockers/Concerns
 
-- Phase 4: Dark-mode FOUC strategy under MV3 CSP must be locked (alternative A vs B) during planning
-- Phase 3: Synchronous flush semantics on `pagehide` in MV3 should be empirically verified
-- Phase 7: Real prototype-export YAML corpus needed to fixture-test ID-derivation normalization
-- Phase 10: 2026 granular-OAuth + 90-day rotation rules + privacy-policy hosting need a short pass
-
-## Deferred Items
-
-| Category | Item | Status | Deferred At |
-|----------|------|--------|-------------|
-| *(none)* | | | |
-
-## Session Continuity
-
-Last session: 2026-06-16
-Stopped at: Roadmap written; REQUIREMENTS.md traceability already present; ready to plan Phase 1
-Resume file: None
+- Phase 11: V3→V4 migration must materialize default sections/topics as editable entities without breaking existing scored sessions; needs frozen fixtures from real v1.0 storage shape before migration code lands
+- Phase 14: YAML schema expansion (default-question text/level + custom-question notes + section/topic add/remove encoding) is the largest single diff in v1.1; consider sub-plans for schema, store actions, and UI affordances
+- Phase 15: Sticky sidebar header (UI-13) introduces a layout refactor that interacts with collapsed-sidebar state from Phase 12 fix (UI-12); UI-12 must land first
 
 ## Deferred Items
 
@@ -110,6 +100,12 @@ Items acknowledged and deferred at v1.0 milestone close on 2026-06-18:
 All deferred items are manual browser tests, not unsatisfied requirements. 515/515 unit/integration tests passing.
 Phase 10 manual CWS submission (publish PRIVACY.md to HTTPS URL, capture 1280×800 screenshots, fresh-profile smoke test per cws-assets/CWS-SMOKE-TEST.md, upload dist.zip + copy from docs/cws-submission.md) is the final user action before public release.
 
+## Session Continuity
+
+Last session: 2026-06-18
+Stopped at: v1.1 roadmap written (Phases 11–15); REQUIREMENTS.md traceability filled in; ready to plan Phase 11
+Resume file: None
+
 ## Operator Next Steps
 
-- Start the next milestone with /gsd-new-milestone
+- Plan Phase 11 with `/gsd-plan-phase 11`

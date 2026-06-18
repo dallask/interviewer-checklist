@@ -3,8 +3,9 @@ gsd_state_version: 1.0
 milestone: v1.2
 milestone_name: UAT Closure & Visual Polish
 status: planning
-last_updated: "2026-06-18T18:50:54.476Z"
-last_activity: 2026-06-18
+stopped_at: Phase 16 UI-SPEC approved
+last_updated: "2026-06-18T19:35:21.531Z"
+last_activity: 2026-06-18 — Roadmap created for v1.2
 progress:
   total_phases: 4
   completed_phases: 0
@@ -93,9 +94,9 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-06-18T18:50:54.476Z
-Stopped at: v1.2 roadmap created — Phase 16 ready to plan
-Resume file: None
+Last session: 2026-06-18T19:35:21.528Z
+Stopped at: Phase 16 UI-SPEC approved
+Resume file: .planning/phases/16-bug-fixes-dark-mode-polish/16-UI-SPEC.md
 
 ## Operator Next Steps
 

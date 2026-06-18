@@ -66,10 +66,13 @@ chrome.runtime.onInstalled.addListener((details) => {
         }
       }
       // On `update` / `chrome_update`: do NOT touch `lastSeenVersion` here.
-      // UpdateBanner reads it, compares to the manifest version, renders
-      // the banner, and writes `lastSeenVersion = currentVersion` after
-      // the user dismisses it (so the banner does not re-appear on next
-      // launch).
+      // UpdateBanner reads it, compares to the manifest version, and renders
+      // the banner. On dismiss, UpdateBanner writes
+      // `dismissedUpdateVersion = currentVersion` (NOT `lastSeenVersion`);
+      // re-render is suppressed on next launch via the
+      // `dismissedUpdateVersion === currentVersion` guard. `lastSeenVersion`
+      // is only ever written on first install (above) and is the trigger
+      // signal — once seeded it is never advanced from the UI side.
     } catch (err) {
       console.error('[interviewer-checklist] onInstalled handler failed:', err);
     }

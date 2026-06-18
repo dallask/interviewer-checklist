@@ -371,6 +371,8 @@ export const useAppStore = create<AppState & AppActions>()((set) => ({
     // Step 3: atomically update store — all per-session fields + activeSessionId
     // + manifest.activeSessionId in ONE set() call.
     // Pitfall 2 guard: never split this into multiple set() calls.
+    // Filter fields are reset so the new session's questions are fully visible
+    // regardless of what filters were active in the previous session.
     set((s) => ({
       manifest: s.manifest
         ? { ...s.manifest, activeSessionId: targetId }
@@ -383,6 +385,12 @@ export const useAppStore = create<AppState & AppActions>()((set) => ({
       customQuestions: session?.customQuestions ?? [],
       candidate: session?.candidate ?? null,
       activeSessionId: targetId,
+      // Reset UI filters on session switch so stale filter state from a
+      // previous session cannot hide questions in the newly loaded session.
+      selectedDifficulties: new Set(),
+      selectedSections: new Set(),
+      searchQuery: '',
+      hideMarked: false,
     }));
   },
 

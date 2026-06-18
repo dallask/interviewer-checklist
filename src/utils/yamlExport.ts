@@ -44,13 +44,20 @@ export function exportSession(
             score: session.scores[`${topic.id}-q${index}`] ?? null,
             note: session.notes[`${topic.id}-q${index}`] ?? '',
           })),
-        customQuestions: topicCustomQs.map((cq) => ({
-          id: cq.id,
-          text: cq.text,
-          level: cq.level,
-          score: session.scores[cq.id] ?? null,
-          note: session.notes[cq.id] ?? '',
-        })),
+        // CR-03: custom question scores are stored under the positional key
+        // `${topicId}-q${topic.questions.length + cqIndex}` (written by
+        // QuestionCard via setScore), NOT under cq.id. Use cqIndex (position
+        // in the per-topic filtered array) to reconstruct the correct key.
+        customQuestions: topicCustomQs.map((cq, cqIndex) => {
+          const positionalKey = `${topic.id}-q${topic.questions.length + cqIndex}`;
+          return {
+            id: cq.id,
+            text: cq.text,
+            level: cq.level,
+            score: session.scores[positionalKey] ?? null,
+            note: session.notes[positionalKey] ?? '',
+          };
+        }),
       };
     }),
   }));

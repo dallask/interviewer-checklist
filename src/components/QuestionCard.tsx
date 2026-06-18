@@ -43,6 +43,9 @@ export function QuestionCard({ row }: Props) {
   // attribute cannot be overridden by CSS print:* variants — see
   // 09-RESEARCH.md Pitfall 5).
   const printMode = useAppStore((s) => s.printMode);
+  // hideNotes suppresses all note areas globally (UI-09). Not persisted (D-07).
+  // Print mode takes priority: hideNotes && !printMode (D-08).
+  const hideNotes = useAppStore((s) => s.hideNotes);
 
   const difficultyClass =
     DIFFICULTY_CLASSES[question.level] ?? DIFFICULTY_CLASSES.novice;
@@ -135,7 +138,8 @@ export function QuestionCard({ row }: Props) {
       </div>
 
       {/* Notes section — toggle + textarea (SCORE-03) */}
-      <div>
+      {/* hideNotes=true hides this wrapper; printMode overrides to keep notes visible (D-08) */}
+      <div className={hideNotes && !printMode ? 'hidden' : ''}>
         <button
           type="button"
           aria-expanded={notesOpen}

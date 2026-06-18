@@ -16,6 +16,9 @@ export function TopicRow({ row }: Props) {
   // attribute cannot be overridden by CSS print:* variants — see
   // 09-RESEARCH.md Pitfall 5).
   const printMode = useAppStore((s) => s.printMode);
+  // hideNotes suppresses all note areas globally (UI-09). Not persisted (D-07).
+  // Print mode takes priority: hideNotes && !printMode (D-08).
+  const hideNotes = useAppStore((s) => s.hideNotes);
 
   const topicId = row.topic.id;
 
@@ -72,7 +75,8 @@ export function TopicRow({ row }: Props) {
       </button>
 
       {/* Topic notes panel — outside the button for correct semantics (SCORE-03) */}
-      <div className="px-8 py-2 bg-white dark:bg-gray-900 border-b border-gray-100 dark:border-gray-800 print:px-0 print:py-1 print:border-0">
+      {/* hideNotes=true hides this panel; printMode overrides to keep notes visible (D-08) */}
+      <div className={`px-8 py-2 bg-white dark:bg-gray-900 border-b border-gray-100 dark:border-gray-800 print:px-0 print:py-1 print:border-0${hideNotes && !printMode ? ' hidden' : ''}`}>
         <button
           type="button"
           aria-expanded={topicNotesOpen}

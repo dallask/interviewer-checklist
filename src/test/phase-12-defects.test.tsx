@@ -5,6 +5,8 @@
  *   - SCORE-07: TopicMarkDisplay fieldset click isolation (no toggleTopic bubble)
  *   - SESS-05: SessionSwitcherModal backdrop click closes the dialog
  *   - UI-09: hideNotes store state + QuestionCard/TopicRow note suppression
+ *   - UI-09 (ActionsGroup): Hide notes button wiring
+ *   - UI-10: ActionsGroup icon-only buttons with title tooltips
  */
 
 import { cleanup, fireEvent, render, screen } from '@testing-library/react';
@@ -17,6 +19,7 @@ import { TopicMarkDisplay } from '../components/TopicMarkDisplay.js';
 import { SessionSwitcherModal } from '../components/SessionSwitcherModal.js';
 import { QuestionCard } from '../components/QuestionCard.js';
 import { TopicRow } from '../components/TopicRow.js';
+import { ActionsGroup } from '../components/ActionsGroup.js';
 
 // ─── Store mock ───────────────────────────────────────────────────────────────
 
@@ -473,5 +476,111 @@ describe('UI-09: TopicRow notes panel suppression (D-08)', () => {
     expect(topicNoteToggle).not.toBeNull();
     const notesPanel = topicNoteToggle!.parentElement as HTMLElement;
     expect(notesPanel.className).not.toContain('hidden');
+  });
+});
+
+// ─── UI-09: ActionsGroup Hide notes button wiring ─────────────────────────────
+
+// A comprehensive store mock for ActionsGroup (which renders modals inline)
+function buildActionsGroupStoreMock(overrides: Record<string, unknown> = {}) {
+  const mockManifest = {
+    version: 2 as const,
+    activeSessionId: 'session-1',
+    sessions: [
+      {
+        id: 'session-1',
+        name: 'Session 1',
+        createdAt: '2026-06-18T00:00:00Z',
+        updatedAt: '2026-06-18T00:00:00Z',
+      },
+    ],
+  };
+  return {
+    expandAll: vi.fn(),
+    collapseAll: vi.fn(),
+    hideMarked: false,
+    setHideMarked: vi.fn(),
+    darkMode: false,
+    setDarkMode: vi.fn(),
+    hideNotes: false,
+    setHideNotes: vi.fn(),
+    manifest: mockManifest,
+    activeSessionId: 'session-1',
+    scores: {},
+    overrides: {},
+    notes: {},
+    topicNotes: {},
+    customQuestions: [],
+    candidate: null,
+    createSession: vi.fn().mockResolvedValue(undefined),
+    switchSession: vi.fn().mockResolvedValue(undefined),
+    renameSession: vi.fn().mockResolvedValue(undefined),
+    duplicateSession: vi.fn().mockResolvedValue(undefined),
+    importSession: vi.fn().mockResolvedValue(undefined),
+    ...overrides,
+  };
+}
+
+describe('UI-09: ActionsGroup Hide notes button (D-09)', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
+  afterEach(() => {
+    cleanup();
+  });
+
+  it('renders a button with aria-label="Hide notes"', () => {
+    const storeState = buildActionsGroupStoreMock();
+    mockUseAppStore.mockImplementation((selector: (s: unknown) => unknown) =>
+      selector(storeState),
+    );
+
+    render(<ActionsGroup />);
+
+    const hideNotesBtn = screen.getByRole('button', { name: 'Hide notes' });
+    expect(hideNotesBtn).toBeDefined();
+  });
+
+  it('button has aria-pressed=false when hideNotes=false', () => {
+    const storeState = buildActionsGroupStoreMock({ hideNotes: false });
+    mockUseAppStore.mockImplementation((selector: (s: unknown) => unknown) =>
+      selector(storeState),
+    );
+
+    render(<ActionsGroup />);
+
+    const hideNotesBtn = screen.getByRole('button', { name: 'Hide notes' });
+    expect(hideNotesBtn.getAttribute('aria-pressed')).toBe('false');
+  });
+
+  it('button has aria-pressed=true when hideNotes=true', () => {
+    const storeState = buildActionsGroupStoreMock({ hideNotes: true });
+    mockUseAppStore.mockImplementation((selector: (s: unknown) => unknown) =>
+      selector(storeState),
+    );
+
+    render(<ActionsGroup />);
+
+    const hideNotesBtn = screen.getByRole('button', { name: 'Hide notes' });
+    expect(hideNotesBtn.getAttribute('aria-pressed')).toBe('true');
+  });
+
+  it('clicking the button calls setHideNotes with the toggled value (!hideNotes)', () => {
+    const setHideNotesMock = vi.fn();
+    const storeState = buildActionsGroupStoreMock({
+      hideNotes: false,
+      setHideNotes: setHideNotesMock,
+    });
+    mockUseAppStore.mockImplementation((selector: (s: unknown) => unknown) =>
+      selector(storeState),
+    );
+
+    render(<ActionsGroup />);
+
+    const hideNotesBtn = screen.getByRole('button', { name: 'Hide notes' });
+    fireEvent.click(hideNotesBtn);
+
+    expect(setHideNotesMock).toHaveBeenCalledWith(true);
   });
 });

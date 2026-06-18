@@ -1,12 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { DEFAULT_SECTIONS } from '../data/bank/index.js';
 import { useAppStore } from '../store/app.js';
 import { buildFlatRows } from '../utils/buildFlatRows.js';
-
-const TOTAL_QUESTIONS = DEFAULT_SECTIONS.reduce(
-  (acc, s) => acc + s.items.reduce((a, t) => a + t.questions.length, 0),
-  0,
-);
 
 export function SearchGroup() {
   const setSearchQuery = useAppStore((s) => s.setSearchQuery);
@@ -15,6 +9,8 @@ export function SearchGroup() {
   const selectedSections = useAppStore((s) => s.selectedSections);
   const topicOpen = useAppStore((s) => s.topicOpen);
   const sectionOpen = useAppStore((s) => s.sectionOpen);
+  // Phase 14: use store sections (V4Section[]) instead of DEFAULT_SECTIONS (Plan 01 pattern)
+  const sections = useAppStore((s) => s.sections);
   const [localValue, setLocalValue] = useState('');
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -33,14 +29,26 @@ export function SearchGroup() {
     setSearchQuery('');
   };
 
+  // Total question count across all sections — unfiltered baseline for the counter display.
+  // Computed from store sections (V4Section[]) to include user-added sections.
+  const totalQuestions = useMemo(
+    () =>
+      sections.reduce(
+        (acc, s) => acc + s.topics.reduce((a, t) => a + t.questions.length, 0),
+        0,
+      ),
+    [sections],
+  );
+
   const resultCount = useMemo(
     () =>
-      buildFlatRows(DEFAULT_SECTIONS, topicOpen, sectionOpen, {
+      buildFlatRows(sections, topicOpen, sectionOpen, {
         searchQuery,
         selectedDifficulties,
         selectedSections,
       }).filter((r) => r.type === 'question').length,
     [
+      sections,
       searchQuery,
       selectedDifficulties,
       selectedSections,
@@ -89,8 +97,8 @@ export function SearchGroup() {
         className="text-xs text-gray-500 dark:text-gray-400"
       >
         {isFiltered
-          ? `Showing ${resultCount.toLocaleString()} of ${TOTAL_QUESTIONS.toLocaleString()} questions`
-          : `Showing all ${TOTAL_QUESTIONS.toLocaleString()} questions`}
+          ? `Showing ${resultCount.toLocaleString()} of ${totalQuestions.toLocaleString()} questions`
+          : `Showing all ${totalQuestions.toLocaleString()} questions`}
       </p>
     </div>
   );

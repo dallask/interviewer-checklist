@@ -23,8 +23,8 @@
 
 - [ ] **UI-09**: "Hide notes" action actually hides currently-rendered notes when toggled on and restores them when toggled off (fix for D3, test 6)
 - [ ] **UI-10**: Sidebar Actions buttons render as icon-only controls; each shows its short purpose label as a tooltip on hover/focus (fix for D6, test 7)
-- [ ] **UI-11**: Sidebar section titles (Search, Difficulty, Sections, Actions) each render a relevant leading icon before the text (fix for D7, test 7)
-- [ ] **UI-12**: Sidebar collapse/expand works on all viewports including ≥768px — the "Open sidebar" / toggle control changes sidebar visibility regardless of viewport width (fix for D8, test 9)
+- [x] **UI-11**: Sidebar section titles (Search, Difficulty, Sections, Actions) each render a relevant leading icon before the text (fix for D7, test 7)
+- [x] **UI-12**: Sidebar collapse/expand works on all viewports including ≥768px — the "Open sidebar" / toggle control changes sidebar visibility regardless of viewport width (fix for D8, test 9)
 - [ ] **UI-13**: Sidebar has a sticky top header (not scrolling with sidebar content) containing the sidebar toggle, the candidate-detail button, and a "Final mark · N/86 topics" progress line with a thin progress bar and a numeric mark badge on the right (E6; Images #7–#8)
 - [ ] **UI-14**: Sidebar footer renders a credit/copyright lockup ("Developed by Ievgen Kyvgyla, https://kivgila.pro") and an About button (E5; Image #6)
 - [ ] **UI-15**: About button opens an AboutModal (native `<dialog>` per existing modal pattern) containing application name, version, links, and credits (E5)
@@ -81,8 +81,8 @@ Deferred. Not in v1.1 roadmap.
 | SESS-05 | Phase 12 | Complete |
 | UI-09 | Phase 12 | Pending |
 | UI-10 | Phase 12 | Pending |
-| UI-11 | Phase 12 | Pending |
-| UI-12 | Phase 12 | Pending |
+| UI-11 | Phase 12 | Complete |
+| UI-12 | Phase 12 | Complete |
 | UI-13 | Phase 15 | Pending |
 | UI-14 | Phase 15 | Pending |
 | UI-15 | Phase 15 | Pending |

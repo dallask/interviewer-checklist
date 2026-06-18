@@ -57,6 +57,16 @@ function makeState(overrides: Record<string, unknown> = {}) {
     customQuestions: [],
     // Phase 14: SearchGroup reads sections from store (V4Section[])
     sections: [],
+    // WR-02: ActionsGroup fields — prevents undefined selectors from silently
+    // returning undefined when ActionsGroup is rendered inside Sidebar.
+    manifest: null,
+    activeSessionId: '',
+    notes: {},
+    topicNotes: {},
+    candidate: { name: '', role: '' },
+    hideNotes: false,
+    setHideNotes: vi.fn(),
+    removedDefaultQuestionIds: new Set<string>(),
     ...overrides,
   };
 }

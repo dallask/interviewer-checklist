@@ -40,6 +40,8 @@ function makeState(overrides: Record<string, unknown> = {}) {
     scores: {},
     overrides: {},
     customQuestions: [],
+    // Phase 14: SearchGroup reads sections from store (V4Section[])
+    sections: [],
     ...overrides,
   };
 }

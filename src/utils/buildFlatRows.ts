@@ -1,26 +1,26 @@
-import type {
-  Difficulty,
-  Question,
-  Section,
-  Topic,
-} from '../data/bank/types.js';
-import type { CustomQuestion } from '../storage/types.js';
+import type { Difficulty } from '../data/bank/types.js';
+import type { CustomQuestion, V4Section, V4Topic } from '../storage/types.js';
 
-// Re-export types used by consumers
-export type { Question, Section, Topic };
+// ---------------------------------------------------------------------------
+// VirtualRow types
+// ---------------------------------------------------------------------------
 
 export type SectionRow = {
   type: 'section';
   id: string;
   label: string;
   icon: string;
+  /** True for sections from the default bank; false for user-added sections */
+  isDefault: boolean;
   questionCount: number;
+  isOpen: boolean;
 };
 
 export type TopicRow = {
   type: 'topic';
   sectionId: string;
-  topic: Topic;
+  /** V4Topic — has id, name, desc, tag, isDefault, questions: V4Question[] */
+  topic: V4Topic;
   questionCount: number;
   /** true when topicOpen[topic.id] is undefined or true (default open) */
   isOpen: boolean;
@@ -30,16 +30,43 @@ export type QuestionRow = {
   type: 'question';
   sectionId: string;
   topicId: string;
-  question: Question;
-  /** Original index within topic.questions — used for score key in Phase 5 */
+  /** Bridge: exposes .q and .level for QuestionCard backward compat (q = V4Question.text) */
+  question: { q: string; level: Difficulty };
+  /** Original index within topic.questions — used for score key */
   index: number;
   /** True for user-created custom questions (not in the built-in bank) */
   isCustom?: boolean;
   /** The custom question's storage id (e.g. 'custom-${topicId}-${seq}') */
   customId?: string;
+  /** V4Question.id for default questions; undefined for custom questions */
+  questionBankId?: string;
+  /** True for default questions from bank; false/undefined for custom questions */
+  isDefaultQuestion?: boolean;
 };
 
-export type VirtualRow = SectionRow | TopicRow | QuestionRow;
+/**
+ * Emitted once per section, after all topics for that section.
+ * Triggers the "+ Add topic" inline form in ContentTree.
+ */
+export type AddTopicTriggerRow = {
+  type: 'add-topic-trigger';
+  sectionId: string;
+};
+
+/**
+ * Emitted once after all sections.
+ * Triggers the "+ Add section" inline form in ContentTree.
+ */
+export type AddSectionTriggerRow = {
+  type: 'add-section-trigger';
+};
+
+export type VirtualRow =
+  | SectionRow
+  | TopicRow
+  | QuestionRow
+  | AddTopicTriggerRow
+  | AddSectionTriggerRow;
 
 /**
  * Build a flat array of VirtualRow items for @tanstack/react-virtual.
@@ -49,15 +76,20 @@ export type VirtualRow = SectionRow | TopicRow | QuestionRow;
  * Filter semantics:
  * - selectedSections: empty Set → show all sections; non-empty → show only matching sections
  * - selectedDifficulties: empty Set → show all difficulties; non-empty → show only matching
- * - searchQuery: empty → show all; non-empty → case-insensitive match on topic.name/desc/tag + question.q
+ * - searchQuery: empty → show all; non-empty → case-insensitive match on topic.name/desc/tag + question.text
+ * - removedDefaultQuestionIds: skip questions whose V4Question.id is in this Set (D-08)
  *
  * Collapse semantics:
  * - sectionOpen[id] === false → emit SectionRow, skip all topics for that section
  * - topicOpen[id] === false → emit TopicRow with isOpen=false, skip its questions
  * - topicOpen[id] undefined or true → TopicRow with isOpen=true, include questions
+ *
+ * New row emission:
+ * - add-topic-trigger: emitted once per section (after all topics), only when section is not collapsed
+ * - add-section-trigger: emitted once after all sections (always, even if no sections are visible)
  */
 export function buildFlatRows(
-  sections: readonly Section[],
+  sections: readonly V4Section[],
   topicOpen: Record<string, boolean>,
   sectionOpen: Record<string, boolean>,
   filters: {
@@ -70,6 +102,8 @@ export function buildFlatRows(
     markedTopicIds?: Set<string>;
     /** User-created custom questions to append to their topic's rows */
     customQuestions?: CustomQuestion[];
+    /** V4Question IDs to skip (removed default questions, D-08) */
+    removedDefaultQuestionIds?: Set<string>;
   },
 ): VirtualRow[] {
   const rows: VirtualRow[] = [];
@@ -85,12 +119,20 @@ export function buildFlatRows(
     }
 
     // Build list of visible topics with their filtered questions
+    // V4Section uses .topics (not .items); V4Question uses .text and .level (not .q)
     const visibleTopics: Array<
-      Topic & { filteredQuestions: readonly Question[] }
+      V4Topic & { filteredQuestions: { id: string; text: string; level: Difficulty; isDefault: boolean; originalIndex: number }[] }
     > = [];
 
-    for (const topic of section.items) {
-      const filteredQuestions = topic.questions.filter((question) => {
+    for (const topic of section.topics) {
+      const filteredQuestions: { id: string; text: string; level: Difficulty; isDefault: boolean; originalIndex: number }[] = [];
+
+      for (let idx = 0; idx < topic.questions.length; idx++) {
+        const question = topic.questions[idx];
+
+        // Skip removed default questions (D-08, T-14-03)
+        if (filters.removedDefaultQuestionIds?.has(question.id)) continue;
+
         // Difficulty filter
         const matchesDifficulty =
           filters.selectedDifficulties.size === 0 ||
@@ -102,10 +144,12 @@ export function buildFlatRows(
           topic.name.toLowerCase().includes(q) ||
           topic.desc.toLowerCase().includes(q) ||
           topic.tag.toLowerCase().includes(q) ||
-          question.q.toLowerCase().includes(q);
+          question.text.toLowerCase().includes(q);
 
-        return matchesDifficulty && matchesSearch;
-      });
+        if (matchesDifficulty && matchesSearch) {
+          filteredQuestions.push({ ...question, originalIndex: idx });
+        }
+      }
 
       if (filteredQuestions.length > 0) {
         // hideMarked: skip topics that are fully marked when the filter is active
@@ -119,7 +163,7 @@ export function buildFlatRows(
       }
     }
 
-    // If no visible topics, skip this section entirely
+    // If no visible topics, skip this section entirely (but still track for add-section-trigger)
     if (visibleTopics.length === 0) continue;
 
     const totalQCount = visibleTopics.reduce(
@@ -132,10 +176,12 @@ export function buildFlatRows(
       id: section.id,
       label: section.label,
       icon: section.icon,
+      isDefault: section.isDefault,
       questionCount: totalQCount,
+      isOpen: sectionOpen[section.id] !== false,
     });
 
-    // Section collapsed: emit header but skip topics
+    // Section collapsed: emit header but skip topics (no add-topic-trigger for collapsed sections)
     if (sectionOpen[section.id] === false) continue;
 
     for (const topic of visibleTopics) {
@@ -152,17 +198,18 @@ export function buildFlatRows(
       // Topic collapsed: skip questions
       if (!isOpen) continue;
 
-      // Index fix: use indexOf to get the original position in topic.questions
-      // (not the filtered-subset position). This ensures score keys are stable
-      // regardless of which difficulty filter is active. Phase 5 requirement.
+      // Index fix: use originalIndex (pre-computed above) to get the original position
+      // in topic.questions, regardless of which difficulty filter is active (Phase 5).
       for (const question of topic.filteredQuestions) {
-        const index = topic.questions.indexOf(question);
         rows.push({
           type: 'question',
           sectionId: section.id,
           topicId: topic.id,
-          question,
-          index,
+          // Bridge: expose .q for QuestionCard backward compat (Q: question.text → question.q)
+          question: { q: question.text, level: question.level },
+          index: question.originalIndex,
+          questionBankId: question.id,
+          isDefaultQuestion: question.isDefault,
         });
       }
 
@@ -183,7 +230,14 @@ export function buildFlatRows(
         });
       }
     }
+
+    // Emit add-topic-trigger after all topics for this section (D-03)
+    // Only when section is not collapsed (guard already handled above via continue)
+    rows.push({ type: 'add-topic-trigger', sectionId: section.id });
   }
+
+  // Emit add-section-trigger after all sections — always, even if no sections are visible (D-03)
+  rows.push({ type: 'add-section-trigger' });
 
   return rows;
 }

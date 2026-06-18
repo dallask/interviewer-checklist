@@ -35,8 +35,10 @@ export function migrateV3ToV4(session: Readonly<V3Session>): V4Session {
  * Deep-copies DEFAULT_SECTIONS into V4Section[] with isDefault:true on every entity.
  * Question IDs follow the stable format '${topicId}-q${idx}' (D-04).
  * Uses explicit map/spread — NOT JSON.parse/stringify (loses types; incorrect for readonly).
+ *
+ * Exported for use by yamlImport.ts (Plan 03 — YAML-06 bank delta import).
  */
-function materializeSections(bank: readonly Section[]): V4Section[] {
+export function materializeSections(bank: readonly Section[]): V4Section[] {
   return bank.map((sec) => ({
     id: sec.id,
     label: sec.label,

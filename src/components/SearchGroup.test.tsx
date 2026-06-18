@@ -24,6 +24,8 @@ describe('SearchGroup', () => {
         selectedSections: new Set(),
         topicOpen: {},
         sectionOpen: {},
+        // Phase 14: SearchGroup now reads sections from store (V4Section[])
+        sections: [],
       }),
     );
   });

@@ -50,8 +50,8 @@ export function App() {
     return marked;
   }, [scores, sections]);
 
-  // TODO(14-02): remove cast after buildFlatRows is updated to accept V4Section[]
-  const rows = buildFlatRows(sections as any, topicOpen, sectionOpen, {
+  // buildFlatRows now accepts V4Section[] — no cast needed (Plan 02)
+  const rows = buildFlatRows(sections, topicOpen, sectionOpen, {
     searchQuery,
     selectedDifficulties,
     selectedSections,

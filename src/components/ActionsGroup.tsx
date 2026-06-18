@@ -17,7 +17,6 @@ import {
   reKeyImportResultToV4,
   type ImportPreview,
 } from '../utils/yamlImport.js';
-import type { V3Session } from '../storage/types.js';
 import { AiPromptModal } from './AiPromptModal.js';
 import { CandidateModal } from './CandidateModal.js';
 import { ImportPreviewModal } from './ImportPreviewModal.js';
@@ -41,6 +40,8 @@ export function ActionsGroup() {
   const topicNotes = useAppStore((s) => s.topicNotes);
   const customQuestions = useAppStore((s) => s.customQuestions);
   const candidate = useAppStore((s) => s.candidate);
+  const sections = useAppStore((s) => s.sections);
+  const removedDefaultQuestionIds = useAppStore((s) => s.removedDefaultQuestionIds);
 
   const candidateDialogRef = useRef<HTMLDialogElement>(null);
   const resetDialogRef = useRef<HTMLDialogElement>(null);
@@ -73,9 +74,11 @@ export function ActionsGroup() {
   };
 
   const handleExportYaml = () => {
-    const sessionForExport: V3Session = {
-      version: 3,
+    const sessionForExport = {
+      version: 4 as const,
       id: activeSessionId,
+      sections,
+      removedDefaultQuestionIds: [...removedDefaultQuestionIds],
       scores,
       overrides,
       notes,
@@ -83,11 +86,7 @@ export function ActionsGroup() {
       customQuestions,
       candidate,
     };
-    const yaml = exportSession(
-      sessionForExport,
-      activeSessionName,
-      DEFAULT_SECTIONS,
-    );
+    const yaml = exportSession(sessionForExport, activeSessionName);
     downloadYaml(yaml, buildFilename(activeSessionName));
   };
 

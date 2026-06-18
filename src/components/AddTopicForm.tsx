@@ -15,7 +15,8 @@ export function AddTopicForm({ sectionId, onDismiss }: Props) {
     e.preventDefault();
     if (name.trim() === '') return;
     addTopic(sectionId, {
-      id: `custom-topic-${sectionId}-${Date.now()}`,
+      // WR-04: append random suffix to prevent ID collision on same-ms submits
+      id: `custom-topic-${sectionId}-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
       name: name.trim(),
       desc: desc.trim(),
       tag: '',

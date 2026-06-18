@@ -14,7 +14,8 @@ export function AddSectionForm({ onDismiss }: Props) {
     e.preventDefault();
     if (name.trim() === '') return;
     addSection({
-      id: `custom-section-${Date.now()}`,
+      // WR-04: append random suffix to prevent ID collision on same-ms submits
+      id: `custom-section-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
       label: name.trim(),
       icon: icon.trim() || '🔧',
       isDefault: false,

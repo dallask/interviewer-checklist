@@ -155,7 +155,7 @@ Full archive: [milestones/v1.0-ROADMAP.md](milestones/v1.0-ROADMAP.md)
 
 **Wave 1** *(all independent — run in parallel)*
 
-- [ ] 15-01-PLAN.md — SidebarHeader (sticky header: close toggle + candidate button + progress line + bar) + Sidebar.tsx layout refactor (overflow-y-auto moved to inner div, CandidateModal ownership moved here)
+- [x] 15-01-PLAN.md — SidebarHeader (sticky header: close toggle + candidate button + progress line + bar) + Sidebar.tsx layout refactor (overflow-y-auto moved to inner div, CandidateModal ownership moved here)
 - [x] 15-02-PLAN.md — SidebarFooter credit lockup + About button; AboutModal (native dialog: version, credits, close, backdrop/Esc close)
 - [x] 15-03-PLAN.md — QuestionCard compact redesign: score dropdown (Skip + 0–10) left, question text center, note icon right, textarea below on demand
 
@@ -184,4 +184,4 @@ Full archive: [milestones/v1.0-ROADMAP.md](milestones/v1.0-ROADMAP.md)
 | 12. UAT Defect Cleanup | v1.1 | 4/4 | Complete   | 2026-06-18 |
 | 13. Filter Overhaul | v1.1 | 1/1 | Complete   | 2026-06-18 |
 | 14. Editable Bank & YAML Schema Expansion | v1.1 | 5/5 | Complete | 2026-06-18 |
-| 15. Sidebar Shell Refactor & Compact QuestionCard | v1.1 | 2/4 | In Progress|  |
+| 15. Sidebar Shell Refactor & Compact QuestionCard | v1.1 | 3/4 | In Progress|  |

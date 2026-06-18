@@ -41,7 +41,7 @@ export function SectionFilter() {
             : 'border-l-2 border-transparent'
         }`}
       >
-        <span aria-hidden="true">📋</span>
+        <span aria-hidden="true" className="mr-1">📋</span>
         <span className="flex-1">All sections</span>
         <span className={`ml-auto text-xs tabular-nums ${
           selectedSections.size === 0
@@ -67,7 +67,7 @@ export function SectionFilter() {
                 : 'border-l-2 border-transparent'
             }`}
           >
-            <span aria-hidden="true">{section.icon}</span>
+            <span aria-hidden="true" className="mr-1">{section.icon}</span>
             <span className="flex-1">{section.label}</span>
             <span className={`ml-auto text-xs tabular-nums ${
               isSelected

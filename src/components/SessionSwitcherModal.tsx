@@ -74,13 +74,14 @@ export function SessionSwitcherModal({ dialogRef }: Props) {
     <dialog
       ref={dialogRef}
       aria-labelledby="session-switcher-title"
-      className="fixed inset-0 m-auto w-full max-w-md bg-white dark:bg-gray-900 rounded-lg shadow-xl border border-gray-200 dark:border-gray-700 p-0 flex flex-col"
+      className="fixed inset-0 m-auto w-full max-w-md bg-white dark:bg-gray-900 rounded-lg shadow-xl border border-gray-200 dark:border-gray-700 p-0"
       onClick={(e) => {
         if (e.target === dialogRef.current) {
           dialogRef.current.close();
         }
       }}
     >
+      <div className="flex flex-col">
       {/* Header */}
       <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between">
         <h2
@@ -162,6 +163,7 @@ export function SessionSwitcherModal({ dialogRef }: Props) {
         onDeleted={() => dialogRef.current?.close()}
         focusRestoreId={pendingDelete ? `delete-session-${pendingDelete.id}` : undefined}
       />
+      </div>
     </dialog>
   );
 }

@@ -2,8 +2,8 @@ import { create } from 'zustand';
 import { DEFAULT_SECTIONS } from '../data/bank/index.js';
 import type { Difficulty } from '../data/bank/types.js';
 import { storageAdapter } from '../storage/index.js';
-import type { V2Manifest, V3Session } from '../storage/types.js';
-import { createDefaultV3Session } from '../storage/types.js';
+import type { V2Manifest, V4Section, V4Session } from '../storage/types.js';
+import { createDefaultV4Session } from '../storage/types.js';
 import type { ImportResult } from '../utils/yamlImport.js';
 
 // ---------------------------------------------------------------------------
@@ -37,7 +37,7 @@ export interface UndoBuffer {
   /** The session metadata entry from manifest.sessions */
   sessionMeta: V2Manifest['sessions'][number];
   /** The full session scoring payload */
-  sessionData: V3Session;
+  sessionData: V4Session;
   /** If true, the deleted session was the active one; restore on undo */
   wasActive: boolean;
 }
@@ -93,6 +93,13 @@ export interface AppState {
    * attribute (which CSS cannot override).
    */
   printMode: boolean;
+  // --- V4 session fields (Phase 11) ---
+  /** Materialized section/topic/question tree for the active V4 session; populated at bootstrap and on switchSession */
+  sections: V4Section[];
+  /** Number of sessions that failed V3→V4 migration; drives MigrationErrorBanner */
+  migrationFailedCount: number;
+  /** IDs of sessions that failed migration; for banner display */
+  migrationFailedIds: string[];
 }
 
 export interface AppActions {
@@ -171,6 +178,10 @@ export const DEFAULT_STATE: AppState = {
   undoBuffer: null,
   // Phase 9: print expansion flag — only true between beforeprint and afterprint.
   printMode: false,
+  // Phase 11: V4 session fields
+  sections: [],
+  migrationFailedCount: 0,
+  migrationFailedIds: [],
 };
 
 // ---------------------------------------------------------------------------
@@ -342,7 +353,7 @@ export const useAppStore = create<AppState & AppActions>()((set) => ({
     // Step 2: read target session data from chrome.storage.local
     const key = `session:${targetId}`;
     const raw = await storageAdapter.read([key]);
-    const session = raw[key] as V3Session | undefined;
+    const session = raw[key] as V4Session | undefined;
 
     // Step 3: atomically update store — all per-session fields + activeSessionId
     // + manifest.activeSessionId in ONE set() call.
@@ -351,6 +362,7 @@ export const useAppStore = create<AppState & AppActions>()((set) => ({
       manifest: s.manifest
         ? { ...s.manifest, activeSessionId: targetId }
         : s.manifest,
+      sections: session?.sections ?? [],
       scores: session?.scores ?? {},
       overrides: session?.overrides ?? {},
       notes: session?.notes ?? {},
@@ -369,7 +381,7 @@ export const useAppStore = create<AppState & AppActions>()((set) => ({
     const now = new Date().toISOString();
 
     // Write new session data to storage
-    const newSession = createDefaultV3Session(id);
+    const newSession = createDefaultV4Session(id);
     storageAdapter.write({ [`session:${id}`]: newSession });
 
     // Update manifest in store: append new SessionMeta
@@ -410,7 +422,7 @@ export const useAppStore = create<AppState & AppActions>()((set) => ({
 
     // Read from storage by sessionId — NOT from current Zustand state (A3 guard)
     const raw = await storageAdapter.read([`session:${sessionId}`]);
-    const source = raw[`session:${sessionId}`] as V3Session | undefined;
+    const source = raw[`session:${sessionId}`] as V4Session | undefined;
 
     const originalMeta = state.manifest.sessions.find((s) => s.id === sessionId);
     if (!originalMeta || !source) return;
@@ -420,7 +432,7 @@ export const useAppStore = create<AppState & AppActions>()((set) => ({
     const copyName = `${originalMeta.name} (copy)`;
 
     // Write new session data (copy) to storage
-    const copySession: V3Session = { ...source, id: newId };
+    const copySession: V4Session = { ...source, id: newId };
     storageAdapter.write({ [`session:${newId}`]: copySession });
 
     // Append new SessionMeta to manifest — does NOT change activeSessionId
@@ -447,7 +459,7 @@ export const useAppStore = create<AppState & AppActions>()((set) => ({
 
     // Step 1: read session data from storage BEFORE deletion — Pitfall "Async deleteSession" guard
     const raw = await storageAdapter.read([`session:${sessionId}`]);
-    const data = raw[`session:${sessionId}`] as V3Session | undefined;
+    const data = raw[`session:${sessionId}`] as V4Session | undefined;
 
     // Step 2: capture undo buffer BEFORE remove (T-06-01-02 mitigated)
     if (meta && data) {
@@ -616,11 +628,13 @@ useAppStore.subscribe((state) => {
 
   // Session persistence: write scoring state under session:<id> key when a session is active.
   // Guard: only write when activeSessionId is non-empty to avoid orphaned session keys.
+  // Phase 11: writes version:4 with sections field (V4Session shape).
   if (state.activeSessionId) {
     storageAdapter.write({
       [`session:${state.activeSessionId}`]: {
-        version: 3,
+        version: 4,
         id: state.activeSessionId,
+        sections: state.sections,
         scores: state.scores,
         overrides: state.overrides,
         notes: state.notes,

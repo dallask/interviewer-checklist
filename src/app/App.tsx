@@ -1,6 +1,7 @@
 import './styles.css';
 import { useMemo } from 'react';
 import { ContentTree } from '../components/ContentTree.js';
+import { MigrationErrorBanner } from '../components/MigrationErrorBanner.js';
 import { Sidebar } from '../components/Sidebar.js';
 import { StorageToast } from '../components/StorageToast.js';
 import { UndoToast } from '../components/UndoToast.js';
@@ -28,15 +29,18 @@ export function App() {
   const scores = useAppStore((s) => s.scores);
   const hideMarked = useAppStore((s) => s.hideMarked);
   const customQuestions = useAppStore((s) => s.customQuestions);
+  const migrationFailedCount = useAppStore((s) => s.migrationFailedCount);
+  const migrationFailedIds = useAppStore((s) => s.migrationFailedIds);
 
   // Compute set of topic IDs that have at least one scored question.
   // A topic is "marked" when it has a score != null — used by hideMarked toggle.
+  // Phase 11: score keys use V4 format '${topicId}-q${idx}' (D-04 stable ID format).
   const markedTopicIds = useMemo(() => {
     const marked = new Set<string>();
     for (const section of DEFAULT_SECTIONS) {
       for (const topic of section.items) {
         const hasScore = topic.questions.some((_, i) => {
-          const key = `${topic.id}-${i}`;
+          const key = `${topic.id}-q${i}`;
           return scores[key] !== null && scores[key] !== undefined;
         });
         if (hasScore) marked.add(topic.id);
@@ -73,6 +77,12 @@ export function App() {
         )}
         <Sidebar />
         <div className="flex flex-col flex-1 overflow-hidden">
+          {/* Migration error banner — sticky at top of the right column, above UpdateBanner. Phase 11 D-06. */}
+          <MigrationErrorBanner
+            failedCount={migrationFailedCount}
+            sessionIds={migrationFailedIds}
+            onDismiss={() => useAppStore.setState({ migrationFailedCount: 0, migrationFailedIds: [] })}
+          />
           {/* Update banner — sticky at top of the right column, above main. */}
           <UpdateBanner />
           {/* Sidebar toggle button */}

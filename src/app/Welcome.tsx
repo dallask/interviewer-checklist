@@ -26,25 +26,27 @@ export function Welcome() {
     chrome.tabs.create({ url });
   }
 
-  function handleViewDemo() {
-    // WR-04: chrome.storage.local.set returns a Promise in MV3 — attach
-    // .catch() so rejections (quota, IO) surface instead of becoming
-    // unhandled-rejection noise.
-    chrome.storage.local
-      .set({ activeSessionOverride: 'demo' })
-      .catch((err) =>
-        console.error(
-          '[interviewer-checklist] activeSessionOverride set failed:',
-          err,
-        ),
+  async function handleViewDemo() {
+    // WR-05: await the storage writes BEFORE opening the new tab so the
+    // demo session override is committed when main.tsx reads it during
+    // bootstrap. Without the await, chrome.tabs.create can fire before
+    // the IO commits and the new tab lands on whatever session was
+    // already active. WR-04: a single try/catch around the awaits
+    // captures both rejections (quota, IO) instead of letting them
+    // become unhandled-rejection noise.
+    try {
+      await Promise.all([
+        chrome.storage.local.set({ activeSessionOverride: 'demo' }),
+        chrome.storage.local.set({ hasSeenWelcome: true }),
+      ]);
+    } catch (err) {
+      console.error(
+        '[interviewer-checklist] handleViewDemo storage write failed:',
+        err,
       );
-    chrome.storage.local
-      .set({ hasSeenWelcome: true })
-      .catch((err) =>
-        console.error('[interviewer-checklist] hasSeenWelcome set failed:', err),
-      );
+    }
     const url = chrome.runtime.getURL('src/app/app.html');
-    chrome.tabs.create({ url });
+    await chrome.tabs.create({ url });
   }
 
   return (

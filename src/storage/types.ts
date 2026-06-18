@@ -141,6 +141,51 @@ export const V3SessionSchema = v.object({
 });
 
 // ---------------------------------------------------------------------------
+// valibot schemas for V4 types
+// ---------------------------------------------------------------------------
+
+export const V4QuestionSchema = v.object({
+  id: v.string(),
+  text: v.string(),
+  level: v.union([
+    v.literal('novice'),
+    v.literal('intermediate'),
+    v.literal('advanced'),
+    v.literal('expert'),
+  ]),
+  isDefault: v.boolean(),
+});
+
+export const V4TopicSchema = v.object({
+  id: v.string(),
+  name: v.string(),
+  desc: v.string(),
+  tag: v.string(),
+  isDefault: v.boolean(),
+  questions: v.array(V4QuestionSchema),
+});
+
+export const V4SectionSchema = v.object({
+  id: v.string(),
+  label: v.string(),
+  icon: v.string(),
+  isDefault: v.boolean(),
+  topics: v.array(V4TopicSchema),
+});
+
+export const V4SessionSchema = v.object({
+  version: v.literal(4),
+  id: v.string(),
+  sections: v.array(V4SectionSchema),
+  scores: v.record(v.string(), v.nullable(v.number())),
+  overrides: v.record(v.string(), v.nullable(v.number())),
+  notes: v.record(v.string(), v.string()),
+  topicNotes: v.record(v.string(), v.string()),
+  customQuestions: v.array(CustomQuestionSchema),
+  candidate: v.nullable(CandidateDetailsSchema),
+});
+
+// ---------------------------------------------------------------------------
 // Derived TypeScript types (valibot v1 InferOutput API)
 // ---------------------------------------------------------------------------
 
@@ -151,6 +196,12 @@ export type V2Manifest = v.InferOutput<typeof V2ManifestSchema>;
 export type CandidateDetails = v.InferOutput<typeof CandidateDetailsSchema>;
 export type CustomQuestion = v.InferOutput<typeof CustomQuestionSchema>;
 export type V3Session = v.InferOutput<typeof V3SessionSchema>;
+
+// V4 types
+export type V4Question = v.InferOutput<typeof V4QuestionSchema>;
+export type V4Topic = v.InferOutput<typeof V4TopicSchema>;
+export type V4Section = v.InferOutput<typeof V4SectionSchema>;
+export type V4Session = v.InferOutput<typeof V4SessionSchema>;
 
 // ---------------------------------------------------------------------------
 // Factory functions — produce valid default V2 state
@@ -196,6 +247,25 @@ export function createDefaultV3Session(id: string): V3Session {
   return {
     version: 3,
     id,
+    scores: {},
+    overrides: {},
+    notes: {},
+    topicNotes: {},
+    customQuestions: [],
+    candidate: null,
+  };
+}
+
+/**
+ * Creates an empty V4Session for the given session ID.
+ * sections is [] — populated only during migration from V3, not on new session creation.
+ * All record fields are empty objects; customQuestions is an empty array; candidate is null.
+ */
+export function createDefaultV4Session(id: string): V4Session {
+  return {
+    version: 4,
+    id,
+    sections: [],
     scores: {},
     overrides: {},
     notes: {},

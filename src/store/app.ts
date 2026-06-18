@@ -633,6 +633,10 @@ useAppStore.subscribe((state) => {
       selectedSections: [...state.selectedSections],
       hideMarked: state.hideMarked,
       darkMode: state.darkMode,
+      // hideNotes intentionally excluded: it is UI-only and must not be persisted.
+      // Adding it here would cause stale values from storage to clobber the
+      // in-memory default on next load (via the spread in main.tsx).
+      // See AppState interface comment on hideNotes.
     },
   });
 

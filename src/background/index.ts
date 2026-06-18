@@ -5,11 +5,14 @@ chrome.runtime.onInstalled.addListener(async (details) => {
       if (!result.hasSeenWelcome) {
         await chrome.tabs.create({ url: chrome.runtime.getURL('src/app/welcome.html') });
       }
+      const now = new Date().toISOString();
       await chrome.storage.local.set({
         manifest: {
-          version: 1,
+          version: 2,
           activeSessionId: 'demo',
-          sessions: [{ id: 'demo', name: 'Demo Candidate', createdAt: Date.now() }],
+          sessions: [
+            { id: 'demo', name: 'Demo Candidate', createdAt: now, updatedAt: now },
+          ],
         },
       });
       await chrome.storage.local.set({

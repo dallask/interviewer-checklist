@@ -48,6 +48,21 @@ describe('service worker structural constraints (src/background/index.ts)', () =
     const moduleTopLevelLetPattern = /^let\s+/m;
     expect(src).not.toMatch(moduleTopLevelLetPattern);
   });
+
+  it('demo seed uses real topic IDs from DEFAULT_SECTIONS (POLISH-01)', () => {
+    // Real IDs from src/data/bank/frontend.ts: 'js' (line 121) and 'twig' (line 9).
+    // The store key format is `${topicId}-${index}` (src/store/app.ts).
+    expect(src).toContain("'js-0': 8");
+    expect(src).toContain("'js-1': 7");
+    expect(src).toContain("'twig-0': 6");
+  });
+
+  it('demo seed does NOT reference legacy fake topic IDs', () => {
+    // Pre-fix values were 'js-basics-fundamentals-*' / 'js-basics-closures-*'
+    // which were never real topic IDs in DEFAULT_SECTIONS.
+    expect(src).not.toContain('js-basics-fundamentals');
+    expect(src).not.toContain('js-basics-closures');
+  });
 });
 
 describe('service worker onInstalled behavioral tests', () => {

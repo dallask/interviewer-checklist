@@ -1,9 +1,25 @@
 import { useRef, useState } from 'react';
+import type { ChangeEvent } from 'react';
 import { useAppStore } from '../store/app.js';
 import { DEFAULT_SECTIONS } from '../data/bank/index.js';
 import { buildAiPrompt } from '../utils/buildAiPrompt.js';
+import {
+  buildFilename,
+  downloadYaml,
+  exportSession,
+} from '../utils/yamlExport.js';
+import {
+  detectFormat,
+  MAX_YAML_BYTES,
+  parseLegacy,
+  parseStructural,
+  parseYaml,
+  type ImportPreview,
+} from '../utils/yamlImport.js';
+import type { V3Session } from '../storage/types.js';
 import { AiPromptModal } from './AiPromptModal.js';
 import { CandidateModal } from './CandidateModal.js';
+import { ImportPreviewModal } from './ImportPreviewModal.js';
 import { ResetConfirmDialog } from './ResetConfirmDialog.js';
 import { SessionSwitcherModal } from './SessionSwitcherModal.js';
 
@@ -27,8 +43,14 @@ export function ActionsGroup() {
   const resetDialogRef = useRef<HTMLDialogElement>(null);
   const sessionSwitcherRef = useRef<HTMLDialogElement>(null);
   const aiPromptRef = useRef<HTMLDialogElement>(null);
+  const importDialogRef = useRef<HTMLDialogElement>(null);
+  const importFileInputRef = useRef<HTMLInputElement>(null);
 
   const [aiPrompt, setAiPrompt] = useState('');
+  const [importPreview, setImportPreview] = useState<ImportPreview | null>(
+    null,
+  );
+  const [importError, setImportError] = useState<string | null>(null);
 
   const activeSessionName =
     manifest?.sessions.find((s) => s.id === activeSessionId)?.name ?? '';
@@ -45,6 +67,75 @@ export function ActionsGroup() {
     const generated = buildAiPrompt(currentSession, DEFAULT_SECTIONS);
     setAiPrompt(generated);
     aiPromptRef.current?.showModal();
+  };
+
+  const handleExportYaml = () => {
+    const sessionForExport: V3Session = {
+      version: 3,
+      id: activeSessionId,
+      scores,
+      overrides,
+      notes,
+      topicNotes,
+      customQuestions,
+      candidate,
+    };
+    const yaml = exportSession(
+      sessionForExport,
+      activeSessionName,
+      DEFAULT_SECTIONS,
+    );
+    downloadYaml(yaml, buildFilename(activeSessionName));
+  };
+
+  const handleOpenImportYaml = () => {
+    setImportError(null);
+    importFileInputRef.current?.click();
+  };
+
+  const handleImportFileChange = async (
+    e: ChangeEvent<HTMLInputElement>,
+  ) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (file.size > MAX_YAML_BYTES) {
+      setImportError(
+        `File too large (${file.size} bytes; max ${MAX_YAML_BYTES})`,
+      );
+      e.target.value = '';
+      return;
+    }
+    const text = await file.text();
+    const parsed = parseYaml(text);
+    if (!parsed.ok) {
+      setImportError(`Invalid YAML: ${parsed.error}`);
+      e.target.value = '';
+      return;
+    }
+    const format = detectFormat(parsed.value);
+    const preview =
+      format === 'structural'
+        ? parseStructural(parsed.value, DEFAULT_SECTIONS)
+        : format === 'legacy'
+          ? parseLegacy(parsed.value, DEFAULT_SECTIONS)
+          : null;
+    if (!preview) {
+      setImportError('Unrecognized YAML format (missing sections or scores)');
+      e.target.value = '';
+      return;
+    }
+    setImportPreview(preview);
+    importDialogRef.current?.showModal();
+    // Allow re-import of the same file
+    e.target.value = '';
+  };
+
+  const handleImportConfirm = async (overwriteActive: boolean) => {
+    if (!importPreview) return;
+    await useAppStore
+      .getState()
+      .importSession(importPreview.result, overwriteActive);
+    setImportPreview(null);
   };
 
   return (
@@ -110,6 +201,40 @@ export function ActionsGroup() {
       >
         Candidate details
       </button>
+      <input
+        ref={importFileInputRef}
+        type="file"
+        accept=".yaml,.yml"
+        className="hidden"
+        onChange={(e) => {
+          void handleImportFileChange(e);
+        }}
+        data-testid="yaml-file-input"
+      />
+      <button
+        type="button"
+        id="open-import-yaml"
+        onClick={handleOpenImportYaml}
+        className="w-full text-sm px-3 py-2 text-left text-gray-900 dark:text-gray-100 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none"
+      >
+        Import YAML
+      </button>
+      <button
+        type="button"
+        onClick={handleExportYaml}
+        className="w-full text-sm px-3 py-2 text-left text-gray-900 dark:text-gray-100 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none"
+      >
+        Export YAML
+      </button>
+      {importError && (
+        <p
+          role="alert"
+          className="text-xs text-red-600 dark:text-red-400 px-1"
+          data-testid="yaml-import-error"
+        >
+          {importError}
+        </p>
+      )}
       <button
         type="button"
         id="open-reset-dialog"
@@ -125,6 +250,11 @@ export function ActionsGroup() {
         dialogRef={aiPromptRef}
         prompt={aiPrompt}
         onClose={() => { aiPromptRef.current?.close(); }}
+      />
+      <ImportPreviewModal
+        dialogRef={importDialogRef}
+        preview={importPreview}
+        onConfirm={handleImportConfirm}
       />
     </div>
   );

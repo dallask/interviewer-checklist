@@ -23,7 +23,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 6: Multiple Named Sessions & Switcher** - Session management with safe switch, delete, and undo (completed 2026-06-17)
 - [x] **Phase 7: YAML Import & Export** - Structural and legacy-format portability codec with import preview (completed 2026-06-17)
 - [x] **Phase 8: AI Prompt Modal** - AI candidate-feedback prompt builder with copy-to-clipboard (completed 2026-06-17)
-- [ ] **Phase 9: Polish — Print, Keyboard, A11y, Welcome & Updates** - Onboarding, shortcuts, print stylesheet, update banner
+- [x] **Phase 9: Polish — Print, Keyboard, A11y, Welcome & Updates** - Onboarding, shortcuts, print stylesheet, update banner (completed 2026-06-18)
 - [ ] **Phase 10: Chrome Web Store Submission** - Privacy policy, screenshots, smoke-test, and public listing
 
 ## Phase Details
@@ -243,8 +243,8 @@ Plans:
 
 **Wave 2** *(blocked on Wave 1 completion)*
 
-- [ ] 09-02-PLAN.md — useKeyboardShortcuts + usePrintExpansion hooks + UpdateBanner + SidebarFooter + ChangelogViewer + print CSS on controls + App/Sidebar wiring + tests (POLISH-03, POLISH-05, POLISH-06, POLISH-07)
-- [ ] 09-03-PLAN.md — Welcome page (second Vite entry: welcome.html + Welcome.tsx) + remaining print CSS on QuestionCard/TopicRow + build verification checkpoint (POLISH-01, POLISH-05)
+- [x] 09-02-PLAN.md — useKeyboardShortcuts + usePrintExpansion hooks + UpdateBanner + SidebarFooter + ChangelogViewer + print CSS on controls + App/Sidebar wiring + tests (POLISH-03, POLISH-05, POLISH-06, POLISH-07)
+- [x] 09-03-PLAN.md — Welcome page (second Vite entry: welcome.html + Welcome.tsx) + remaining print CSS on QuestionCard/TopicRow + build verification checkpoint (POLISH-01, POLISH-05)
 
 **UI hint**: yes
 
@@ -278,5 +278,5 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 →
 | 6. Multiple Named Sessions & Switcher | 3/3 | Complete   | 2026-06-17 |
 | 7. YAML Import & Export | 2/2 | Complete    | 2026-06-17 |
 | 8. AI Prompt Modal | 2/2 | Complete    | 2026-06-17 |
-| 9. Polish — Print, Keyboard, A11y, Welcome & Updates | 1/3 | In Progress|  |
+| 9. Polish — Print, Keyboard, A11y, Welcome & Updates | 3/3 | Complete   | 2026-06-18 |
 | 10. Chrome Web Store Submission | 0/? | Not started | - |

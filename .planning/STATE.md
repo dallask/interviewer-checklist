@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v1.1
 milestone_name: Post-UAT Fix + Polish
 status: executing
-stopped_at: Completed 12-uat-defect-cleanup-01-PLAN.md
-last_updated: "2026-06-18T09:28:24.477Z"
-last_activity: 2026-06-18 -- Phase 12 execution started
+stopped_at: Completed 12-uat-defect-cleanup-02-PLAN.md
+last_updated: "2026-06-18T12:35:00.000Z"
+last_activity: 2026-06-18 -- Phase 12 plan 02 complete (hideNotes store + component wiring)
 progress:
   total_phases: 5
   completed_phases: 1
   total_plans: 7
-  completed_plans: 4
-  percent: 20
+  completed_plans: 5
+  percent: 26
 ---
 
 # Project State
@@ -26,9 +26,9 @@ See: .planning/PROJECT.md (updated 2026-06-18)
 ## Current Position
 
 Phase: 12 (uat-defect-cleanup) — EXECUTING
-Plan: 2 of 4
-Status: Ready to execute
-Last activity: 2026-06-18 -- Phase 12 execution started
+Plan: 3 of 4
+Status: Executing
+Last activity: 2026-06-18 -- Phase 12 plan 02 complete (hideNotes store + component wiring)
 
 ## Performance Metrics
 
@@ -60,6 +60,7 @@ Last activity: 2026-06-18 -- Phase 12 execution started
 
 *Updated after each plan completion*
 | Phase 12-uat-defect-cleanup P01 | 5min | 2 tasks | 3 files |
+| Phase 12-uat-defect-cleanup P02 | 5min | 2 tasks | 4 files |
 
 ## Accumulated Context
 
@@ -76,6 +77,8 @@ Recent decisions affecting current work:
 - SCORE-08 (compact QuestionCard) isolated with the sidebar shell refactor (Phase 15) to keep visual-redesign diff reviewable
 - [Phase ?]: stopPropagation on TopicMarkDisplay fieldset (both onClick and onMouseDown): prevents override clicks from triggering toggleTopic (SCORE-07)
 - [Phase ?]: Backdrop-click close on SessionSwitcherModal dialog using e.target === dialogRef.current guard; onClick chosen over onMouseDown per CandidateModal analog (SESS-05)
+- [Phase 12-02]: hideNotes absent from subscribe block uiState write: volatile per-session preference, resets on reload (D-07)
+- [Phase 12-02]: CSS hidden class on outer wrapper div (not HTML hidden attr on textarea) for print-override compatibility with Tailwind print: variants (D-08)
 
 ### Pending Todos
 
@@ -107,8 +110,8 @@ Phase 10 manual CWS submission (publish PRIVACY.md to HTTPS URL, capture 1280×8
 
 ## Session Continuity
 
-Last session: 2026-06-18T09:28:24.474Z
-Stopped at: Completed 12-uat-defect-cleanup-01-PLAN.md
+Last session: 2026-06-18T12:35:00.000Z
+Stopped at: Completed 12-uat-defect-cleanup-02-PLAN.md
 Resume file: None
 
 ## Operator Next Steps

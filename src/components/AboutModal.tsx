@@ -17,7 +17,7 @@ export function AboutModal({ dialogRef }: AboutModalProps) {
     function handleKeyDown(e: KeyboardEvent) {
       if (e.key !== 'Tab') return;
       const focusable = dialogEl.querySelectorAll<HTMLElement>(
-        'button, input, textarea, select, [tabindex]:not([tabindex="-1"])',
+        'a[href], button, input, textarea, select, [tabindex]:not([tabindex="-1"])',
       );
       // WR-02: guard against empty focusable list to prevent TypeError on .focus()
       if (focusable.length === 0) return;

@@ -45,7 +45,11 @@ Full archive: [milestones/v1.0-ROADMAP.md](milestones/v1.0-ROADMAP.md)
   2. The migrated session exposes default sections and topics as user-editable entities (the schema/store layer accepts add/remove calls against them, even if no UI surfaces them yet)
   3. Importing a v1.0-era full-structural YAML export produces an equivalent V4 session with no loss of scores, notes, candidate details, or custom questions
   4. Importing a legacy progress-only YAML (v1.0 regression boundary) still matches by stable IDs and applies scores without losing the bank
-**Plans**: TBD
+**Plans**: 3 plans
+Plans:
+- [ ] 11-01-PLAN.md — V4 schema types, migrateV3ToV4() module, fixtures, unit tests, runMigrations() extension
+- [ ] 11-02-PLAN.md — Bootstrap V3→V4 migration loop, store V4 wiring, MigrationErrorBanner, main.tsx hydration
+- [ ] 11-03-PLAN.md — YAML import V4 key re-keying, ActionsGroup wiring, integration test extensions
 
 ### Phase 12: UAT Defect Cleanup
 **Goal**: Close the six small-touch defects from the v1.0 CWS smoke test so the existing surface stops misbehaving for real interviewer use
@@ -112,7 +116,7 @@ Full archive: [milestones/v1.0-ROADMAP.md](milestones/v1.0-ROADMAP.md)
 | 8. AI Prompt Modal | v1.0 | 2/2 | Complete | 2026-06-17 |
 | 9. Polish | v1.0 | 3/3 | Complete | 2026-06-18 |
 | 10. Chrome Web Store Submission | v1.0 | 3/3 (manual submission tasks pending user action) | Complete | 2026-06-18 |
-| 11. V4 Session Migration & Legacy Compat | v1.1 | 0/0 | Not started | — |
+| 11. V4 Session Migration & Legacy Compat | v1.1 | 0/3 | Not started | — |
 | 12. UAT Defect Cleanup | v1.1 | 0/0 | Not started | — |
 | 13. Filter Overhaul | v1.1 | 0/0 | Not started | — |
 | 14. Editable Bank & YAML Schema Expansion | v1.1 | 0/0 | Not started | — |

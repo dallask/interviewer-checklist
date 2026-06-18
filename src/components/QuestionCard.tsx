@@ -65,7 +65,7 @@ export function QuestionCard({ row }: Props) {
             const v = e.target.value;
             setScore(questionId, v === 'skip' ? null : Number(v));
           }}
-          className="text-xs font-normal text-gray-900 dark:text-gray-100 bg-gray-100 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded px-1.5 py-1 min-w-[52px] focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none"
+          className="text-xs font-normal text-gray-900 dark:text-gray-100 bg-gray-100 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded px-1.5 py-1 min-w-[52px] focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none dark:[color-scheme:dark]"
         >
           <option value="skip">Skip</option>
           {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((n) => (

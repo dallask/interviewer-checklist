@@ -114,6 +114,12 @@ describe('QuestionCard', () => {
     expect(select.className).toContain('min-w-[52px]');
   });
 
+  it('score select has dark:[color-scheme:dark] class for dark mode option readability', () => {
+    render(<QuestionCard row={mockRow} />);
+    const select = screen.getByRole('combobox', { name: /What is JSX\? score/ });
+    expect(select.className).toContain('[color-scheme:dark]');
+  });
+
   it('constructs questionId as topicId-qIndex (V4 format) — select aria-label uses it', () => {
     const row = {
       ...mockRow,

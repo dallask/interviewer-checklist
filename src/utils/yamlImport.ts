@@ -1,5 +1,7 @@
 import { load } from 'js-yaml';
+import { DEFAULT_SECTIONS } from '../data/bank/index.js';
 import type { Section } from '../data/bank/types.js';
+import { materializeSections } from '../storage/migrations/v3-to-v4.js';
 import type { CandidateDetails, CustomQuestion, V4Section } from '../storage/types.js';
 
 // ---------------------------------------------------------------------------
@@ -467,11 +469,59 @@ export function parseStructural(
             result.scores[newId] = cq.score;
             modifiedCount++;
           }
+          // YAML-05: custom question note preserved on import
           if (typeof cq.note === 'string' && cq.note !== '') {
             result.notes[newId] = cq.note;
           }
         });
       }
+    }
+  }
+
+  // YAML-06: bank delta — only for schemaVersion >= 2
+  const schemaVersion =
+    typeof (obj.meta as Record<string, unknown> | null | undefined)
+      ?.schemaVersion === 'number'
+      ? ((obj.meta as Record<string, unknown>).schemaVersion as number)
+      : 1;
+  if (schemaVersion >= 2 && obj.bank != null) {
+    const bank = obj.bank as Record<string, unknown>;
+
+    // removedQuestionIds — string[] validation
+    if (Array.isArray(bank.removedQuestionIds)) {
+      result.removedDefaultQuestionIds = (
+        bank.removedQuestionIds as unknown[]
+      ).filter((id): id is string => typeof id === 'string');
+    }
+
+    // addedSections — validate shape and check for ID collisions (T-14-04)
+    if (Array.isArray(bank.addedSections)) {
+      const materialized = materializeSections(DEFAULT_SECTIONS);
+      const defaultSectionIds = new Set(materialized.map((s) => s.id));
+      const addedSections: V4Section[] = [];
+      for (const raw of bank.addedSections as unknown[]) {
+        if (raw == null || typeof raw !== 'object') continue;
+        const s = raw as Record<string, unknown>;
+        if (
+          typeof s.id !== 'string' ||
+          defaultSectionIds.has(s.id)
+        ) {
+          // T-14-04: skip colliding IDs to prevent default section corruption
+          continue;
+        }
+        // Minimal V4Section shape — unsafe cast; topics from user-provided YAML
+        addedSections.push({
+          id: s.id,
+          label: typeof s.label === 'string' ? s.label : '',
+          icon: typeof s.icon === 'string' ? s.icon : '🔧',
+          isDefault: false,
+          topics: Array.isArray(s.topics)
+            ? (s.topics as V4Section['topics'])
+            : [],
+        });
+      }
+      // Build full sections: default materialized sections + added sections
+      result.sections = [...materialized, ...addedSections];
     }
   }
 

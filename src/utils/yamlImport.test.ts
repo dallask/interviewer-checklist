@@ -321,3 +321,129 @@ describe('parseLegacy → reKeyImportResultToV4 integration', () => {
     expect('twig-0' in rekeyed.scores).toBe(false);
   });
 });
+
+// ---------------------------------------------------------------------------
+// parseStructural — bank delta (YAML-06)
+// ---------------------------------------------------------------------------
+
+describe('parseStructural — bank delta (YAML-06)', () => {
+  it('v1 YAML (schemaVersion absent): result.sections and removedDefaultQuestionIds are undefined', () => {
+    const v1Yaml = {
+      meta: { sessionName: 'Session 1' },
+      sections: [],
+    };
+    const preview = parseStructural(v1Yaml, DEFAULT_SECTIONS);
+    expect(preview.result.sections).toBeUndefined();
+    expect(preview.result.removedDefaultQuestionIds).toBeUndefined();
+  });
+
+  it('v2 YAML with no bank block: result.sections and removedDefaultQuestionIds are undefined', () => {
+    const v2Yaml = {
+      meta: { schemaVersion: 2, sessionName: 'Session 1' },
+      sections: [],
+    };
+    const preview = parseStructural(v2Yaml, DEFAULT_SECTIONS);
+    expect(preview.result.sections).toBeUndefined();
+    expect(preview.result.removedDefaultQuestionIds).toBeUndefined();
+  });
+
+  it('v2 YAML with removedQuestionIds: result.removedDefaultQuestionIds is populated', () => {
+    const v2Yaml = {
+      meta: { schemaVersion: 2, sessionName: 'Session 1' },
+      sections: [],
+      bank: {
+        removedQuestionIds: ['twig-q0', 'twig-q1'],
+      },
+    };
+    const preview = parseStructural(v2Yaml, DEFAULT_SECTIONS);
+    expect(preview.result.removedDefaultQuestionIds).toEqual(['twig-q0', 'twig-q1']);
+  });
+
+  it('v2 YAML with addedSections: result.sections includes default + added sections', () => {
+    const v2Yaml = {
+      meta: { schemaVersion: 2, sessionName: 'Session 1' },
+      sections: [],
+      bank: {
+        addedSections: [
+          {
+            id: 'custom-section-abc',
+            label: 'My Custom Section',
+            icon: '🔧',
+            isDefault: false,
+            topics: [],
+          },
+        ],
+      },
+    };
+    const preview = parseStructural(v2Yaml, DEFAULT_SECTIONS);
+    expect(preview.result.sections).toBeDefined();
+    // Should include default sections + the custom one
+    const sectionIds = preview.result.sections?.map((s) => s.id) ?? [];
+    expect(sectionIds).toContain('custom-section-abc');
+    // Default sections are also present
+    expect(sectionIds.length).toBeGreaterThan(1);
+  });
+
+  it('v2 YAML: addedSection with colliding default ID is skipped (T-14-04)', () => {
+    // 'frontend' is a real default section ID — should be skipped
+    const v2Yaml = {
+      meta: { schemaVersion: 2, sessionName: 'Session 1' },
+      sections: [],
+      bank: {
+        addedSections: [
+          {
+            id: 'frontend', // collides with default section
+            label: 'Attempted Override',
+            icon: '⚠',
+            isDefault: false,
+            topics: [],
+          },
+          {
+            id: 'custom-section-xyz',
+            label: 'Legitimate Custom',
+            icon: '🔧',
+            isDefault: false,
+            topics: [],
+          },
+        ],
+      },
+    };
+    const preview = parseStructural(v2Yaml, DEFAULT_SECTIONS);
+    const sectionIds = preview.result.sections?.map((s) => s.id) ?? [];
+    // Colliding ID 'frontend' must NOT appear as a user-added section (default already there)
+    const frontendSections = sectionIds.filter((id) => id === 'frontend');
+    expect(frontendSections).toHaveLength(1); // only the default one, not a duplicate
+    expect(sectionIds).toContain('custom-section-xyz');
+  });
+
+  it('YAML-05: custom question note is written to result.notes on import', () => {
+    const yamlWithCustomNote = {
+      meta: { schemaVersion: 2, sessionName: 'Test' },
+      sections: [
+        {
+          id: 'frontend',
+          topics: [
+            {
+              id: 'twig',
+              topicNote: '',
+              questions: [],
+              customQuestions: [
+                {
+                  id: 'custom-twig-1',
+                  text: 'What is Twig strict mode?',
+                  level: 'advanced',
+                  score: null,
+                  note: 'Great answer given about strict mode',
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    };
+    const preview = parseStructural(yamlWithCustomNote, DEFAULT_SECTIONS);
+    // The note should be in result.notes under the newly generated ID
+    const noteValues = Object.values(preview.result.notes);
+    expect(noteValues).toContain('Great answer given about strict mode');
+  });
+});

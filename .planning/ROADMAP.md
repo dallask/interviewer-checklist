@@ -61,7 +61,10 @@ Full archive: [milestones/v1.1-ROADMAP.md](milestones/v1.1-ROADMAP.md)
   3. User clicks the note icon on a QuestionCard whose textarea contains text and the textarea collapses
   4. Score dropdown options are readable in dark mode with sufficient contrast (no invisible text or washed-out border)
   5. All 675+ existing tests continue to pass after the fixes
-**Plans**: TBD
+**Plans**: 2 plans
+Plans:
+- [ ] 16-01-PLAN.md — BUG-03 note textarea className toggle + POL-01 score/difficulty select dark mode
+- [ ] 16-02-PLAN.md — BUG-01/BUG-02 ContentTree scroll-after-add (useEffect + scrollToIndex)
 **UI hint**: yes
 
 ### Phase 17: Difficulty Indicators

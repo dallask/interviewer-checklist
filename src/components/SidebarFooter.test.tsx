@@ -61,4 +61,34 @@ describe('SidebarFooter', () => {
       expect.any(Function),
     );
   });
+
+  it('renders "Developed by" credit text', () => {
+    const { container } = render(<SidebarFooter />);
+    expect(container.textContent).toMatch(/Developed by/);
+  });
+
+  it('renders Ievgen Kyvgyla link with href="https://kivgila.pro"', () => {
+    const { getByRole } = render(<SidebarFooter />);
+    const link = getByRole('link', { name: /Ievgen Kyvgyla/ });
+    expect(link).toBeInTheDocument();
+    expect(link).toHaveAttribute('href', 'https://kivgila.pro');
+  });
+
+  it('Ievgen Kyvgyla link has rel="noopener noreferrer"', () => {
+    const { getByRole } = render(<SidebarFooter />);
+    const link = getByRole('link', { name: /Ievgen Kyvgyla/ });
+    expect(link).toHaveAttribute('rel', 'noopener noreferrer');
+  });
+
+  it('renders About button', () => {
+    const { getByRole } = render(<SidebarFooter />);
+    const btn = getByRole('button', { name: 'About' });
+    expect(btn).toBeInTheDocument();
+  });
+
+  it('About button has data-about-trigger attribute', () => {
+    const { getByRole } = render(<SidebarFooter />);
+    const btn = getByRole('button', { name: 'About' });
+    expect(btn).toHaveAttribute('data-about-trigger');
+  });
 });

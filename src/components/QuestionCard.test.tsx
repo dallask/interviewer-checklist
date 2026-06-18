@@ -29,121 +29,148 @@ const mockCustomRow = {
   customId: 'custom-react-1234567890',
 };
 
+function makeState(overrides: Record<string, unknown> = {}) {
+  return {
+    scores: {},
+    notes: {},
+    setScore: vi.fn(),
+    setNote: vi.fn(),
+    deleteCustomQuestion: vi.fn(),
+    removeDefaultQuestion: vi.fn(),
+    printMode: false,
+    hideNotes: false,
+    ...overrides,
+  };
+}
+
 describe('QuestionCard', () => {
   const setScore = vi.fn();
   const setNote = vi.fn();
   const deleteCustomQuestion = vi.fn();
+  const removeDefaultQuestion = vi.fn();
 
   beforeEach(() => {
     vi.clearAllMocks();
     mockUseAppStore.mockImplementation((selector: (s: unknown) => unknown) =>
-      selector({
-        scores: {},
-        notes: {},
-        setScore,
-        setNote,
-        deleteCustomQuestion,
-      }),
+      selector(
+        makeState({
+          setScore,
+          setNote,
+          deleteCustomQuestion,
+          removeDefaultQuestion,
+        }),
+      ),
     );
   });
 
-  // Slider tests (SCORE-01)
-  it('renders a range input with aria-label set to the question text', () => {
+  // Score dropdown tests (SCORE-08)
+  it('renders a score select (combobox) with aria-label "{question} score"', () => {
     render(<QuestionCard row={mockRow} />);
-    const slider = screen.getByRole('slider', { name: 'What is JSX?' });
-    expect(slider).toBeInTheDocument();
-    expect(slider).toHaveAttribute('type', 'range');
+    const select = screen.getByRole('combobox', {
+      name: /What is JSX\? score/,
+    });
+    expect(select).toBeInTheDocument();
   });
 
-  it('range input has min=0, max=10, step=1', () => {
+  it('score select shows "Skip" as default selected option when score is null', () => {
     render(<QuestionCard row={mockRow} />);
-    const slider = screen.getByRole('slider', { name: 'What is JSX?' });
-    expect(slider).toHaveAttribute('min', '0');
-    expect(slider).toHaveAttribute('max', '10');
-    expect(slider).toHaveAttribute('step', '1');
+    const select = screen.getByRole('combobox', {
+      name: /What is JSX\? score/,
+    }) as HTMLSelectElement;
+    expect(select.value).toBe('skip');
   });
 
-  it('has aria-valuenow=0 when score is null (unscored)', () => {
-    render(<QuestionCard row={mockRow} />);
-    const slider = screen.getByRole('slider', { name: 'What is JSX?' });
-    expect(slider).toHaveAttribute('aria-valuenow', '0');
-  });
-
-  it('has aria-valuemin=0 and aria-valuemax=10', () => {
-    render(<QuestionCard row={mockRow} />);
-    const slider = screen.getByRole('slider', { name: 'What is JSX?' });
-    expect(slider).toHaveAttribute('aria-valuemin', '0');
-    expect(slider).toHaveAttribute('aria-valuemax', '10');
-  });
-
-  it('displays "— / 10" when score is null', () => {
-    render(<QuestionCard row={mockRow} />);
-    expect(screen.getByText('— / 10')).toBeInTheDocument();
-  });
-
-  it('displays "0 / 10" when score is 0', () => {
+  it('score select calls setScore with null when "Skip" is selected', () => {
     mockUseAppStore.mockImplementation((selector: (s: unknown) => unknown) =>
-      selector({
-        scores: { 'react-q0': 0 },
-        notes: {},
-        setScore,
-        setNote,
-        deleteCustomQuestion,
-      }),
+      selector(makeState({ scores: { 'react-q0': 5 }, setScore })),
     );
     render(<QuestionCard row={mockRow} />);
-    expect(screen.getByText('0 / 10')).toBeInTheDocument();
+    const select = screen.getByRole('combobox', { name: /What is JSX\? score/ });
+    fireEvent.change(select, { target: { value: 'skip' } });
+    expect(setScore).toHaveBeenCalledWith('react-q0', null);
   });
 
-  it('displays "8 / 10" when score is 8', () => {
-    mockUseAppStore.mockImplementation((selector: (s: unknown) => unknown) =>
-      selector({
-        scores: { 'react-q0': 8 },
-        notes: {},
-        setScore,
-        setNote,
-        deleteCustomQuestion,
-      }),
-    );
+  it('score select calls setScore with 7 when "7" is selected', () => {
     render(<QuestionCard row={mockRow} />);
-    expect(screen.getByText('8 / 10')).toBeInTheDocument();
-  });
-
-  it('calls setScore with questionId and numeric value on slider change', () => {
-    render(<QuestionCard row={mockRow} />);
-    const slider = screen.getByRole('slider', { name: 'What is JSX?' });
-    fireEvent.change(slider, { target: { value: '7' } });
+    const select = screen.getByRole('combobox', { name: /What is JSX\? score/ });
+    fireEvent.change(select, { target: { value: '7' } });
     expect(setScore).toHaveBeenCalledWith('react-q0', 7);
   });
 
-  it('constructs questionId as topicId-qIndex (V4 format)', () => {
-    const row = { ...mockRow, topicId: 'twig', index: 4 };
+  it('score select shows value "8" when score is 8 in store', () => {
     mockUseAppStore.mockImplementation((selector: (s: unknown) => unknown) =>
-      selector({
-        scores: { 'twig-q4': 5 },
-        notes: {},
-        setScore,
-        setNote,
-        deleteCustomQuestion,
-      }),
+      selector(makeState({ scores: { 'react-q0': 8 } })),
     );
+    render(<QuestionCard row={mockRow} />);
+    const select = screen.getByRole('combobox', {
+      name: /What is JSX\? score/,
+    }) as HTMLSelectElement;
+    expect(select.value).toBe('8');
+  });
+
+  it('score select has min-w-[52px] class', () => {
+    render(<QuestionCard row={mockRow} />);
+    const select = screen.getByRole('combobox', { name: /What is JSX\? score/ });
+    expect(select.className).toContain('min-w-[52px]');
+  });
+
+  it('constructs questionId as topicId-qIndex (V4 format) — select aria-label uses it', () => {
+    const row = {
+      ...mockRow,
+      topicId: 'twig',
+      index: 4,
+      question: { q: 'What is Twig?', level: 'intermediate' as const },
+    };
     render(<QuestionCard row={row} />);
-    expect(screen.getByText('5 / 10')).toBeInTheDocument();
+    const select = screen.getByRole('combobox', { name: /What is Twig\? score/ });
+    expect(select).toBeInTheDocument();
   });
 
-  // Notes tests (SCORE-03)
-  it('renders a notes toggle button with aria-expanded=false by default', () => {
+  // Note icon button tests
+  it('renders note icon button with aria-label "Toggle note for {question}"', () => {
     render(<QuestionCard row={mockRow} />);
-    const toggleBtn = screen.getByRole('button', { name: /add notes/i });
-    expect(toggleBtn).toHaveAttribute('aria-expanded', 'false');
+    const btn = screen.getByRole('button', {
+      name: /Toggle note for What is JSX\?/,
+    });
+    expect(btn).toBeInTheDocument();
   });
 
-  it('notes toggle button has aria-controls pointing to notes textarea id', () => {
+  it('note icon button has aria-expanded=false by default', () => {
     render(<QuestionCard row={mockRow} />);
-    const toggleBtn = screen.getByRole('button', { name: /add notes/i });
-    expect(toggleBtn).toHaveAttribute('aria-controls', 'notes-react-q0');
+    const btn = screen.getByRole('button', {
+      name: /Toggle note for What is JSX\?/,
+    });
+    expect(btn).toHaveAttribute('aria-expanded', 'false');
   });
 
+  it('note icon button has aria-controls="notes-react-q0"', () => {
+    render(<QuestionCard row={mockRow} />);
+    const btn = screen.getByRole('button', {
+      name: /Toggle note for What is JSX\?/,
+    });
+    expect(btn).toHaveAttribute('aria-controls', 'notes-react-q0');
+  });
+
+  it('note icon button aria-expanded=true after click', () => {
+    render(<QuestionCard row={mockRow} />);
+    const btn = screen.getByRole('button', {
+      name: /Toggle note for What is JSX\?/,
+    });
+    fireEvent.click(btn);
+    expect(btn).toHaveAttribute('aria-expanded', 'true');
+  });
+
+  it('clicking note icon button shows the textarea', () => {
+    render(<QuestionCard row={mockRow} />);
+    const btn = screen.getByRole('button', {
+      name: /Toggle note for What is JSX\?/,
+    });
+    fireEvent.click(btn);
+    const textarea = screen.getByLabelText('Notes for What is JSX?');
+    expect(textarea).not.toHaveAttribute('hidden');
+  });
+
+  // Notes textarea tests
   it('notes textarea has aria-label "Notes for {question.q}"', () => {
     render(<QuestionCard row={mockRow} />);
     const textarea = screen.getByLabelText('Notes for What is JSX?');
@@ -162,27 +189,10 @@ describe('QuestionCard', () => {
     expect(textarea.className).toContain('resize-y');
   });
 
-  it('notes textarea has min-h-[80px] class', () => {
+  it('notes textarea has min-h-[64px] class', () => {
     render(<QuestionCard row={mockRow} />);
     const textarea = screen.getByLabelText('Notes for What is JSX?');
-    expect(textarea.className).toContain('min-h-[80px]');
-  });
-
-  it('notes toggle changes label to "Hide notes" when clicked', () => {
-    render(<QuestionCard row={mockRow} />);
-    const toggleBtn = screen.getByRole('button', { name: /add notes/i });
-    fireEvent.click(toggleBtn);
-    expect(
-      screen.getByRole('button', { name: /hide notes/i }),
-    ).toBeInTheDocument();
-  });
-
-  it('notes toggle button has aria-expanded=true after click', () => {
-    render(<QuestionCard row={mockRow} />);
-    const toggleBtn = screen.getByRole('button', { name: /add notes/i });
-    fireEvent.click(toggleBtn);
-    const expandedBtn = screen.getByRole('button', { name: /hide notes/i });
-    expect(expandedBtn).toHaveAttribute('aria-expanded', 'true');
+    expect(textarea.className).toContain('min-h-[64px]');
   });
 
   // Custom badge and delete button (SCORE-05)

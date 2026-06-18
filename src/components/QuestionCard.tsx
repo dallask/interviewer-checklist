@@ -80,6 +80,13 @@ export function QuestionCard({ row }: Props) {
           {question.q}
         </span>
 
+        {/* Custom badge — shown only for custom questions */}
+        {row.isCustom === true && (
+          <span className="text-xs font-normal px-1.5 py-0.5 rounded bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400 shrink-0">
+            custom
+          </span>
+        )}
+
         {/* Note icon button (right) */}
         <button
           type="button"
@@ -120,8 +127,9 @@ export function QuestionCard({ row }: Props) {
       </div>
 
       {/* Notes section — hideNotes=true hides this wrapper; printMode overrides (D-08) */}
-      <div id={`notes-${questionId}`} className={hideNotes && !printMode ? 'hidden' : ''}>
+      <div className={hideNotes && !printMode ? 'hidden' : ''}>
         <textarea
+          id={`notes-${questionId}`}
           aria-label={`Notes for ${question.q}`}
           value={localNote}
           onChange={(e) => handleNoteChange(e.target.value)}

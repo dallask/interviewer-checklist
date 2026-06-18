@@ -7,6 +7,21 @@ vi.mock('../store/app.js', () => ({
   useAppStore: vi.fn(),
 }));
 
+vi.mock('../scoring/index.js', () => ({
+  computeOverallMark: vi.fn(() => ({
+    mark: null,
+    band: 'none',
+    scoredTopics: 0,
+    totalTopics: 0,
+  })),
+  computeTopicMark: vi.fn(() => ({
+    mark: null,
+    band: 'none',
+    scoredCount: 0,
+    totalCount: 0,
+  })),
+}));
+
 import { useAppStore } from '../store/app.js';
 
 const mockUseAppStore = useAppStore as unknown as ReturnType<typeof vi.fn>;
@@ -101,5 +116,19 @@ describe('Sidebar', () => {
     // (added in Phase 12 UI-11), so we query specifically for the backdrop pattern.
     const backdrop = document.querySelector('div.fixed.inset-0[aria-hidden="true"]');
     expect(backdrop).not.toBeInTheDocument();
+  });
+
+  it('renders SidebarHeader inside aside', () => {
+    render(<Sidebar />);
+    // SidebarHeader renders the Close sidebar toggle button
+    const toggleBtn = screen.getByRole('button', { name: 'Close sidebar' });
+    expect(toggleBtn).toBeInTheDocument();
+  });
+
+  it('inner scrollable div has overflow-y-auto class', () => {
+    render(<Sidebar />);
+    const aside = screen.getByRole('complementary');
+    const scrollDiv = aside.querySelector('.overflow-y-auto');
+    expect(scrollDiv).not.toBeNull();
   });
 });

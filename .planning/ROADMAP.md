@@ -117,7 +117,25 @@ Full archive: [milestones/v1.0-ROADMAP.md](milestones/v1.0-ROADMAP.md)
   3. Exporting a session produces YAML whose default-question entries include `text` and `level` alongside `index`, `score`, and `note`, and whose custom-question entries preserve the user-entered notes
   4. Exporting and re-importing a session that has added/removed sections, added/removed topics, and deleted default questions reconstructs the same editable-bank shape with no loss
 
-**Plans**: TBD
+**Plans**: 5 plans
+
+**Wave 1**
+
+- [ ] 14-01-PLAN.md — V4SessionSchema + removedDefaultQuestionIds + 5 store actions + subscribe/hydration wiring + App.tsx sections-from-store
+
+**Wave 2** *(blocked on 14-01, plans run in parallel)*
+
+- [ ] 14-02-PLAN.md — buildFlatRows: V4Section input, new VirtualRow types, removedDefaultQuestionIds filter, add-topic-trigger / add-section-trigger row emission
+- [ ] 14-03-PLAN.md — YAML v2: exportSession signature change (V4Session), text+level fields, bank block; importSession bank delta extraction; YAML-05 note fix
+
+**Wave 3** *(blocked on 14-02 + 14-03)*
+
+- [ ] 14-04-PLAN.md — UI: AddSectionForm, AddTopicForm, SectionRow/TopicRow delete buttons, QuestionCard BANK-05 extension, ContentTree ESTIMATE_SIZE + dispatch
+
+**Wave 4** *(blocked on all prior waves)*
+
+- [ ] 14-05-PLAN.md — Tests: store actions (BANK-01..05), buildFlatRows filter + new rows, yamlExport v2 (YAML-04/06), yamlImport note round-trip + bank delta (YAML-05/06)
+
 **UI hint**: yes
 
 ### Phase 15: Sidebar Shell Refactor & Compact QuestionCard
@@ -154,5 +172,5 @@ Full archive: [milestones/v1.0-ROADMAP.md](milestones/v1.0-ROADMAP.md)
 | 11. V4 Session Migration & Legacy Compat | v1.1 | 3/3 | Complete    | 2026-06-18 |
 | 12. UAT Defect Cleanup | v1.1 | 4/4 | Complete   | 2026-06-18 |
 | 13. Filter Overhaul | v1.1 | 1/1 | Complete   | 2026-06-18 |
-| 14. Editable Bank & YAML Schema Expansion | v1.1 | 0/0 | Not started | — |
+| 14. Editable Bank & YAML Schema Expansion | v1.1 | 0/5 | Not started | — |
 | 15. Sidebar Shell Refactor & Compact QuestionCard | v1.1 | 0/0 | Not started | — |

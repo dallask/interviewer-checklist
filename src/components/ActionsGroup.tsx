@@ -18,7 +18,6 @@ import {
   type ImportPreview,
 } from '../utils/yamlImport.js';
 import { AiPromptModal } from './AiPromptModal.js';
-import { CandidateModal } from './CandidateModal.js';
 import { ImportPreviewModal } from './ImportPreviewModal.js';
 import { ResetConfirmDialog } from './ResetConfirmDialog.js';
 import { SessionSwitcherModal } from './SessionSwitcherModal.js';
@@ -43,7 +42,6 @@ export function ActionsGroup() {
   const sections = useAppStore((s) => s.sections);
   const removedDefaultQuestionIds = useAppStore((s) => s.removedDefaultQuestionIds);
 
-  const candidateDialogRef = useRef<HTMLDialogElement>(null);
   const resetDialogRef = useRef<HTMLDialogElement>(null);
   const sessionSwitcherRef = useRef<HTMLDialogElement>(null);
   const aiPromptRef = useRef<HTMLDialogElement>(null);
@@ -218,16 +216,6 @@ export function ActionsGroup() {
       >
         {darkMode ? '☀' : '🌙'}
       </button>
-      <button
-        type="button"
-        id="open-candidate-modal"
-        title="Candidate details"
-        aria-label="Candidate details"
-        onClick={() => candidateDialogRef.current?.showModal()}
-        className="p-2 min-h-[44px] min-w-[44px] text-sm text-gray-900 dark:text-gray-100 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none"
-      >
-        👤
-      </button>
       <input
         ref={importFileInputRef}
         type="file"
@@ -277,7 +265,6 @@ export function ActionsGroup() {
         🗑
       </button>
       <SessionSwitcherModal dialogRef={sessionSwitcherRef} />
-      <CandidateModal dialogRef={candidateDialogRef} />
       <ResetConfirmDialog dialogRef={resetDialogRef} />
       <AiPromptModal
         dialogRef={aiPromptRef}

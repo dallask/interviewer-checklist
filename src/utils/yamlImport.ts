@@ -497,14 +497,19 @@ export function parseStructural(
           result.customQuestions.push(newCq);
           addedCount++;
 
-          // Store the custom question's score under the new ID
+          // CR-05: store score/note under the positional key QuestionCard uses:
+          // `${topicId}-q${defaultQCount + cqIndex}`. Using newId would make
+          // scores unreadable after import because QuestionCard never writes
+          // or reads under the newId key space.
+          const defaultQCount = topicQuestionCount.get(topicId) ?? 0;
+          const positionalKey = `${topicId}-q${defaultQCount + cqIndex}`;
           if (typeof cq.score === 'number') {
-            result.scores[newId] = cq.score;
+            result.scores[positionalKey] = cq.score;
             modifiedCount++;
           }
           // YAML-05: custom question note preserved on import
           if (typeof cq.note === 'string' && cq.note !== '') {
-            result.notes[newId] = cq.note;
+            result.notes[positionalKey] = cq.note;
           }
         });
       }

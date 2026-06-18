@@ -11,8 +11,10 @@ export function SearchGroup() {
   const sectionOpen = useAppStore((s) => s.sectionOpen);
   // Phase 14: use store sections (V4Section[]) instead of DEFAULT_SECTIONS (Plan 01 pattern)
   const sections = useAppStore((s) => s.sections);
-  // WR-02: include removedDefaultQuestionIds so resultCount matches rendered rows
   const removedDefaultQuestionIds = useAppStore((s) => s.removedDefaultQuestionIds);
+  const hideMarked = useAppStore((s) => s.hideMarked);
+  const scores = useAppStore((s) => s.scores);
+  const customQuestions = useAppStore((s) => s.customQuestions);
   const [localValue, setLocalValue] = useState('');
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -31,16 +33,38 @@ export function SearchGroup() {
     setSearchQuery('');
   };
 
-  // Total question count across all sections — unfiltered baseline for the counter display.
-  // Computed from store sections (V4Section[]) to include user-added sections.
+  // WR-01: exclude removed default questions from the total so the baseline
+  // count matches the accessible question pool shown in ContentTree.
   const totalQuestions = useMemo(
     () =>
       sections.reduce(
-        (acc, s) => acc + s.topics.reduce((a, t) => a + t.questions.length, 0),
+        (acc, s) =>
+          acc +
+          s.topics.reduce(
+            (a, t) =>
+              a + t.questions.filter((q) => !removedDefaultQuestionIds.has(q.id)).length,
+            0,
+          ),
         0,
       ),
-    [sections],
+    [sections, removedDefaultQuestionIds],
   );
+
+  // WR-02: derive markedTopicIds so resultCount stays in sync with hideMarked.
+  const markedTopicIds = useMemo(() => {
+    const marked = new Set<string>();
+    for (const section of sections) {
+      for (const topic of section.topics) {
+        const hasScore = topic.questions.some((q, i) => {
+          if (removedDefaultQuestionIds.has(q.id)) return false;
+          const key = `${topic.id}-q${i}`;
+          return scores[key] !== null && scores[key] !== undefined;
+        });
+        if (hasScore) marked.add(topic.id);
+      }
+    }
+    return marked;
+  }, [scores, sections, removedDefaultQuestionIds]);
 
   const resultCount = useMemo(
     () =>
@@ -48,7 +72,10 @@ export function SearchGroup() {
         searchQuery,
         selectedDifficulties,
         selectedSections,
-        removedDefaultQuestionIds, // WR-02: exclude removed questions from count
+        hideMarked,
+        markedTopicIds,
+        customQuestions,
+        removedDefaultQuestionIds,
       }).filter((r) => r.type === 'question').length,
     [
       sections,
@@ -57,6 +84,9 @@ export function SearchGroup() {
       selectedSections,
       topicOpen,
       sectionOpen,
+      hideMarked,
+      markedTopicIds,
+      customQuestions,
       removedDefaultQuestionIds,
     ],
   );

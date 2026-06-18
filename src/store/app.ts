@@ -639,6 +639,26 @@ export const useAppStore = create<AppState & AppActions>()((set) => ({
   },
 }));
 
+// ---------------------------------------------------------------------------
+// PersistedUIState: compile-time contract for what is written to storage.
+// Excludes transient-only fields so TypeScript will error if a developer
+// accidentally adds hideNotes, printMode, or session-domain fields to the
+// subscribe write block or reads them back in main.tsx. The `satisfies`
+// operator on the uiState object literal below enforces this at the write
+// site; Partial<PersistedUIState> at the read site (main.tsx) does the same.
+// ---------------------------------------------------------------------------
+export type PersistedUIState = {
+  sidebarOpen: boolean;
+  sectionOpen: Record<string, boolean>;
+  groupOpen: Record<string, boolean>;
+  topicOpen: Record<string, boolean>;
+  searchQuery: string;
+  selectedDifficulties: Difficulty[];
+  selectedSections: string[];
+  hideMarked: boolean;
+  darkMode: boolean;
+};
+
 // Module-level subscribe: fires after every mutation.
 // Serializes Sets → Arrays before write (T-04-01-02 mitigation: JSON cannot serialize Set).
 // Per RESEARCH.md Anti-Patterns: subscribe belongs at module level, not inside components.
@@ -655,10 +675,9 @@ useAppStore.subscribe((state) => {
       hideMarked: state.hideMarked,
       darkMode: state.darkMode,
       // hideNotes intentionally excluded: it is UI-only and must not be persisted.
-      // Adding it here would cause stale values from storage to clobber the
-      // in-memory default on next load (via the spread in main.tsx).
-      // See AppState interface comment on hideNotes.
-    },
+      // PersistedUIState (above) makes this exclusion a compile-time guarantee —
+      // adding hideNotes here will produce a TypeScript excess-property error.
+    } satisfies PersistedUIState,
   });
 
   // Phase 6: persist manifest when it is set (Pitfall 6 guard — manifest not written after session ops)

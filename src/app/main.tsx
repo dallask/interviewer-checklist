@@ -5,7 +5,7 @@ import { bootstrap } from '../storage/bootstrap.js';
 import { storageAdapter } from '../storage/index.js';
 import { registerLifecycleListeners } from '../storage/lifecycle.js';
 import type { V4Session } from '../storage/types.js';
-import type { AppState } from '../store/app.js';
+import type { PersistedUIState } from '../store/app.js';
 import { useAppStore } from '../store/app.js';
 import { App } from './App.tsx';
 
@@ -22,7 +22,7 @@ registerLifecycleListeners();
 // Phase 5: read uiState directly from storage to ensure it reflects the latest
 // persisted state (not just the bootstrap return, which focuses on sessions).
 const uiStateRaw = await storageAdapter.read(['uiState']);
-const uiState = (uiStateRaw.uiState as Partial<AppState> | undefined) ?? {};
+const uiState = (uiStateRaw.uiState as Partial<PersistedUIState> | undefined) ?? {};
 
 // Read activeSessionId from the manifest so the store knows which session is loaded.
 // CR-04: use optional chaining — manifest may be null on first-launch or migration failure.

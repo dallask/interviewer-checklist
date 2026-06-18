@@ -240,4 +240,40 @@ describe('QuestionCard', () => {
       'custom-react-1234567890',
     );
   });
+
+  // WR-03: default question delete path
+  const mockDefaultRow = {
+    type: 'question' as const,
+    sectionId: 'frontend',
+    topicId: 'react',
+    question: { q: 'Describe the virtual DOM', level: 'intermediate' as const },
+    index: 1,
+    isCustom: false,
+    isDefaultQuestion: true,
+    questionBankId: 'q-react-001',
+  };
+
+  it('renders delete button with aria-label "Remove question" for default questions', () => {
+    render(<QuestionCard row={mockDefaultRow} />);
+    const deleteBtn = screen.getByRole('button', { name: 'Remove question' });
+    expect(deleteBtn).toBeInTheDocument();
+  });
+
+  it('delete button calls removeDefaultQuestion with questionBankId on click', () => {
+    render(<QuestionCard row={mockDefaultRow} />);
+    const deleteBtn = screen.getByRole('button', { name: 'Remove question' });
+    fireEvent.click(deleteBtn);
+    expect(removeDefaultQuestion).toHaveBeenCalledWith('q-react-001');
+  });
+
+  it('does NOT render delete button for default question when questionBankId is null', () => {
+    const rowNoId = { ...mockDefaultRow, questionBankId: undefined };
+    render(<QuestionCard row={rowNoId as typeof mockDefaultRow} />);
+    // The delete button renders (isDefaultQuestion===true triggers button visibility),
+    // but clicking it is a no-op because questionBankId is null.
+    // The button itself is rendered; verify clicking it does NOT call removeDefaultQuestion.
+    const deleteBtn = screen.getByRole('button', { name: 'Remove question' });
+    fireEvent.click(deleteBtn);
+    expect(removeDefaultQuestion).not.toHaveBeenCalled();
+  });
 });

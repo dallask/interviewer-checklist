@@ -352,6 +352,70 @@ describe('UI-09: QuestionCard note suppression (D-08)', () => {
   });
 });
 
+// ─── UI-11: SidebarGroup icon prop ───────────────────────────────────────────
+
+import { SidebarGroup } from '../components/SidebarGroup.js';
+
+describe('UI-11: SidebarGroup icon prop', () => {
+  afterEach(() => {
+    cleanup();
+  });
+
+  it('renders an aria-hidden icon span before the label when icon prop is provided', () => {
+    render(
+      <SidebarGroup
+        groupId="test"
+        label="Test"
+        icon="🔍"
+        isOpen={false}
+        onToggle={() => {}}
+      >
+        <div />
+      </SidebarGroup>,
+    );
+
+    // The icon span must be present with aria-hidden="true"
+    const iconSpan = document.querySelector('[aria-hidden="true"]');
+    expect(iconSpan).not.toBeNull();
+    expect(iconSpan!.textContent).toBe('🔍');
+  });
+
+  it('does NOT render an icon span when icon prop is omitted', () => {
+    render(
+      <SidebarGroup
+        groupId="test"
+        label="Test"
+        isOpen={false}
+        onToggle={() => {}}
+      >
+        <div />
+      </SidebarGroup>,
+    );
+
+    // No icon span with aria-hidden when no icon prop
+    const iconSpan = document.querySelector('[aria-hidden="true"]');
+    expect(iconSpan).toBeNull();
+  });
+
+  it('icon span has aria-hidden="true" so screen readers skip it', () => {
+    render(
+      <SidebarGroup
+        groupId="test"
+        label="Search"
+        icon="🔍"
+        isOpen={false}
+        onToggle={() => {}}
+      >
+        <div />
+      </SidebarGroup>,
+    );
+
+    const iconSpan = document.querySelector('[aria-hidden="true"]');
+    expect(iconSpan).not.toBeNull();
+    expect(iconSpan!.getAttribute('aria-hidden')).toBe('true');
+  });
+});
+
 // ─── UI-09: TopicRow note panel suppression ────────────────────────────────────
 
 describe('UI-09: TopicRow notes panel suppression (D-08)', () => {

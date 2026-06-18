@@ -198,6 +198,19 @@ Plans:
 
 **Plans**: TBD
 
+### Phase 7.1: Close gap — YAML wiring + demo seed fix
+
+**Goal**: Wire YAML import/export into the UI (Phase 7 produced utilities + modal + store action but no triggers) and fix the broken demo seed in background/index.ts (uses non-existent topic IDs)
+**Depends on**: Phase 7, Phase 9
+**Requirements**: YAML-01, YAML-02, YAML-03, POLISH-01
+**Success Criteria** (what must be TRUE):
+
+  1. ActionsGroup.tsx renders an Export button that calls exportSession + downloadYaml, producing a valid YAML download
+  2. ActionsGroup.tsx renders an Import button with id="open-import-yaml" that opens a file picker, parses the YAML, shows ImportPreviewModal, and applies via useAppStore.importSession on confirm
+  3. background/index.ts demo seed uses real topic IDs from DEFAULT_SECTIONS (e.g. js-0, js-1) so the welcome demo session displays scored questions correctly
+
+**Plans**: TBD
+
 ### Phase 8: AI Prompt Modal
 
 **Goal**: Users can generate an editable AI feedback prompt for the active session and copy it to the clipboard in one click

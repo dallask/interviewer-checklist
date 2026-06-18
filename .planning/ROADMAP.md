@@ -266,7 +266,7 @@ Plans:
 Plans:
 **Wave 1**
 
-- [ ] 10-01-PLAN.md — Generate CWS submission artifacts: PRIVACY.md + docs/cws-submission.md + cws-assets/CWS-SCREENSHOTS.md + cws-assets/CWS-SMOKE-TEST.md + .gitignore update (CWS-01, CWS-02, CWS-03, CWS-04)
+- [x] 10-01-PLAN.md — Generate CWS submission artifacts: PRIVACY.md + docs/cws-submission.md + cws-assets/CWS-SCREENSHOTS.md + cws-assets/CWS-SMOKE-TEST.md + .gitignore update (CWS-01, CWS-02, CWS-03, CWS-04)
 
 **Wave 2** *(blocked on Wave 1 completion)*
 
@@ -292,4 +292,4 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 →
 | 7. YAML Import & Export | 2/2 | Complete    | 2026-06-17 |
 | 8. AI Prompt Modal | 2/2 | Complete    | 2026-06-17 |
 | 9. Polish — Print, Keyboard, A11y, Welcome & Updates | 3/3 | Complete    | 2026-06-18 |
-| 10. Chrome Web Store Submission | 0/3 | Not started | - |
+| 10. Chrome Web Store Submission | 1/3 | In Progress|  |

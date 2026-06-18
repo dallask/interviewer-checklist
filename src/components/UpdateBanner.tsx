@@ -81,7 +81,11 @@ export function UpdateBanner() {
 
   function handleDismiss() {
     const version = versionRef.current;
-    chrome.storage.local.set({ dismissedUpdateVersion: version });
+    chrome.storage.local
+      .set({ dismissedUpdateVersion: version })
+      .catch((err) =>
+        console.error('[interviewer-checklist] dismiss banner failed:', err),
+      );
     setShowBanner(false);
   }
 

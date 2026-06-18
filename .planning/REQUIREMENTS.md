@@ -13,7 +13,7 @@
 ### Scoring UI
 
 - [x] **SCORE-07**: Manual topic-override control does not toggle the parent topic's expanded/collapsed state when opened or changed (fix for D1, test 5)
-- [ ] **SCORE-08**: Question card renders compactly — score control is a dropdown on the left (0–10 + skip), a note icon button on the right toggles a note textarea below the question, and the card collapses to a single line by default (E1; locked to screenshot spec Images #1–#3)
+- [x] **SCORE-08**: Question card renders compactly — score control is a dropdown on the left (0–10 + skip), a note icon button on the right toggles a note textarea below the question, and the card collapses to a single line by default (E1; locked to screenshot spec Images #1–#3)
 
 ### Sessions
 
@@ -77,7 +77,7 @@ Deferred. Not in v1.1 roadmap.
 | Requirement | Phase | Status |
 |-------------|-------|--------|
 | SCORE-07 | Phase 12 | Complete |
-| SCORE-08 | Phase 15 | Pending |
+| SCORE-08 | Phase 15 | Complete |
 | SESS-05 | Phase 12 | Complete |
 | UI-09 | Phase 12 | Complete |
 | UI-10 | Phase 12 | Complete |

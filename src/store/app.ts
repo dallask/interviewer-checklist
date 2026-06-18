@@ -597,7 +597,9 @@ export const useAppStore = create<AppState & AppActions>()((set) => ({
     );
 
     if (overwriteActive) {
-      // Apply scores/notes/candidate directly to the active session
+      // Apply scores/notes/candidate directly to the active session.
+      // Reset filters so the imported data is fully visible — stale filters
+      // (e.g. 'advanced' selected) would silently hide imported questions.
       set({
         scores: clampedScores,
         overrides: clampedOverrides,
@@ -605,6 +607,10 @@ export const useAppStore = create<AppState & AppActions>()((set) => ({
         topicNotes: data.topicNotes,
         customQuestions: data.customQuestions,
         candidate: data.candidate,
+        selectedDifficulties: new Set(),
+        selectedSections: new Set(),
+        searchQuery: '',
+        hideMarked: false,
       });
     } else {
       // Create a new session and rename it to data.sessionName if provided
@@ -613,7 +619,10 @@ export const useAppStore = create<AppState & AppActions>()((set) => ({
       if (data.sessionName) {
         await useAppStore.getState().renameSession(newId, data.sessionName);
       }
-      // Apply import data to the new session
+      // Apply import data to the new session.
+      // Reset filters here too — createSession calls switchSession which now
+      // clears filters, but the explicit reset ensures correctness regardless
+      // of future changes to switchSession behaviour.
       set({
         scores: clampedScores,
         overrides: clampedOverrides,
@@ -621,6 +630,10 @@ export const useAppStore = create<AppState & AppActions>()((set) => ({
         topicNotes: data.topicNotes,
         customQuestions: data.customQuestions,
         candidate: data.candidate,
+        selectedDifficulties: new Set(),
+        selectedSections: new Set(),
+        searchQuery: '',
+        hideMarked: false,
       });
     }
   },

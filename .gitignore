@@ -24,3 +24,7 @@ Thumbs.db
 *.pem
 key.pem
 coverage/
+
+# Chrome Web Store submission assets
+cws-assets/screenshots/*
+!cws-assets/screenshots/.gitkeep

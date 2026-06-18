@@ -29,9 +29,22 @@ export function useKeyboardShortcuts(): void {
       }
 
       // Guard 1: suppress all shortcuts when focus is in an editable element.
+      // WR-03 exception: let `Escape` through when focus is in the sidebar
+      // search input itself, because the documented contract is "Esc clears
+      // the search query" and the most natural place to invoke that is from
+      // the search input. Other editable elements (TEXTAREA, contenteditable,
+      // unrelated INPUTs) still suppress Escape so we don't clobber
+      // user-entered notes/values.
       const el = document.activeElement as HTMLElement | null;
       const tag = el?.tagName ?? '';
-      if (tag === 'INPUT' || tag === 'TEXTAREA' || el?.isContentEditable) {
+      const isSearchInput =
+        tag === 'INPUT' &&
+        el?.getAttribute('aria-label') === 'Search questions';
+      const escapeFromSearch = e.key === 'Escape' && isSearchInput;
+      if (
+        !escapeFromSearch &&
+        (tag === 'INPUT' || tag === 'TEXTAREA' || el?.isContentEditable)
+      ) {
         return;
       }
 

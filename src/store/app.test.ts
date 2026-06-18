@@ -358,8 +358,9 @@ describe('session store actions', () => {
   });
 
   const makeSession = (id: string) => ({
-    version: 3 as const,
+    version: 4 as const,
     id,
+    sections: [],
     scores: { [`q-${id}`]: 5 },
     overrides: {},
     notes: {},

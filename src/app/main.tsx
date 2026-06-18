@@ -4,7 +4,7 @@ import type { Difficulty } from '../data/bank/index.js';
 import { bootstrap } from '../storage/bootstrap.js';
 import { storageAdapter } from '../storage/index.js';
 import { registerLifecycleListeners } from '../storage/lifecycle.js';
-import type { V3Session } from '../storage/types.js';
+import type { V4Session } from '../storage/types.js';
 import type { AppState } from '../store/app.js';
 import { useAppStore } from '../store/app.js';
 import { App } from './App.tsx';
@@ -42,14 +42,21 @@ useAppStore.setState({
 // Hydrate manifest into store — Phase 6 (SESS-01: reactive session list)
 useAppStore.setState({ manifest: initialState.manifest });
 
+// Phase 11: hydrate failed migration info for MigrationErrorBanner
+useAppStore.setState({
+  migrationFailedCount: initialState.failedSessionIds.length,
+  migrationFailedIds: initialState.failedSessionIds,
+});
+
 // Hydrate scoring state from the active session — Phase 5 (notes/scores/customQuestions persist)
 if (activeSessionId) {
   const sessionRaw = await storageAdapter.read([`session:${activeSessionId}`]);
   const session = sessionRaw[`session:${activeSessionId}`] as
-    | V3Session
+    | V4Session
     | undefined;
   if (session) {
     useAppStore.setState({
+      sections: session.sections ?? [],
       scores: session.scores ?? {},
       overrides: session.overrides ?? {},
       notes: session.notes ?? {},

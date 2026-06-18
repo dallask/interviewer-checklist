@@ -1,0 +1,100 @@
+import { useEffect, type RefObject } from 'react';
+
+interface AboutModalProps {
+  dialogRef: RefObject<HTMLDialogElement | null>;
+}
+
+export function AboutModal({ dialogRef }: AboutModalProps) {
+  const { version } = chrome.runtime.getManifest();
+
+  // Focus trap: query focusable elements inside handler each time (for dynamic state safety)
+  useEffect(() => {
+    const maybeDialog = dialogRef.current;
+    if (!maybeDialog) return;
+    // Assign to const with non-null type so TypeScript preserves narrowing in closures
+    const dialogEl: HTMLDialogElement = maybeDialog;
+
+    function handleKeyDown(e: KeyboardEvent) {
+      if (e.key !== 'Tab') return;
+      const focusable = dialogEl.querySelectorAll<HTMLElement>(
+        'button, input, textarea, select, [tabindex]:not([tabindex="-1"])',
+      );
+      // WR-02: guard against empty focusable list to prevent TypeError on .focus()
+      if (focusable.length === 0) return;
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      if (e.shiftKey && document.activeElement === first) {
+        e.preventDefault();
+        last.focus();
+      } else if (!e.shiftKey && document.activeElement === last) {
+        e.preventDefault();
+        first.focus();
+      }
+    }
+
+    function handleClose() {
+      (document.querySelector('[data-about-trigger]') as HTMLElement | null)?.focus();
+    }
+
+    dialogEl.addEventListener('keydown', handleKeyDown);
+    dialogEl.addEventListener('close', handleClose);
+    return () => {
+      dialogEl.removeEventListener('keydown', handleKeyDown);
+      dialogEl.removeEventListener('close', handleClose);
+    };
+  }, [dialogRef]);
+
+  function handleBackdropClick(e: React.MouseEvent<HTMLDialogElement>) {
+    if (e.target === dialogRef.current) dialogRef.current?.close();
+  }
+
+  return (
+    // T-05-03-04: Never pass open prop — always call .showModal() imperatively
+    <dialog
+      ref={dialogRef}
+      aria-labelledby="about-modal-title"
+      className="fixed inset-0 m-auto w-full max-w-lg bg-white dark:bg-gray-900 rounded-lg shadow-xl border border-gray-200 dark:border-gray-700 p-6"
+      onClick={handleBackdropClick}
+    >
+      <h2
+        id="about-modal-title"
+        className="text-base font-semibold text-gray-900 dark:text-gray-100 mb-4"
+      >
+        Interviewer Checklist
+      </h2>
+
+      <p className="text-sm font-normal text-gray-500 dark:text-gray-400 mb-2">
+        Version {version}
+      </p>
+
+      <p className="text-sm font-normal text-gray-700 dark:text-gray-300 mb-4">
+        A browser-based weighted scoring session for technical interviews.
+      </p>
+
+      <div className="mb-4">
+        <p className="text-sm font-normal text-gray-700 dark:text-gray-300">
+          Developed by{' '}
+          <a
+            href="https://kivgila.pro"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-blue-600 dark:text-blue-400 underline hover:text-blue-800 dark:hover:text-blue-300 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none"
+          >
+            Ievgen Kyvgyla
+          </a>
+        </p>
+      </div>
+
+      <div className="flex justify-end">
+        <button
+          type="button"
+          aria-label="Close about modal"
+          onClick={() => dialogRef.current?.close()}
+          className="text-sm font-normal px-4 py-2 text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none"
+        >
+          Close
+        </button>
+      </div>
+    </dialog>
+  );
+}

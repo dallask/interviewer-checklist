@@ -609,22 +609,25 @@ These three prerequisites are required before writing any Phase 14 component:
 
 ---
 
-## Open Questions
+## Open Questions (RESOLVED)
 
 1. **Should `resetAll` clear `removedDefaultQuestionIds`?**
    - What we know: `resetAll` clears scoring data but not session identity. The bank shape (which questions exist) is arguably separate from scoring state.
    - What's unclear: Whether users expect a "Reset session" to also restore deleted questions.
    - Recommendation: Do NOT clear `removedDefaultQuestionIds` in `resetAll`. Bank shape and scoring are separate concerns. Document in code comment.
+   - RESOLVED: Do NOT clear `removedDefaultQuestionIds` in `resetAll`. Bank shape ≠ scoring state.
 
 2. **`importSession` + bank delta: should it apply to new or overwrite-active sessions?**
    - What we know: Both `overwriteActive=true` and `overwriteActive=false` branches exist. YAML-06 requires the bank delta to apply in both cases.
    - What's unclear: When importing into a new session (`overwriteActive=false`), should the new session start from DEFAULT_SECTIONS and apply the delta, or use the full `addedSections` list directly?
    - Recommendation: For `overwriteActive=false`: set `sections = materializeSections(DEFAULT_SECTIONS)`, then apply bank delta (remove IDs from set, append addedSections). For `overwriteActive=true`: same. This preserves the materialization-first approach from Phase 11.
+   - RESOLVED: Apply bank delta in BOTH branches. For both overwrite-active and new-session: use addedSections from YAML directly + set removedDefaultQuestionIds from YAML.
 
 3. **`V4Section.topics` vs. `V4TopicSchema.items` naming**
    - What we know: In `types.ts`, `V4TopicSchema` uses `questions: v.array(V4QuestionSchema)` and `V4SectionSchema` uses `topics: v.array(V4TopicSchema)`. But the legacy `Section` type (data/bank/types.ts) uses `items` for topics and `questions` for questions.
    - What's unclear: Some parts of `buildFlatRows.ts` use `section.items` (legacy Section type) while V4Section has `section.topics`.
    - Recommendation: `buildFlatRows` must be updated to handle `V4Section.topics` (not `Section.items`) once it switches to consuming `state.sections` (V4Section[]).
+   - RESOLVED: Use `section.topics` everywhere in `buildFlatRows.ts` — the V4 type uses `topics`, not `items`.
 
 ---
 

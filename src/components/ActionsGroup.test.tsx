@@ -13,6 +13,13 @@ vi.mock('./SessionSwitcherModal.js', () => ({
   ),
 }));
 
+vi.mock('./ImportPreviewModal.js', () => ({
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  ImportPreviewModal: ({ dialogRef }: { dialogRef: any }) => (
+    <dialog ref={dialogRef} data-testid="import-preview-modal" />
+  ),
+}));
+
 import { useAppStore } from '../store/app.js';
 
 const mockUseAppStore = useAppStore as unknown as ReturnType<typeof vi.fn>;
@@ -159,6 +166,8 @@ describe('ActionsGroup', () => {
       /hide marked topics/i,
       /dark mode/i,
       /candidate details/i,
+      /import yaml/i,
+      /export yaml/i,
       /reset all/i,
     ];
     for (const name of ownButtonNames) {
@@ -200,6 +209,32 @@ describe('ActionsGroup', () => {
     const btn = screen.getByRole('button', { name: /ai feedback prompt/i });
     expect(btn).toBeInTheDocument();
     expect(btn).toHaveAttribute('id', 'open-ai-prompt');
+  });
+
+  it('renders "Import YAML" button with id="open-import-yaml"', () => {
+    render(<ActionsGroup />);
+    const btn = screen.getByRole('button', { name: /import yaml/i });
+    expect(btn).toBeInTheDocument();
+    expect(btn).toHaveAttribute('id', 'open-import-yaml');
+  });
+
+  it('renders "Export YAML" button', () => {
+    render(<ActionsGroup />);
+    const btn = screen.getByRole('button', { name: /export yaml/i });
+    expect(btn).toBeInTheDocument();
+  });
+
+  it('renders hidden YAML file input', () => {
+    render(<ActionsGroup />);
+    const input = screen.getByTestId('yaml-file-input');
+    expect(input).toBeInTheDocument();
+    expect(input).toHaveAttribute('type', 'file');
+    expect(input).toHaveAttribute('accept', '.yaml,.yml');
+  });
+
+  it('mounts ImportPreviewModal', () => {
+    render(<ActionsGroup />);
+    expect(screen.getByTestId('import-preview-modal')).toBeInTheDocument();
   });
 
   it('clicking "AI feedback prompt" calls showModal() on the AI prompt dialog', () => {

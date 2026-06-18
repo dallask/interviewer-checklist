@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v1.1
 milestone_name: Post-UAT Fix + Polish
 status: executing
-stopped_at: Completed 12-uat-defect-cleanup-03-PLAN.md
-last_updated: "2026-06-18T09:44:00.000Z"
-last_activity: 2026-06-18 -- Phase 12 plan 03 complete (SidebarGroup icon prop + sidebar desktop toggle fix)
+stopped_at: Completed 12-uat-defect-cleanup-04-PLAN.md
+last_updated: "2026-06-18T09:45:43Z"
+last_activity: 2026-06-18 -- Phase 12 plan 04 complete (ActionsGroup Hide notes button + icon-only conversion)
 progress:
   total_phases: 5
   completed_phases: 1
   total_plans: 7
-  completed_plans: 6
-  percent: 37
+  completed_plans: 7
+  percent: 44
 ---
 
 # Project State
@@ -26,9 +26,9 @@ See: .planning/PROJECT.md (updated 2026-06-18)
 ## Current Position
 
 Phase: 12 (uat-defect-cleanup) — EXECUTING
-Plan: 4 of 4
-Status: Executing
-Last activity: 2026-06-18 -- Phase 12 plan 03 complete (SidebarGroup icon prop + sidebar desktop toggle fix)
+Plan: 4 of 4 (COMPLETE)
+Status: Phase 12 Complete
+Last activity: 2026-06-18 -- Phase 12 plan 04 complete (ActionsGroup Hide notes button + icon-only conversion)
 
 ## Performance Metrics
 
@@ -62,6 +62,7 @@ Last activity: 2026-06-18 -- Phase 12 plan 03 complete (SidebarGroup icon prop +
 | Phase 12-uat-defect-cleanup P01 | 5min | 2 tasks | 3 files |
 | Phase 12-uat-defect-cleanup P02 | 5min | 2 tasks | 4 files |
 | Phase 12-uat-defect-cleanup P03 | 6min | 2 tasks | 5 files |
+| Phase 12-uat-defect-cleanup P04 | 4min | 2 tasks | 2 files |
 
 ## Accumulated Context
 
@@ -80,6 +81,8 @@ Recent decisions affecting current work:
 - [Phase ?]: Backdrop-click close on SessionSwitcherModal dialog using e.target === dialogRef.current guard; onClick chosen over onMouseDown per CandidateModal analog (SESS-05)
 - [Phase 12-02]: hideNotes absent from subscribe block uiState write: volatile per-session preference, resets on reload (D-07)
 - [Phase 12-02]: CSS hidden class on outer wrapper div (not HTML hidden attr on textarea) for print-override compatibility with Tailwind print: variants (D-08)
+- [Phase 12-04]: title attribute matching aria-label on all ActionsGroup buttons (D-14: native title, no custom tooltip component)
+- [Phase 12-04]: Icon-only ActionsGroup buttons keep flex-col layout with p-2 min-h/w-[44px]; no grid switch needed at 280px sidebar width
 
 ### Pending Todos
 
@@ -111,8 +114,8 @@ Phase 10 manual CWS submission (publish PRIVACY.md to HTTPS URL, capture 1280×8
 
 ## Session Continuity
 
-Last session: 2026-06-18T09:44:00.000Z
-Stopped at: Completed 12-uat-defect-cleanup-03-PLAN.md
+Last session: 2026-06-18T09:45:43Z
+Stopped at: Completed 12-uat-defect-cleanup-04-PLAN.md
 Resume file: None
 
 ## Operator Next Steps

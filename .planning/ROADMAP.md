@@ -29,7 +29,7 @@ Full archive: [milestones/v1.0-ROADMAP.md](milestones/v1.0-ROADMAP.md)
 ### v1.1 Post-UAT Fix + Polish (Phases 11–15) — ACTIVE
 
 - [x] **Phase 11: V4 Session Migration & Legacy Compat** — Forward-only V3→V4 migration materializes default sections/topics into editable bank shape; legacy progress-only YAML imports keep working (completed 2026-06-18)
-- [ ] **Phase 12: UAT Defect Cleanup** — Six small-touch fixes: topic-override propagation, session modal close paths, hide-notes wiring, sidebar icon buttons + section icons, desktop sidebar toggle
+- [x] **Phase 12: UAT Defect Cleanup** — Six small-touch fixes: topic-override propagation, session modal close paths, hide-notes wiring, sidebar icon buttons + section icons, desktop sidebar toggle (completed 2026-06-18)
 - [ ] **Phase 13: Filter Overhaul** — Difficulty and Section filters get "All" rows, colored/emoji indicators, and live per-row counts
 - [ ] **Phase 14: Editable Bank & YAML Schema Expansion** — Users can add/remove sections and topics, delete default questions; YAML round-trips the new editable-bank state with full per-question text/level/note fidelity
 - [ ] **Phase 15: Sidebar Shell Refactor & Compact QuestionCard** — Sticky sidebar header (toggle + candidate button + final-mark progress line), credit footer + AboutModal, and the compact QuestionCard redesign (dropdown left, note icon right, single-line default)
@@ -77,11 +77,11 @@ Full archive: [milestones/v1.0-ROADMAP.md](milestones/v1.0-ROADMAP.md)
 
 - [x] 12-01-PLAN.md — SCORE-07: TopicMarkDisplay fieldset stopPropagation; SESS-05: SessionSwitcherModal backdrop click close
 - [x] 12-02-PLAN.md — UI-09: hideNotes store field + QuestionCard + TopicRow note suppression
-- [ ] 12-03-PLAN.md — UI-11: SidebarGroup icon prop + Sidebar icon pass-through; UI-12: remove md: breakpoint sidebar overrides
+- [x] 12-03-PLAN.md — UI-11: SidebarGroup icon prop + Sidebar icon pass-through; UI-12: remove md: breakpoint sidebar overrides
 
 **Wave 2** *(blocked on 12-02)*
 
-- [ ] 12-04-PLAN.md — UI-09: ActionsGroup Hide notes button; UI-10: all ActionsGroup buttons icon-only with title tooltips
+- [x] 12-04-PLAN.md — UI-09: ActionsGroup Hide notes button; UI-10: all ActionsGroup buttons icon-only with title tooltips
 
 **UI hint**: yes
 
@@ -147,7 +147,7 @@ Full archive: [milestones/v1.0-ROADMAP.md](milestones/v1.0-ROADMAP.md)
 | 9. Polish | v1.0 | 3/3 | Complete | 2026-06-18 |
 | 10. Chrome Web Store Submission | v1.0 | 3/3 (manual submission tasks pending user action) | Complete | 2026-06-18 |
 | 11. V4 Session Migration & Legacy Compat | v1.1 | 3/3 | Complete    | 2026-06-18 |
-| 12. UAT Defect Cleanup | v1.1 | 2/4 | In Progress|  |
+| 12. UAT Defect Cleanup | v1.1 | 4/4 | Complete | 2026-06-18 |
 | 13. Filter Overhaul | v1.1 | 0/0 | Not started | — |
 | 14. Editable Bank & YAML Schema Expansion | v1.1 | 0/0 | Not started | — |
 | 15. Sidebar Shell Refactor & Compact QuestionCard | v1.1 | 0/0 | Not started | — |

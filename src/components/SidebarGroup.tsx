@@ -37,7 +37,13 @@ export function SidebarGroup({
           ▾
         </span>
       </button>
-      {isOpen && <div id={regionId} className="px-4 pb-3">{children}</div>}
+      <div
+        id={regionId}
+        hidden={!isOpen}
+        className="px-4 pb-3"
+      >
+        {children}
+      </div>
     </div>
   );
 }

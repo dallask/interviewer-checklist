@@ -49,7 +49,7 @@ describe('SidebarGroup', () => {
     expect(screen.getByText('Visible content')).toBeInTheDocument();
   });
 
-  it('does not render children when isOpen=false', () => {
+  it('region div has hidden attribute when isOpen=false (aria-controls always resolves)', () => {
     render(
       <SidebarGroup
         groupId="search"
@@ -60,7 +60,11 @@ describe('SidebarGroup', () => {
         <p>Hidden content</p>
       </SidebarGroup>,
     );
-    expect(screen.queryByText('Hidden content')).not.toBeInTheDocument();
+    // WR-02 fix: region is always in the DOM so aria-controls resolves;
+    // the HTML hidden attribute removes it from the accessibility tree.
+    const region = document.getElementById('sidebar-group-search');
+    expect(region).toBeInTheDocument();
+    expect(region).toHaveAttribute('hidden');
   });
 
   it('calls onToggle when button is clicked', () => {

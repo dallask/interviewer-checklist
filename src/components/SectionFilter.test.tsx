@@ -13,6 +13,7 @@ const mockUseAppStore = useAppStore as unknown as ReturnType<typeof vi.fn>;
 
 describe('SectionFilter', () => {
   const toggleSection = vi.fn();
+  const clearSections = vi.fn();
 
   beforeEach(() => {
     vi.clearAllMocks();
@@ -20,66 +21,72 @@ describe('SectionFilter', () => {
       selector({
         selectedSections: new Set(),
         toggleSection,
-        scores: {},
-        overrides: {},
-        customQuestions: [],
+        clearSections,
       }),
     );
   });
 
-  it('renders 9 section buttons (one per DEFAULT_SECTIONS entry)', () => {
+  it('renders 10 buttons (All sections + one per DEFAULT_SECTIONS entry)', () => {
     render(<SectionFilter />);
     const buttons = screen.getAllByRole('button');
-    expect(buttons).toHaveLength(9);
+    expect(buttons).toHaveLength(10);
   });
 
-  it('each button has aria-pressed="false" when no sections selected', () => {
+  it('each section row button has aria-pressed="false" when no sections selected', () => {
     render(<SectionFilter />);
     const buttons = screen.getAllByRole('button');
-    for (const btn of buttons) {
+    // buttons[0] is "All sections" which has aria-pressed="true" when Set is empty (D-01)
+    // Individual section row buttons (index 1+) should all be aria-pressed="false"
+    for (const btn of buttons.slice(1)) {
       expect(btn).toHaveAttribute('aria-pressed', 'false');
     }
   });
 
-  it('each button shows "—" mark placeholder when no questions are scored', () => {
+  it('each section row shows a numeric count badge (not "—")', () => {
     render(<SectionFilter />);
-    const marks = screen.getAllByText('—');
-    expect(marks).toHaveLength(9);
+    // No "—" placeholders should exist
+    const dashes = screen.queryAllByText('—');
+    expect(dashes).toHaveLength(0);
+    // Count badges should all be numeric (positive integers)
+    const countBadges = document.querySelectorAll('.tabular-nums');
+    for (const badge of Array.from(countBadges)) {
+      expect(badge.textContent).toMatch(/^\d+$/);
+    }
   });
 
   it('clicking a button calls toggleSection with the section id', () => {
     render(<SectionFilter />);
+    // Click the second button (first section row; first button is "All sections")
     const buttons = screen.getAllByRole('button');
-    fireEvent.click(buttons[0]);
+    fireEvent.click(buttons[1]);
     expect(toggleSection).toHaveBeenCalledTimes(1);
   });
 
   it('selected section button has aria-pressed="true"', () => {
-    // We need to know the first section's ID — use DEFAULT_SECTIONS
-    render(<SectionFilter />);
-    // Get first button's section id from the first call after a click
+    const { unmount: unmount1 } = render(<SectionFilter />);
+    // Get first section row button and click to get the section id
     const buttons = screen.getAllByRole('button');
-    fireEvent.click(buttons[0]);
+    fireEvent.click(buttons[1]);
     const [calledId] = toggleSection.mock.calls[0] as [string];
+    unmount1();
 
     // Re-render with that section selected
     mockUseAppStore.mockImplementation((selector: (s: unknown) => unknown) =>
       selector({
         selectedSections: new Set([calledId]),
         toggleSection,
-        scores: {},
-        overrides: {},
-        customQuestions: [],
+        clearSections,
       }),
     );
-    const { unmount } = render(<SectionFilter />);
+    render(<SectionFilter />);
     const newButtons = screen.getAllByRole('button');
-    // One of them should be pressed
+    // With a non-empty Set:
+    // - "All sections" row: aria-pressed="false" (Set is non-empty, D-01)
+    // - The selected section row: aria-pressed="true"
     const pressedButtons = newButtons.filter(
       (btn) => btn.getAttribute('aria-pressed') === 'true',
     );
     expect(pressedButtons).toHaveLength(1);
-    unmount();
   });
 
   it('all buttons have focus-visible ring classes', () => {
@@ -91,56 +98,67 @@ describe('SectionFilter', () => {
     }
   });
 
-  it('shows a numeric mark (not "—") for first section when a question is scored', () => {
-    // Find first section and first topic to build a valid score key (V4 format)
-    const firstSection = DEFAULT_SECTIONS[0];
-    const firstTopic = firstSection.items[0];
-    const scoreKey = `${firstTopic.id}-q0`;
+  // --- "All sections" row tests (UI-17, D-01) ---
 
-    mockUseAppStore.mockImplementation((selector: (s: unknown) => unknown) =>
-      selector({
-        selectedSections: new Set(),
-        toggleSection,
-        scores: { [scoreKey]: 8 },
-        overrides: {},
-        customQuestions: [],
-      }),
-    );
-
+  it('"All sections" row has aria-pressed="true" when no sections selected', () => {
     render(<SectionFilter />);
-
-    // With one question scored, the first section should NOT show "—"
-    // There should be fewer than 9 "—" marks (one section now shows a number)
-    const dashes = screen.queryAllByText('—');
-    expect(dashes).toHaveLength(8);
+    const allBtn = screen.getByRole('button', { name: /all sections/i });
+    expect(allBtn).toHaveAttribute('aria-pressed', 'true');
   });
 
-  it('scored section mark has a band color class', () => {
-    const firstSection = DEFAULT_SECTIONS[0];
-    const firstTopic = firstSection.items[0];
-    const scoreKey = `${firstTopic.id}-q0`;
+  it('"All sections" row has aria-pressed="false" when a section is selected', () => {
+    mockUseAppStore.mockImplementation((selector: (s: unknown) => unknown) =>
+      selector({
+        selectedSections: new Set(['frontend']),
+        toggleSection,
+        clearSections: vi.fn(),
+      }),
+    );
+    render(<SectionFilter />);
+    const allBtn = screen.getByRole('button', { name: /all sections/i });
+    expect(allBtn).toHaveAttribute('aria-pressed', 'false');
+  });
 
+  it('clicking "All sections" calls clearSections when a section is selected', () => {
+    const localClearSections = vi.fn();
+    mockUseAppStore.mockImplementation((selector: (s: unknown) => unknown) =>
+      selector({
+        selectedSections: new Set(['frontend']),
+        toggleSection,
+        clearSections: localClearSections,
+      }),
+    );
+    render(<SectionFilter />);
+    fireEvent.click(screen.getByRole('button', { name: /all sections/i }));
+    expect(localClearSections).toHaveBeenCalledTimes(1);
+  });
+
+  it('clicking "All sections" is a no-op when no sections are selected', () => {
+    const localClearSections = vi.fn();
     mockUseAppStore.mockImplementation((selector: (s: unknown) => unknown) =>
       selector({
         selectedSections: new Set(),
         toggleSection,
-        scores: { [scoreKey]: 8 },
-        overrides: {},
-        customQuestions: [],
+        clearSections: localClearSections,
       }),
     );
-
     render(<SectionFilter />);
+    fireEvent.click(screen.getByRole('button', { name: /all sections/i }));
+    expect(localClearSections).not.toHaveBeenCalled();
+  });
 
-    // Score 8 → high band → text-emerald-600
-    const markElement = screen
-      .getAllByRole('button')[0]
-      .querySelector('.tabular-nums');
-    expect(markElement).not.toBeNull();
-    if (markElement) {
-      expect(markElement.className).toMatch(
-        /text-(emerald|green|yellow|red|gray)/,
+  it('each section row renders the section.icon emoji', () => {
+    render(<SectionFilter />);
+    // Verify each section's icon emoji appears in its button's text content
+    // Use getAllByRole + filter by exact label text to avoid substring ambiguity
+    // (e.g. "Tooling" is a substring of "AI & Tooling")
+    for (const section of DEFAULT_SECTIONS) {
+      const allButtons = screen.getAllByRole('button');
+      const sectionBtn = allButtons.find(
+        (btn) => btn.textContent?.includes(section.label),
       );
+      expect(sectionBtn).toBeDefined();
+      expect(sectionBtn!.textContent).toContain(section.icon);
     }
   });
 });

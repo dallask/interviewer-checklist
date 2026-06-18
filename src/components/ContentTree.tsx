@@ -1,5 +1,5 @@
 import { useVirtualizer } from '@tanstack/react-virtual';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useAppStore } from '../store/app.js';
 import type { VirtualRow } from '../utils/buildFlatRows.js';
 import { AddSectionForm } from './AddSectionForm.js';
@@ -43,6 +43,35 @@ export function ContentTree({ rows }: Props) {
     overscan: 10,
     useFlushSync: false, // Required for React 19 — see RESEARCH.md Pitfall 4
   });
+
+  // Scroll-after-add: detect when rows grow and scroll the new row into view.
+  // prevRowsLengthRef tracks the previous rows.length to detect additions.
+  // useEffect runs after the re-render that reflects the new rows, so
+  // scrollToIndex targets an index that exists in the virtualizer.
+  const prevRowsLengthRef = useRef<number>(rows.length);
+
+  useEffect(() => {
+    if (rows.length > prevRowsLengthRef.current) {
+      if (addTopicOpenFor !== null) {
+        // BUG-02: a topic was added — find the add-topic-trigger for that section
+        const topicTriggerIdx = rows.findIndex(
+          (r) => r.type === 'add-topic-trigger' && r.sectionId === addTopicOpenFor,
+        );
+        if (topicTriggerIdx > 0) {
+          // New topic row is immediately before the add-topic-trigger
+          rowVirtualizer.scrollToIndex(topicTriggerIdx - 1, { align: 'start', behavior: 'auto' });
+        }
+      } else {
+        // BUG-01: a section was added — find the add-section-trigger (always last)
+        const triggerIdx = rows.findIndex((r) => r.type === 'add-section-trigger');
+        if (triggerIdx > 0) {
+          // New section row is immediately before the add-section-trigger
+          rowVirtualizer.scrollToIndex(triggerIdx - 1, { align: 'start', behavior: 'auto' });
+        }
+      }
+    }
+    prevRowsLengthRef.current = rows.length;
+  }, [rows, rowVirtualizer, addTopicOpenFor]);
 
   const virtualItems = rowVirtualizer.getVirtualItems();
 

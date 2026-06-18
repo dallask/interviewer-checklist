@@ -20,11 +20,20 @@ export function usePrintExpansion(): void {
   useEffect(() => {
     let savedTopicOpen: Record<string, boolean> = {};
     let savedSectionOpen: Record<string, boolean> = {};
+    // WR-09: snapshot printMode too. If the user prints twice without
+    // leaving the page and the second beforeprint fires before React
+    // has reconciled the first afterprint, the second snapshot would
+    // otherwise capture the *expanded* topicOpen/sectionOpen plus a
+    // stale printMode=false — and the restore on the second afterprint
+    // would leave topics expanded. Snapshot every key we write so the
+    // restore is idempotent across repeated prints.
+    let savedPrintMode = false;
 
     function handleBeforePrint() {
       const state = useAppStore.getState();
       savedTopicOpen = { ...state.topicOpen };
       savedSectionOpen = { ...state.sectionOpen };
+      savedPrintMode = state.printMode;
       // WR-02: collapse all three writes into a single setState. The
       // previous code issued three separate set() calls (expandAll +
       // sectionOpen + printMode), each of which fires the module-level
@@ -49,7 +58,7 @@ export function usePrintExpansion(): void {
       useAppStore.setState({
         topicOpen: savedTopicOpen,
         sectionOpen: savedSectionOpen,
-        printMode: false,
+        printMode: savedPrintMode,
       });
     }
 

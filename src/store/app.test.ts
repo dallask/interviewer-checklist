@@ -368,6 +368,238 @@ describe('useAppStore — ScoringActions', () => {
 });
 
 // ---------------------------------------------------------------------------
+// Bank mutation actions — Phase 14 (BANK-01..05)
+// ---------------------------------------------------------------------------
+
+describe('useAppStore — bank mutation actions (BANK-01..05)', () => {
+  const makeSection = (id: string, isDefault = false) => ({
+    id,
+    label: `Section ${id}`,
+    icon: '📋',
+    isDefault,
+    topics: [] as {
+      id: string;
+      name: string;
+      desc: string;
+      tag: string;
+      isDefault: boolean;
+      questions: { id: string; text: string; level: string; isDefault: boolean }[];
+    }[],
+  });
+
+  const makeTopic = (id: string, isDefault = false) => ({
+    id,
+    name: `Topic ${id}`,
+    desc: '',
+    tag: '',
+    isDefault,
+    questions: [] as { id: string; text: string; level: string; isDefault: boolean }[],
+  });
+
+  const makeQuestion = (id: string) => ({
+    id,
+    text: `Question ${id}?`,
+    level: 'novice' as const,
+    isDefault: true,
+  });
+
+  beforeEach(() => {
+    vi.clearAllMocks();
+    useAppStore.setState({
+      ...DEFAULT_STATE,
+      sections: [
+        {
+          id: 'default-sec',
+          label: 'Default Section',
+          icon: '📋',
+          isDefault: true,
+          topics: [
+            {
+              id: 'default-topic',
+              name: 'Default Topic',
+              desc: '',
+              tag: '',
+              isDefault: true,
+              questions: [
+                { id: 'default-topic-q0', text: 'Q0?', level: 'novice', isDefault: true },
+                { id: 'default-topic-q1', text: 'Q1?', level: 'intermediate', isDefault: true },
+              ],
+            },
+          ],
+        },
+      ],
+      removedDefaultQuestionIds: new Set<string>(),
+    });
+  });
+
+  // --- addSection (BANK-01) ---
+
+  it('addSection appends a new section to sections array', () => {
+    const newSection = makeSection('custom-section-1', false);
+    useAppStore.getState().addSection(newSection);
+    const { sections } = useAppStore.getState();
+    expect(sections).toHaveLength(2);
+    expect(sections[1].id).toBe('custom-section-1');
+  });
+
+  it('addSection preserves all fields on the new section', () => {
+    const newSection = {
+      id: 'custom-section-2',
+      label: 'My New Section',
+      icon: '🔧',
+      isDefault: false,
+      topics: [],
+    };
+    useAppStore.getState().addSection(newSection);
+    const added = useAppStore.getState().sections.find((s) => s.id === 'custom-section-2');
+    expect(added).toBeDefined();
+    expect(added?.label).toBe('My New Section');
+    expect(added?.icon).toBe('🔧');
+    expect(added?.isDefault).toBe(false);
+    expect(added?.topics).toEqual([]);
+  });
+
+  it('addSection does not affect existing sections', () => {
+    useAppStore.getState().addSection(makeSection('custom-section-3'));
+    const { sections } = useAppStore.getState();
+    expect(sections[0].id).toBe('default-sec');
+  });
+
+  // --- removeSection (BANK-02) ---
+
+  it('removeSection removes the section with the matching id', () => {
+    const userSection = makeSection('custom-section-remove', false);
+    useAppStore.getState().addSection(userSection);
+    expect(useAppStore.getState().sections).toHaveLength(2);
+    useAppStore.getState().removeSection('custom-section-remove');
+    expect(useAppStore.getState().sections).toHaveLength(1);
+    expect(useAppStore.getState().sections.find((s) => s.id === 'custom-section-remove')).toBeUndefined();
+  });
+
+  it('removeSection with unknown id is a no-op', () => {
+    const countBefore = useAppStore.getState().sections.length;
+    useAppStore.getState().removeSection('does-not-exist');
+    expect(useAppStore.getState().sections).toHaveLength(countBefore);
+  });
+
+  it('removeSection does not remove other sections', () => {
+    useAppStore.getState().addSection(makeSection('custom-a'));
+    useAppStore.getState().addSection(makeSection('custom-b'));
+    useAppStore.getState().removeSection('custom-a');
+    const ids = useAppStore.getState().sections.map((s) => s.id);
+    expect(ids).toContain('custom-b');
+    expect(ids).toContain('default-sec');
+  });
+
+  // --- addTopic (BANK-03) ---
+
+  it('addTopic appends a topic to the matching section\'s topics array', () => {
+    const newTopic = makeTopic('custom-topic-1', false);
+    useAppStore.getState().addTopic('default-sec', newTopic);
+    const section = useAppStore.getState().sections.find((s) => s.id === 'default-sec');
+    expect(section?.topics).toHaveLength(2);
+    expect(section?.topics[1].id).toBe('custom-topic-1');
+  });
+
+  it('addTopic preserves all fields on the new topic', () => {
+    const newTopic = {
+      id: 'custom-topic-fields',
+      name: 'My Topic',
+      desc: 'A description',
+      tag: 'mytag',
+      isDefault: false,
+      questions: [],
+    };
+    useAppStore.getState().addTopic('default-sec', newTopic);
+    const section = useAppStore.getState().sections.find((s) => s.id === 'default-sec');
+    const added = section?.topics.find((t) => t.id === 'custom-topic-fields');
+    expect(added?.name).toBe('My Topic');
+    expect(added?.desc).toBe('A description');
+    expect(added?.isDefault).toBe(false);
+  });
+
+  it('addTopic to nonexistent section is a no-op (sections unchanged)', () => {
+    const countBefore = useAppStore.getState().sections[0].topics.length;
+    useAppStore.getState().addTopic('no-such-section', makeTopic('orphan-topic'));
+    expect(useAppStore.getState().sections[0].topics).toHaveLength(countBefore);
+  });
+
+  // --- removeTopic (BANK-04) ---
+
+  it('removeTopic removes the matching topic from its parent section', () => {
+    useAppStore.getState().addTopic('default-sec', makeTopic('custom-topic-del'));
+    expect(useAppStore.getState().sections[0].topics).toHaveLength(2);
+    useAppStore.getState().removeTopic('custom-topic-del');
+    expect(useAppStore.getState().sections[0].topics).toHaveLength(1);
+    const topic = useAppStore.getState().sections[0].topics.find((t) => t.id === 'custom-topic-del');
+    expect(topic).toBeUndefined();
+  });
+
+  it('removeTopic does not remove topics in other sections', () => {
+    useAppStore.getState().addSection({
+      id: 'other-sec',
+      label: 'Other',
+      icon: '',
+      isDefault: false,
+      topics: [makeTopic('shared-id-topic')],
+    });
+    // Add same-named topic to default-sec
+    useAppStore.getState().addTopic('default-sec', makeTopic('remove-from-default'));
+    useAppStore.getState().removeTopic('remove-from-default');
+    // other-sec's topic is unaffected
+    const otherSec = useAppStore.getState().sections.find((s) => s.id === 'other-sec');
+    expect(otherSec?.topics).toHaveLength(1);
+  });
+
+  it('removeTopic with unknown id is a no-op', () => {
+    const topicCountBefore = useAppStore.getState().sections[0].topics.length;
+    useAppStore.getState().removeTopic('definitely-does-not-exist');
+    expect(useAppStore.getState().sections[0].topics).toHaveLength(topicCountBefore);
+  });
+
+  // --- removeDefaultQuestion (BANK-05) ---
+
+  it('removeDefaultQuestion adds the questionId to removedDefaultQuestionIds Set', () => {
+    useAppStore.getState().removeDefaultQuestion('default-topic-q0');
+    expect(useAppStore.getState().removedDefaultQuestionIds.has('default-topic-q0')).toBe(true);
+  });
+
+  it('removeDefaultQuestion for a second question adds both to the Set', () => {
+    useAppStore.getState().removeDefaultQuestion('default-topic-q0');
+    useAppStore.getState().removeDefaultQuestion('default-topic-q1');
+    expect(useAppStore.getState().removedDefaultQuestionIds.has('default-topic-q0')).toBe(true);
+    expect(useAppStore.getState().removedDefaultQuestionIds.has('default-topic-q1')).toBe(true);
+    expect(useAppStore.getState().removedDefaultQuestionIds.size).toBe(2);
+  });
+
+  it('removeDefaultQuestion does NOT mutate sections[] (Set-based model is non-destructive)', () => {
+    const sectionsBefore = JSON.stringify(useAppStore.getState().sections);
+    useAppStore.getState().removeDefaultQuestion('default-topic-q0');
+    expect(JSON.stringify(useAppStore.getState().sections)).toBe(sectionsBefore);
+  });
+
+  it('removeDefaultQuestion calling the same id twice is idempotent (Set deduplicates)', () => {
+    useAppStore.getState().removeDefaultQuestion('default-topic-q0');
+    useAppStore.getState().removeDefaultQuestion('default-topic-q0');
+    expect(useAppStore.getState().removedDefaultQuestionIds.size).toBe(1);
+  });
+
+  it('removeDefaultQuestion returns a Set instance', () => {
+    useAppStore.getState().removeDefaultQuestion('default-topic-q0');
+    expect(useAppStore.getState().removedDefaultQuestionIds).toBeInstanceOf(Set);
+  });
+
+  // --- resetAll: bank shape preserved ---
+
+  it('resetAll does NOT clear removedDefaultQuestionIds (bank shape is separate from scoring state)', () => {
+    useAppStore.getState().removeDefaultQuestion('default-topic-q0');
+    useAppStore.getState().resetAll();
+    // Bank shape should persist even after a session reset
+    expect(useAppStore.getState().removedDefaultQuestionIds.has('default-topic-q0')).toBe(true);
+  });
+});
+
+// ---------------------------------------------------------------------------
 // Session store actions — Phase 6
 // ---------------------------------------------------------------------------
 

@@ -1,5 +1,6 @@
 import { useVirtualizer } from '@tanstack/react-virtual';
 import { useRef } from 'react';
+import { useAppStore } from '../store/app.js';
 import type { VirtualRow } from '../utils/buildFlatRows.js';
 import { QuestionCard } from './QuestionCard.js';
 import { SectionRow } from './SectionRow.js';
@@ -19,6 +20,10 @@ interface Props {
 
 export function ContentTree({ rows }: Props) {
   const parentRef = useRef<HTMLDivElement>(null);
+  const candidate = useAppStore((s) => s.candidate);
+  const candidateName = candidate?.name ?? '';
+  const candidateRole = candidate?.role ?? '';
+  const candidateDate = candidate?.date ?? '';
 
   const rowVirtualizer = useVirtualizer({
     count: rows.length,
@@ -33,6 +38,19 @@ export function ContentTree({ rows }: Props) {
 
   return (
     <div ref={parentRef} className="flex-1 overflow-y-auto">
+      {/* Print-only candidate header — hidden on screen (screen users already
+          see candidate details via the modal). Appears above the question
+          list on the printed page. */}
+      <div aria-hidden="true" className="hidden print:block print:mb-4">
+        <h1 className="text-xl font-semibold">
+          {candidateName || 'Interview Session'}
+        </h1>
+        <p className="text-sm text-gray-600">
+          {candidateRole}
+          {candidateRole && candidateDate ? ' — ' : ''}
+          {candidateDate}
+        </p>
+      </div>
       <div
         style={{
           height: `${rowVirtualizer.getTotalSize()}px`,

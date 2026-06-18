@@ -10,6 +10,7 @@ export default defineConfig({
     rollupOptions: {
       input: {
         'src/app/app': 'src/app/app.html',
+        'src/app/welcome': 'src/app/welcome.html',
       },
     },
     sourcemap: 'hidden',

@@ -182,3 +182,81 @@ blocked: 0
   artifacts: []
   missing: []
   debug_session: ""
+
+## Additional Enhancement Requests (post-smoke-test review)
+
+# These were surfaced after the 13-test smoke checklist completed. All are
+# feature/UX redesign items (not regressions). Recommended for v1.1+ scope.
+
+- truth: "Question card is compact: score dropdown on the LEFT of the question text (replacing the slider), with a 'note' icon button on the RIGHT that toggles a textarea below the question. Default question card collapses to a single line by default; note textarea only renders when the user toggles it."
+  status: requested
+  reason: "User requested: Question should look more compact. The mark control should be dropdown on the left side of the question card, not slider. Add note should be iconic button on the right side of the question card, this button should show/hide the note textarea below the question."
+  severity: major
+  scope: "QuestionCard component redesign — affects score input mechanism, layout, notes affordance, and per-question DOM weight"
+  category: "redesign"
+  evidence: "screenshots Image #1 (compact card with score dropdown + note icon), Image #2 (dropdown open showing 0–10 + skip), Image #3 (note textarea expanded below)"
+  root_cause: ""
+  artifacts: []
+  missing: []
+  debug_session: ""
+
+- truth: "Difficulty filter shows 'All levels' as the first option with infinity icon, color dot indication next to each difficulty label (Novice green, Intermediate blue, Advanced orange, Expert pink), and the count of questions in each difficulty on the right"
+  status: requested
+  reason: "User requested: Difficulty filter in the sidebar should have colors indication and show 'All levels' option and amount of questions in each category of difficulty."
+  severity: major
+  scope: "DifficultyFilter component — add color tokens per difficulty, All-levels toggle semantics, per-difficulty count aggregation"
+  category: "feature"
+  evidence: "screenshot Image #4 (DIFFICULTY section showing All levels + 4 levels with colored dots and counts 258/281/268/260)"
+  root_cause: ""
+  artifacts: []
+  missing: []
+  debug_session: ""
+
+- truth: "Section filter shows 'All sections' as the first option with a clipboard icon, an icon (emoji) next to each section name (Frontend 🖥, Design 🎨, Backend ⚙, Dev Environment 🐳, Testing 🧪, CI/CD 🚀, Tooling 🔧, Integrations 🔗, AI & Tooling 🤖), and per-section question count on the right"
+  status: requested
+  reason: "User requested: Section should also have 'All sections', icons and amount of questions in each section"
+  severity: major
+  scope: "SectionFilter component — add per-section icons, All-sections toggle semantics, per-section count aggregation"
+  category: "feature"
+  evidence: "screenshot Image #5 (SECTIONS panel with All sections + 9 sections each with emoji icon)"
+  root_cause: ""
+  artifacts: []
+  missing: []
+  debug_session: ""
+
+- truth: "User can add and remove sections AND topics — same affordance as adding/removing custom questions today. Default sections and topics become user-editable (not only the built-in bank)."
+  status: requested
+  reason: "User requested: User should able to add or remove sections and topics"
+  severity: major
+  scope: "schema-change + new actions in store + UI affordances in sidebar and content tree — significantly expands the editable surface beyond per-topic custom questions"
+  category: "feature"
+  notes: "Touches V3Session schema (sections/topics become user-mutable), store actions (addSection, removeSection, addTopic, removeTopic), YAML export (full structural already covers this — see related YAML schema gap from test 7), and UI in SectionFilter / ContentTree."
+  root_cause: ""
+  artifacts: []
+  missing: []
+  debug_session: ""
+
+- truth: "Sidebar footer renders a copyright/credit block (e.g. 'Developed by Ievgen Kyvgyla, https://kivgila.pro') and an 'About' button that opens a modal containing application information (version, links, credits)."
+  status: requested
+  reason: "User requested: Sidebar footer should contain copyright [Image #6] and 'About' button that shows the information about the application in the modal."
+  severity: minor
+  scope: "SidebarFooter — add credit/copyright lockup + About button; new AboutModal component using existing native dialog pattern"
+  category: "polish"
+  evidence: "screenshot Image #6 (credit block: 'Developed by Ievgen Kyvgyla https://kivgila.pro')"
+  root_cause: ""
+  artifacts: []
+  missing: []
+  debug_session: ""
+
+- truth: "Sidebar has a fixed header (does not scroll with sidebar content) containing: (1) sidebar toggle button, (2) user-detail (candidate) button, (3) 'Final mark · N/86 topics' progress line with a thin progress bar and a numeric mark badge on the right."
+  status: requested
+  reason: "User requested: Sidebar should contain fixed header with Toggler, user Detail button, and progressline"
+  severity: major
+  scope: "Sidebar layout — introduce sticky-top header with three persistent affordances; layout refactor of existing collapsible groups below it; new top-level progress aggregator"
+  category: "feature"
+  evidence: "screenshots Image #7 (sticky header annotated 'Sidebar toggler / Userform / Final mark progressline'), Image #8 (collapsed sidebar showing only toggle button at top)"
+  notes: "Final mark progress line probably aggregates scored-topic count over total topic count (86 in current bank). Mark badge on the right would surface the live overall mark from the scoring engine."
+  root_cause: ""
+  artifacts: []
+  missing: []
+  debug_session: ""

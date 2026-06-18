@@ -92,7 +92,10 @@ describe('exportSession — custom questions', () => {
           level: 'advanced',
         },
       ],
-      scores: { 'custom-twig-1': 9 },
+      // CR-03: custom question scores are stored under the positional key
+      // `${topicId}-q${topic.questions.length + cqIndex}` in the store.
+      // twig topic has 12 default questions, so first custom → 'twig-q12'.
+      scores: { 'twig-q12': 9 },
     };
     const result = exportSession(sessionWithCustom, 'Test Session');
     expect(result).toContain('customQuestions:');

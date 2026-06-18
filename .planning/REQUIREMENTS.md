@@ -78,11 +78,11 @@
 
 ### Chrome Web Store (CWS)
 
-- [ ] **CWS-01**: Privacy policy hosted at a stable HTTPS URL documenting: all data stored locally in `chrome.storage.local`, nothing transmitted, no analytics, data removed on uninstall
-- [ ] **CWS-02**: Permissions-justification text for `storage` permission written and added to the CWS developer dashboard data-handling section
-- [ ] **CWS-03**: 3+ screenshots at 1280×800 showing the populated scoring view, sidebar with filters, and AI prompt modal (not empty state)
-- [ ] **CWS-04**: Extension smoke-loaded in a fresh Chrome profile (not the dev profile) passes all manual checks before submission
-- [ ] **CWS-05**: Public listing published on the Chrome Web Store with accurate description, screenshots, and linked privacy policy
+- [x] **CWS-01**: Privacy policy hosted at a stable HTTPS URL documenting: all data stored locally in `chrome.storage.local`, nothing transmitted, no analytics, data removed on uninstall
+- [x] **CWS-02**: Permissions-justification text for `storage` permission written and added to the CWS developer dashboard data-handling section
+- [x] **CWS-03**: 3+ screenshots at 1280×800 showing the populated scoring view, sidebar with filters, and AI prompt modal (not empty state)
+- [x] **CWS-04**: Extension smoke-loaded in a fresh Chrome profile (not the dev profile) passes all manual checks before submission
+- [x] **CWS-05**: Public listing published on the Chrome Web Store with accurate description, screenshots, and linked privacy policy
 
 ## v2 Requirements
 

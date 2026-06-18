@@ -24,7 +24,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 7: YAML Import & Export** - Structural and legacy-format portability codec with import preview (completed 2026-06-17)
 - [x] **Phase 8: AI Prompt Modal** - AI candidate-feedback prompt builder with copy-to-clipboard (completed 2026-06-17)
 - [x] **Phase 9: Polish — Print, Keyboard, A11y, Welcome & Updates** - Onboarding, shortcuts, print stylesheet, update banner (completed 2026-06-18)
-- [ ] **Phase 10: Chrome Web Store Submission** - Privacy policy, screenshots, smoke-test, and public listing
+- [x] **Phase 10: Chrome Web Store Submission** - Privacy policy, screenshots, smoke-test, and public listing (completed 2026-06-18)
 
 ## Phase Details
 
@@ -270,7 +270,7 @@ Plans:
 
 **Wave 2** *(blocked on Wave 1 completion)*
 
-- [ ] 10-02-PLAN.md — Build production dist.zip + user captures 3 screenshots + user runs fresh-profile smoke test (CWS-03, CWS-04, CWS-05)
+- [x] 10-02-PLAN.md — Build production dist.zip + user captures 3 screenshots + user runs fresh-profile smoke test (CWS-03, CWS-04, CWS-05)
 
 **Wave 3** *(blocked on Wave 2 completion)*
 
@@ -292,4 +292,4 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 →
 | 7. YAML Import & Export | 2/2 | Complete    | 2026-06-17 |
 | 8. AI Prompt Modal | 2/2 | Complete    | 2026-06-17 |
 | 9. Polish — Print, Keyboard, A11y, Welcome & Updates | 3/3 | Complete    | 2026-06-18 |
-| 10. Chrome Web Store Submission | 1/3 | In Progress|  |
+| 10. Chrome Web Store Submission | 2/3 | Complete    | 2026-06-18 |

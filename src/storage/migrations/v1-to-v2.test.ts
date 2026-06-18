@@ -99,8 +99,8 @@ describe('runMigrations', () => {
     }
   });
 
-  it('returns null when raw.version === 3 (already at latest)', () => {
-    const raw = { version: 3 };
+  it('returns null when raw.version === 4 (already at latest)', () => {
+    const raw = { version: 4 };
     const result = runMigrations(raw);
     expect(result).toBeNull();
   });

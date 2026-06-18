@@ -1,6 +1,13 @@
-import type { V1Schema, V2Manifest, V2Session, V3Session } from '../types.js';
+import type {
+  V1Schema,
+  V2Manifest,
+  V2Session,
+  V3Session,
+  V4Session,
+} from '../types.js';
 import { migrateV1ToV2 } from './v1-to-v2.js';
 import { migrateV2ToV3 } from './v2-to-v3.js';
+import { migrateV3ToV4 } from './v3-to-v4.js';
 
 /**
  * Migration pipeline entry.
@@ -9,23 +16,27 @@ import { migrateV2ToV3 } from './v2-to-v3.js';
  */
 const MIGRATIONS: Array<{
   fromVersion: number;
-  fn: (r: unknown) => { manifest: V2Manifest; session: V2Session } | V3Session;
+  fn: (
+    r: unknown,
+  ) => { manifest: V2Manifest; session: V2Session } | V3Session | V4Session;
 }> = [
   { fromVersion: 1, fn: (r) => migrateV1ToV2(r as V1Schema) },
   { fromVersion: 2, fn: (r) => migrateV2ToV3(r as V2Session) },
+  { fromVersion: 3, fn: (r) => migrateV3ToV4(r as V3Session) },
 ];
 
 /**
  * Runs the migration pipeline against raw storage data.
  *
- * - Returns null when raw.version === 2 (data is already current; caller handles hydration).
+ * - Returns null when raw.version === 4 (data is already current; caller handles hydration).
  * - Returns {manifest, session} for v1 data (migrateV1ToV2 output).
  * - Returns V3Session for v2 data (migrateV2ToV3 output).
+ * - Returns V4Session for v3 data (migrateV3ToV4 output).
  * - For missing/undefined version: treated as v1 (the only legacy format in Phase 3).
  */
 export function runMigrations(
   raw: unknown,
-): { manifest: V2Manifest; session: V2Session } | V3Session | null {
+): { manifest: V2Manifest; session: V2Session } | V3Session | V4Session | null {
   const version =
     raw !== null &&
     typeof raw === 'object' &&
@@ -42,11 +53,17 @@ export function runMigrations(
   }
 
   if (version === 3) {
+    const entry = MIGRATIONS.find((m) => m.fromVersion === 3);
+    if (entry) return entry.fn(raw) as V4Session;
+    return null;
+  }
+
+  if (version === 4) {
     // Already at latest version — caller handles hydration.
     return null;
   }
 
-  // Treat any non-v2/v3 version (including undefined/missing) as needing v1 migration.
+  // Treat any non-v2/v3/v4 version (including undefined/missing) as needing v1 migration.
   const entry = MIGRATIONS.find((m) => m.fromVersion === 1);
   if (entry) {
     return entry.fn(raw) as { manifest: V2Manifest; session: V2Session };

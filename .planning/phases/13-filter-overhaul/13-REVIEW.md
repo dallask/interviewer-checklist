@@ -1,109 +1,47 @@
 ---
 phase: 13-filter-overhaul
-reviewed: 2026-06-18T00:00:00Z
+reviewed: 2026-06-18T14:30:00Z
 depth: standard
-files_reviewed: 5
+files_reviewed: 6
 files_reviewed_list:
   - src/store/app.ts
+  - src/app/main.tsx
   - src/components/DifficultyFilter.tsx
   - src/components/DifficultyFilter.test.tsx
   - src/components/SectionFilter.tsx
   - src/components/SectionFilter.test.tsx
 findings:
   critical: 0
-  warning: 3
-  info: 2
-  total: 5
+  warning: 0
+  info: 3
+  total: 3
 status: issues_found
 ---
 
-# Phase 13: Code Review Report
+# Phase 13: Code Review Report (Re-review after iteration 2 fixes)
 
-**Reviewed:** 2026-06-18T00:00:00Z
+**Reviewed:** 2026-06-18T14:30:00Z
 **Depth:** standard
-**Files Reviewed:** 5
-**Status:** issues_found
+**Files Reviewed:** 6
+**Status:** issues_found (info only)
 
 ## Summary
 
-This phase introduces two new filter components (`DifficultyFilter`, `SectionFilter`) and wires them into the existing Zustand store via two new state fields (`selectedDifficulties`, `selectedSections`) and four new actions (`toggleDifficulty`, `toggleSection`, `clearDifficulties`, `clearSections`). The store action logic is correct and the components faithfully represent the documented D-01 / UI-16 / UI-17 semantics.
+This is a final re-review following the two iteration 2 fixes: `PersistedUIState` type enforcement (WR-01) and count badge contrast on selected filter buttons (WR-02).
 
-Three issues surfaced that degrade correctness or robustness at the store level; two informational items address test fragility and a missing gap detail.
+**WR-01 resolved and verified.** `PersistedUIState` is exported from `src/store/app.ts` (lines 650-660) as an explicit 9-field type. The `satisfies PersistedUIState` operator is applied to the `uiState` object literal inside the subscribe block (line 680), making `hideNotes` exclusion a compile-time guarantee rather than a prose comment. `src/app/main.tsx` line 25 now casts the storage read as `Partial<PersistedUIState>` (replacing the previous `Partial<AppState>`). TypeScript strict-mode type check (`tsc --noEmit`) reports zero errors in all six reviewed files. The fix is correct and complete.
 
-## Warnings
+**WR-02 resolved and verified.** Both `DifficultyFilter` and `SectionFilter` now apply conditional text color to count badge `<span>` elements. `DifficultyFilter` uses `text-blue-200 dark:text-blue-300` for selected buttons (solid `bg-blue-600` background) and `text-gray-400 dark:text-gray-500` for unselected — applied to both the "All levels" row (lines 67-71) and individual difficulty rows (lines 95-99). `SectionFilter` uses `text-blue-500 dark:text-blue-400` for selected buttons (light `bg-blue-50` tint) and `text-gray-400 dark:text-gray-500` for unselected — applied to both the "All sections" row (lines 38-42) and individual section rows (lines 64-68). The contrast pairing is appropriate: `text-blue-500` on `bg-blue-50` and `text-blue-200` on `bg-blue-600` are both readable. All 22 tests pass.
 
-### WR-01: `hideNotes` persisted to `uiState` by comment but omitted from subscribe write
-
-**File:** `src/store/app.ts:626-636`
-
-**Issue:** The `AppState` interface documents `hideNotes` as "UI-only, not persisted" (line 68), yet the subscribe block writes `uiState` to storage without it. This is internally consistent _now_, but the doc comment is the only guard. If a future developer adds `hideNotes` to the write block (matching the pattern of `hideMarked`/`darkMode`), the intent is silently violated because the field is present in `DEFAULT_STATE` (line 174) and is restored via the spread `...uiState` in `main.tsx:31`. More critically, `main.tsx` unconditionally spreads the raw `uiState` object from storage back into the store (line 31), so _any_ key that appears in a persisted `uiState` will clobber the in-memory default — including any accidental future persistence of `hideNotes`. The risk is one-directional leak from storage → memory.
-
-**Fix:** Add an explicit exclusion comment at the spread site in `main.tsx` OR add `hideNotes` to a `type PersistedUIState` that does not include it, so TypeScript enforces the boundary:
-
-```ts
-// src/store/app.ts — define a persisted-only type
-type PersistedUIState = Omit<AppState, 'hideNotes' | 'printMode' | ...>;
-```
-
-Alternatively, at minimum document at the subscribe site that `hideNotes` is intentionally excluded, mirroring the comment on the interface field.
-
----
-
-### WR-02: `switchSession` does not reset filter state (`selectedDifficulties`, `selectedSections`, `searchQuery`, `hideMarked`)
-
-**File:** `src/store/app.ts:362-387`
-
-**Issue:** `switchSession` atomically restores scores, notes, candidate, and sections from storage (lines 379–386), but does NOT reset the active filters (`selectedDifficulties`, `selectedSections`, `searchQuery`, `hideMarked`). These filters are UI state and live in `uiState`, not the session payload — so they persist across session switches. Depending on the product intent, this can produce a jarring experience: a user selects the "advanced" difficulty filter in Session A, switches to Session B, and sees an apparently empty or incomplete question list because the difficulty filter is still active. `resetAll` (line 336–349) resets these filters, but `switchSession` does not call `resetAll` and instead operates on session-payload fields only.
-
-**Fix:** If filters should be global UI state (persist across session switches), this is working as intended — but it should be explicitly documented. If filters should reset on session switch (more ergonomic), add the resets to the `switchSession` set call:
-
-```ts
-set((s) => ({
-  // ... existing session fields ...
-  selectedDifficulties: new Set(),
-  selectedSections: new Set(),
-  searchQuery: '',
-  hideMarked: false,
-}));
-```
-
----
-
-### WR-03: `importSession` (overwrite-active path) does not reset filter state, and new-session path resets scoring state but not filters before applying import data
-
-**File:** `src/store/app.ts:591-617`
-
-**Issue:** When `overwriteActive=true`, `importSession` sets scores/notes/candidate (lines 592–600) but leaves `selectedDifficulties`, `selectedSections`, `searchQuery`, and `hideMarked` at whatever the user had active. An imported session that has, say, only `novice` questions will silently show an empty question list if the user had `advanced` selected — no error, just invisible questions.
-
-When `overwriteActive=false`, `createSession()` is called (which calls `switchSession` — see WR-02) and then the import data is applied. The newly created session starts with cleared filters _only_ if `switchSession` cleared them (it doesn't). So the stale filter problem carries over here too.
-
-**Fix:** Add filter resets to both branches of `importSession`:
-
-```ts
-set({
-  scores: clampedScores,
-  overrides: clampedOverrides,
-  notes: data.notes,
-  topicNotes: data.topicNotes,
-  customQuestions: data.customQuestions,
-  candidate: data.candidate,
-  // Reset filters so imported data is fully visible
-  selectedDifficulties: new Set(),
-  selectedSections: new Set(),
-  searchQuery: '',
-  hideMarked: false,
-});
-```
-
----
+No new Critical or Warning findings were identified in this pass. Three pre-existing Info findings from the previous review were not addressed by the fixer (they were out of scope for the critical-warning fixer), and they remain open.
 
 ## Info
 
-### IN-01: `totalCount` in `DifficultyFilter` is computed on every render outside `useMemo`
+### IN-01: `totalCount` in `DifficultyFilter` computed outside `useMemo`
 
 **File:** `src/components/DifficultyFilter.tsx:44-48`
 
-**Issue:** `questionCounts` is memoized (lines 34–42), but `totalCount` is derived from it via plain arithmetic on every render (lines 44–48). Because `questionCounts` is a stable object reference from `useMemo([])`, `totalCount` is always the same value across all renders. This is not a correctness problem, but it is an inconsistency — the engineer took care to memoize the per-difficulty counts but not the total derived from them.
+**Issue:** `questionCounts` is memoized with `useMemo([])` (lines 34-42) and is a stable object reference, but `totalCount` is derived from it via plain arithmetic on every render (lines 44-48). The value is always identical across renders. Not a correctness problem since the memo dependency is stable, but inconsistent with the explicit memoization strategy applied to the per-difficulty counts.
 
 **Fix:** Fold `totalCount` into the same `useMemo`:
 
@@ -116,19 +54,22 @@ const { questionCounts, totalCount } = useMemo(() => {
     advanced: all.filter(q => q.level === 'advanced').length,
     expert: all.filter(q => q.level === 'expert').length,
   };
-  return { questionCounts: counts, totalCount: counts.novice + counts.intermediate + counts.advanced + counts.expert };
+  return {
+    questionCounts: counts,
+    totalCount: counts.novice + counts.intermediate + counts.advanced + counts.expert,
+  };
 }, []);
 ```
 
 ---
 
-### IN-02: `SectionFilter.test.tsx` line 29 hardcodes button count as `10`
+### IN-02: `SectionFilter.test.tsx` hardcodes button count as `10`
 
-**File:** `src/components/SectionFilter.test.tsx:29`
+**File:** `src/components/SectionFilter.test.tsx:32`
 
-**Issue:** The test asserts `toHaveLength(10)` — computed as 1 ("All sections") + 9 (DEFAULT_SECTIONS entries). This will silently pass even if the count comment is wrong, and will produce a cryptic failure if a section is ever added or removed from DEFAULT_SECTIONS, because the test gives no indication _why_ 10 is expected.
+**Issue:** The test asserts `toHaveLength(10)` — 1 ("All sections") + 9 (`DEFAULT_SECTIONS` entries). `DEFAULT_SECTIONS` currently has 9 entries, so the test passes. However, if a section is added or removed from `DEFAULT_SECTIONS`, the test will fail with an opaque count mismatch rather than a self-documenting failure message.
 
-**Fix:** Drive the count from the imported constant so the test is self-documenting and resilient:
+**Fix:** Drive the expected count from the imported constant:
 
 ```ts
 it('renders N buttons (All sections + one per DEFAULT_SECTIONS entry)', () => {
@@ -140,6 +81,24 @@ it('renders N buttons (All sections + one per DEFAULT_SECTIONS entry)', () => {
 
 ---
 
-_Reviewed: 2026-06-18T00:00:00Z_
+### IN-03: `SectionFilter` buttons have no gap between icon and label
+
+**File:** `src/components/SectionFilter.tsx:30, 56`
+
+**Issue:** Both the "All sections" row and the per-section rows use `flex items-center` without a `gap-*` class. The icon `<span>` and the `<span className="flex-1">` label sibling are flush against each other. `DifficultyFilter` uses `gap-2` on the same flex container structure (lines 59 and 84). This inconsistency produces tighter visual spacing in `SectionFilter` than in `DifficultyFilter`.
+
+**Fix:** Add `gap-2` to both button `className` strings in `SectionFilter`:
+
+```tsx
+// "All sections" row (line 30)
+className={`w-full flex items-center gap-2 px-3 py-2 text-sm text-left ...`}
+
+// Per-section rows (line 56)
+className={`w-full flex items-center gap-2 px-3 py-2 text-sm text-left ...`}
+```
+
+---
+
+_Reviewed: 2026-06-18T14:30:00Z_
 _Reviewer: Claude (gsd-code-reviewer)_
 _Depth: standard_

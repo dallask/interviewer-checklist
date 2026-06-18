@@ -3,10 +3,15 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { chrome } from 'vitest-chrome';
 import { bootstrap } from './bootstrap.js';
 import {
+  V3_SESSION_POPULATED,
+} from './migrations/fixtures/v3-session-fixture.js';
+import {
   createDefaultSession,
+  createDefaultV4Session,
   V2ManifestSchema,
   V2SessionSchema,
   V3SessionSchema,
+  V4SessionSchema,
 } from './types.js';
 
 // ---------------------------------------------------------------------------
@@ -440,5 +445,288 @@ describe('bootstrap() — Scenario B: V3 session round-trip', () => {
     expect(result.sessions[SESSION_ID].questionScore).toEqual(
       defaultSession.questionScore,
     );
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Scenario E: V3 session in storage → migration on bootstrap
+// ---------------------------------------------------------------------------
+
+describe('bootstrap() — Scenario E: V3 session migrated to V4 on bootstrap', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
+  it('returns version:4 session with sections after migrating a stored V3 session', async () => {
+    chrome.storage.local.get.mockImplementation((keys, callback) => {
+      const keysArr = Array.isArray(keys) ? keys : [keys];
+      if (keysArr.includes('manifest')) {
+        const result = { manifest: VALID_V2_MANIFEST };
+        callback?.(result);
+        return Promise.resolve(result);
+      }
+      // Return V3 session blob
+      const result = { [`session:${SESSION_ID}`]: V3_SESSION_POPULATED };
+      callback?.(result);
+      return Promise.resolve(result);
+    });
+    chrome.storage.local.set.mockImplementation((_items, callback) => {
+      callback?.();
+      return Promise.resolve();
+    });
+
+    const result = await bootstrap();
+
+    expect(result.sessions[SESSION_ID]).toBeDefined();
+    expect(result.sessions[SESSION_ID].version).toBe(4);
+  });
+
+  it('returns non-empty sections array after migrating a stored V3 session', async () => {
+    chrome.storage.local.get.mockImplementation((keys, callback) => {
+      const keysArr = Array.isArray(keys) ? keys : [keys];
+      if (keysArr.includes('manifest')) {
+        const result = { manifest: VALID_V2_MANIFEST };
+        callback?.(result);
+        return Promise.resolve(result);
+      }
+      const result = { [`session:${SESSION_ID}`]: V3_SESSION_POPULATED };
+      callback?.(result);
+      return Promise.resolve(result);
+    });
+    chrome.storage.local.set.mockImplementation((_items, callback) => {
+      callback?.();
+      return Promise.resolve();
+    });
+
+    const result = await bootstrap();
+
+    // V4 session must have sections materialized from DEFAULT_SECTIONS
+    const session = result.sessions[SESSION_ID] as unknown as { version: number; sections: unknown[] };
+    expect(Array.isArray(session.sections)).toBe(true);
+    expect(session.sections.length).toBeGreaterThan(0);
+  });
+
+  it('returns empty failedSessionIds after successful V3→V4 migration', async () => {
+    chrome.storage.local.get.mockImplementation((keys, callback) => {
+      const keysArr = Array.isArray(keys) ? keys : [keys];
+      if (keysArr.includes('manifest')) {
+        const result = { manifest: VALID_V2_MANIFEST };
+        callback?.(result);
+        return Promise.resolve(result);
+      }
+      const result = { [`session:${SESSION_ID}`]: V3_SESSION_POPULATED };
+      callback?.(result);
+      return Promise.resolve(result);
+    });
+    chrome.storage.local.set.mockImplementation((_items, callback) => {
+      callback?.();
+      return Promise.resolve();
+    });
+
+    const result = await bootstrap();
+
+    expect((result as { failedSessionIds?: string[] }).failedSessionIds).toEqual([]);
+  });
+
+  it('writes a pre-v4 snapshot key matching /^snapshot:<id>:pre-v4-\\d+$/', async () => {
+    chrome.storage.local.get.mockImplementation((keys, callback) => {
+      const keysArr = Array.isArray(keys) ? keys : [keys];
+      if (keysArr.includes('manifest')) {
+        const result = { manifest: VALID_V2_MANIFEST };
+        callback?.(result);
+        return Promise.resolve(result);
+      }
+      const result = { [`session:${SESSION_ID}`]: V3_SESSION_POPULATED };
+      callback?.(result);
+      return Promise.resolve(result);
+    });
+    chrome.storage.local.set.mockImplementation((_items, callback) => {
+      callback?.();
+      return Promise.resolve();
+    });
+
+    await bootstrap();
+
+    const allSetCalls = chrome.storage.local.set.mock.calls as Array<
+      [Record<string, unknown>, ...unknown[]]
+    >;
+    const snapshotCall = allSetCalls.find((call) => {
+      const keys = Object.keys(call[0]);
+      return keys.some((k) =>
+        new RegExp(`^snapshot:${SESSION_ID}:pre-v4-\\d+$`).test(k),
+      );
+    });
+    expect(snapshotCall).toBeDefined();
+  });
+
+  it('writes migrated V4 session under session:<id> key', async () => {
+    chrome.storage.local.get.mockImplementation((keys, callback) => {
+      const keysArr = Array.isArray(keys) ? keys : [keys];
+      if (keysArr.includes('manifest')) {
+        const result = { manifest: VALID_V2_MANIFEST };
+        callback?.(result);
+        return Promise.resolve(result);
+      }
+      const result = { [`session:${SESSION_ID}`]: V3_SESSION_POPULATED };
+      callback?.(result);
+      return Promise.resolve(result);
+    });
+    chrome.storage.local.set.mockImplementation((_items, callback) => {
+      callback?.();
+      return Promise.resolve();
+    });
+
+    await bootstrap();
+
+    const allSetCalls = chrome.storage.local.set.mock.calls as Array<
+      [Record<string, unknown>, ...unknown[]]
+    >;
+    const sessionWriteCall = allSetCalls.find((call) => {
+      const keys = Object.keys(call[0]);
+      return keys.includes(`session:${SESSION_ID}`);
+    });
+    expect(sessionWriteCall).toBeDefined();
+    const written = sessionWriteCall?.[0][`session:${SESSION_ID}`] as { version: number };
+    expect(written?.version).toBe(4);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Scenario F: migration failure → session excluded from sessions map
+// ---------------------------------------------------------------------------
+
+describe('bootstrap() — Scenario F: failed migration → session excluded', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
+  it('excludes session from sessions map when migrateV3ToV4 throws', async () => {
+    vi.mock('./migrations/v3-to-v4.js', () => ({
+      migrateV3ToV4: vi.fn().mockImplementation(() => {
+        throw new Error('migration failed');
+      }),
+    }));
+
+    chrome.storage.local.get.mockImplementation((keys, callback) => {
+      const keysArr = Array.isArray(keys) ? keys : [keys];
+      if (keysArr.includes('manifest')) {
+        const result = { manifest: VALID_V2_MANIFEST };
+        callback?.(result);
+        return Promise.resolve(result);
+      }
+      const result = { [`session:${SESSION_ID}`]: V3_SESSION_POPULATED };
+      callback?.(result);
+      return Promise.resolve(result);
+    });
+    chrome.storage.local.set.mockImplementation((_items, callback) => {
+      callback?.();
+      return Promise.resolve();
+    });
+
+    const result = await bootstrap();
+
+    // Session must be excluded when migration fails
+    expect(result.sessions[SESSION_ID]).toBeUndefined();
+  });
+
+  it('includes session ID in failedSessionIds when migrateV3ToV4 throws', async () => {
+    vi.mock('./migrations/v3-to-v4.js', () => ({
+      migrateV3ToV4: vi.fn().mockImplementation(() => {
+        throw new Error('migration failed');
+      }),
+    }));
+
+    chrome.storage.local.get.mockImplementation((keys, callback) => {
+      const keysArr = Array.isArray(keys) ? keys : [keys];
+      if (keysArr.includes('manifest')) {
+        const result = { manifest: VALID_V2_MANIFEST };
+        callback?.(result);
+        return Promise.resolve(result);
+      }
+      const result = { [`session:${SESSION_ID}`]: V3_SESSION_POPULATED };
+      callback?.(result);
+      return Promise.resolve(result);
+    });
+    chrome.storage.local.set.mockImplementation((_items, callback) => {
+      callback?.();
+      return Promise.resolve();
+    });
+
+    const result = await bootstrap();
+
+    const failedIds = (result as { failedSessionIds?: string[] }).failedSessionIds ?? [];
+    expect(failedIds).toContain(SESSION_ID);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Scenario G: already-V4 session → passed through without re-migration
+// ---------------------------------------------------------------------------
+
+describe('bootstrap() — Scenario G: already-V4 session passes through unchanged', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
+  it('returns V4 session unchanged when a V4 session is already in storage', async () => {
+    const V4_SESSION = createDefaultV4Session(SESSION_ID);
+
+    chrome.storage.local.get.mockImplementation((keys, callback) => {
+      const keysArr = Array.isArray(keys) ? keys : [keys];
+      if (keysArr.includes('manifest')) {
+        const result = { manifest: VALID_V2_MANIFEST };
+        callback?.(result);
+        return Promise.resolve(result);
+      }
+      const result = { [`session:${SESSION_ID}`]: V4_SESSION };
+      callback?.(result);
+      return Promise.resolve(result);
+    });
+    chrome.storage.local.set.mockImplementation((_items, callback) => {
+      callback?.();
+      return Promise.resolve();
+    });
+
+    const result = await bootstrap();
+
+    expect(result.sessions[SESSION_ID]).toBeDefined();
+    expect(result.sessions[SESSION_ID].version).toBe(4);
+  });
+
+  it('does NOT write a pre-v4 snapshot when session is already V4', async () => {
+    const V4_SESSION = createDefaultV4Session(SESSION_ID);
+    // Validate fixture passes V4SessionSchema
+    const check = v.safeParse(V4SessionSchema, V4_SESSION);
+    if (!check.success) throw new Error('V4_SESSION fixture is invalid');
+
+    chrome.storage.local.get.mockImplementation((keys, callback) => {
+      const keysArr = Array.isArray(keys) ? keys : [keys];
+      if (keysArr.includes('manifest')) {
+        const result = { manifest: VALID_V2_MANIFEST };
+        callback?.(result);
+        return Promise.resolve(result);
+      }
+      const result = { [`session:${SESSION_ID}`]: V4_SESSION };
+      callback?.(result);
+      return Promise.resolve(result);
+    });
+    chrome.storage.local.set.mockImplementation((_items, callback) => {
+      callback?.();
+      return Promise.resolve();
+    });
+
+    await bootstrap();
+
+    const allSetCalls = chrome.storage.local.set.mock.calls as Array<
+      [Record<string, unknown>, ...unknown[]]
+    >;
+    // No snapshot key should be written for an already-V4 session
+    const snapshotCall = allSetCalls.find((call) => {
+      const keys = Object.keys(call[0]);
+      return keys.some((k) =>
+        new RegExp(`^snapshot:${SESSION_ID}:pre-v4-\\d+$`).test(k),
+      );
+    });
+    expect(snapshotCall).toBeUndefined();
   });
 });

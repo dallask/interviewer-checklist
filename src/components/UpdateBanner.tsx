@@ -28,23 +28,55 @@ export function UpdateBanner() {
     versionRef.current = version;
     setCurrentVersion(version);
 
+    function evaluate(lastSeen: string | undefined, dismissed: string | undefined) {
+      if (lastSeen && lastSeen !== version && dismissed !== version) {
+        setShowBanner(true);
+      } else {
+        setShowBanner(false);
+      }
+    }
+
     chrome.storage.local.get(
       ['lastSeenVersion', 'dismissedUpdateVersion'],
       (result) => {
         if (chrome.runtime.lastError) return;
-        const lastSeen = result.lastSeenVersion as string | undefined;
-        const dismissed = result.dismissedUpdateVersion as string | undefined;
-        // Compare against the LOCAL CONST `version`, not the (still '')
-        // React state `currentVersion`.
-        if (
-          lastSeen &&
-          lastSeen !== version &&
-          dismissed !== version
-        ) {
-          setShowBanner(true);
-        }
+        evaluate(
+          result.lastSeenVersion as string | undefined,
+          result.dismissedUpdateVersion as string | undefined,
+        );
       },
     );
+
+    // WR-08: subscribe to chrome.storage.onChanged so the banner stays
+    // reactive when another tab dismisses it (dismissedUpdateVersion) or
+    // the background SW seeds lastSeenVersion after a hot update. Without
+    // this listener the component read storage exactly once on mount and
+    // could fall out of sync indefinitely.
+    function onChanged(
+      changes: { [key: string]: chrome.storage.StorageChange },
+      area: chrome.storage.AreaName,
+    ) {
+      if (area !== 'local') return;
+      if (
+        !('lastSeenVersion' in changes) &&
+        !('dismissedUpdateVersion' in changes)
+      ) {
+        return;
+      }
+      // Re-read both keys to make the decision with the latest values.
+      chrome.storage.local.get(
+        ['lastSeenVersion', 'dismissedUpdateVersion'],
+        (result) => {
+          if (chrome.runtime.lastError) return;
+          evaluate(
+            result.lastSeenVersion as string | undefined,
+            result.dismissedUpdateVersion as string | undefined,
+          );
+        },
+      );
+    }
+    chrome.storage.onChanged.addListener(onChanged);
+    return () => chrome.storage.onChanged.removeListener(onChanged);
   }, []);
 
   function handleDismiss() {

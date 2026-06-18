@@ -151,7 +151,18 @@ Full archive: [milestones/v1.0-ROADMAP.md](milestones/v1.0-ROADMAP.md)
   4. Clicking the note icon toggles a note textarea below the question; the card stays compact until the user explicitly expands the note
   5. The compact card layout is locked to the screenshot spec (Images #1–#3 from the UAT brief) for spacing, icon placement, and dropdown affordance
 
-**Plans**: TBD
+**Plans**: 4 plans
+
+**Wave 1** *(all independent — run in parallel)*
+
+- [ ] 15-01-PLAN.md — SidebarHeader (sticky header: close toggle + candidate button + progress line + bar) + Sidebar.tsx layout refactor (overflow-y-auto moved to inner div, CandidateModal ownership moved here)
+- [ ] 15-02-PLAN.md — SidebarFooter credit lockup + About button; AboutModal (native dialog: version, credits, close, backdrop/Esc close)
+- [ ] 15-03-PLAN.md — QuestionCard compact redesign: score dropdown (Skip + 0–10) left, question text center, note icon right, textarea below on demand
+
+**Wave 2** *(blocked on Wave 1 completion)*
+
+- [ ] 15-04-PLAN.md — Tests: SidebarHeader.test.tsx (new), AboutModal.test.tsx (new), SidebarFooter.test.tsx (updated), Sidebar.test.tsx (updated), QuestionCard.test.tsx (updated)
+
 **UI hint**: yes
 
 ## Progress
@@ -173,4 +184,4 @@ Full archive: [milestones/v1.0-ROADMAP.md](milestones/v1.0-ROADMAP.md)
 | 12. UAT Defect Cleanup | v1.1 | 4/4 | Complete   | 2026-06-18 |
 | 13. Filter Overhaul | v1.1 | 1/1 | Complete   | 2026-06-18 |
 | 14. Editable Bank & YAML Schema Expansion | v1.1 | 5/5 | Complete | 2026-06-18 |
-| 15. Sidebar Shell Refactor & Compact QuestionCard | v1.1 | 0/0 | Not started | — |
+| 15. Sidebar Shell Refactor & Compact QuestionCard | v1.1 | 0/4 | In planning | — |

@@ -47,13 +47,18 @@ export function useKeyboardShortcuts(): void {
         return;
       }
 
-      if (e.key === '/') {
+      // WR-07: also match via e.code for layout-independent shortcuts.
+      // On AZERTY/QWERTZ/etc., `/` and `\` are Shift-modified or AltGr-
+      // modified and e.key won't be '/' or '\\' for an unmodified press.
+      // e.code === 'Slash' / 'Backslash' refers to the US-layout key
+      // POSITION, so the shortcut still works regardless of layout.
+      if (e.key === '/' || e.code === 'Slash') {
         e.preventDefault();
         const input = document.querySelector(
           '[aria-label="Search questions"]',
         ) as HTMLInputElement | null;
         input?.focus();
-      } else if (e.key === '\\') {
+      } else if (e.key === '\\' || e.code === 'Backslash') {
         e.preventDefault();
         const store = useAppStore.getState();
         store.setSidebarOpen(!store.sidebarOpen);

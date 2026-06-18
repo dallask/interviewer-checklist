@@ -48,6 +48,7 @@ Exceptions:
 - Sticky header height: 44px minimum (fits toggle button + candidate button + progress line at comfortable density)
 - Progress bar height: 4px (`h-1`) — thin decorative line below the progress text
 - Score dropdown: `min-w-[52px]` to accommodate "Skip" label without wrapping
+- 6px (`*-1.5`) — compact card single-line row padding (`py-1.5`, `px-1.5`, `p-1.5`) and score dropdown padding; preserves the 44px min-height touch target while keeping the single-line row compact
 
 **Source:** Measured from existing component classes across `ActionsGroup.tsx`, `SidebarGroup.tsx`, `QuestionCard.tsx`.
 
@@ -226,6 +227,12 @@ fixed inset-0 m-auto w-full max-w-lg bg-white dark:bg-gray-900 rounded-lg shadow
 
 ---
 
+## Visual Focal Point
+
+Primary focal point: score `<select>` dropdown on the left edge of the compact QuestionCard row — the scoring action is the dominant interaction in the content tree. All other row elements (question text, note icon) are subordinate to it in visual weight and horizontal order.
+
+---
+
 ## Interaction States
 
 ### SidebarHeader — Progress Bar
@@ -279,9 +286,9 @@ fixed inset-0 m-auto w-full max-w-lg bg-white dark:bg-gray-900 rounded-lg shadow
 | Note icon button aria-label (open) | "Toggle note for {question text}" (unchanged — `aria-expanded` signals state) |
 | Score dropdown aria-label | "{question text} score" |
 | Score dropdown Skip option | "Skip" |
-| About button label | "About" |
+| About button label | "About" — noun (application name implied by context; button sits in SidebarFooter alongside the app version line) |
 | AboutModal title | "Interviewer Checklist" |
-| AboutModal close button | "Close" |
+| AboutModal close button | "Close" — contextually unambiguous on modal close button (WCAG dialog pattern; dialog title provides the object) |
 | Credit lockup | "Developed by Ievgen Kyvgyla" + link text "kivgila.pro" |
 | Sidebar toggle (close) | aria-label: "Close sidebar" |
 | Candidate button in header | aria-label: "Candidate details", title: "Candidate details" |

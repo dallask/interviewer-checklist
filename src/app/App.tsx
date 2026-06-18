@@ -31,16 +31,22 @@ export function App() {
   const migrationFailedCount = useAppStore((s) => s.migrationFailedCount);
   const migrationFailedIds = useAppStore((s) => s.migrationFailedIds);
   const sections = useAppStore((s) => s.sections);
+  // CR-01: subscribe to removedDefaultQuestionIds so removed questions are
+  // filtered out of the rendered rows immediately after removal.
+  const removedDefaultQuestionIds = useAppStore((s) => s.removedDefaultQuestionIds);
 
   // Compute set of topic IDs that have at least one scored question.
   // A topic is "marked" when it has a score != null — used by hideMarked toggle.
   // Phase 11: score keys use V4 format '${topicId}-q${idx}' (D-04 stable ID format).
   // Phase 14: iterate state.sections (from store) instead of DEFAULT_SECTIONS.
+  // WR-05: skip removed default questions so their stale scores don't keep a
+  // topic "marked" after the question is removed from the visible list.
   const markedTopicIds = useMemo(() => {
     const marked = new Set<string>();
     for (const section of sections) {
       for (const topic of section.topics) {
-        const hasScore = topic.questions.some((_, i) => {
+        const hasScore = topic.questions.some((q, i) => {
+          if (removedDefaultQuestionIds.has(q.id)) return false; // skip removed
           const key = `${topic.id}-q${i}`;
           return scores[key] !== null && scores[key] !== undefined;
         });
@@ -48,7 +54,7 @@ export function App() {
       }
     }
     return marked;
-  }, [scores, sections]);
+  }, [scores, sections, removedDefaultQuestionIds]);
 
   // buildFlatRows now accepts V4Section[] — no cast needed (Plan 02)
   const rows = buildFlatRows(sections, topicOpen, sectionOpen, {
@@ -58,6 +64,7 @@ export function App() {
     hideMarked,
     markedTopicIds,
     customQuestions,
+    removedDefaultQuestionIds, // CR-01: pass so buildFlatRows filters removed questions
   });
 
   return (

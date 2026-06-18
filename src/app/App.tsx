@@ -70,7 +70,7 @@ export function App() {
         {/* Backdrop — narrow viewports only */}
         {sidebarOpen && (
           <div
-            className="fixed inset-0 bg-black/40 z-40 md:hidden print:hidden"
+            className="fixed inset-0 bg-black/40 z-40 print:hidden"
             aria-hidden="true"
             onClick={() => setSidebarOpen(false)}
           />

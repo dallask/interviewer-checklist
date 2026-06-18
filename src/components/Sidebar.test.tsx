@@ -94,9 +94,10 @@ describe('Sidebar', () => {
   // exercised by App-level tests/UAT, not by this component test suite.
   it('does not render a backdrop (owned by App.tsx after CR-03)', () => {
     render(<Sidebar />);
-    // The aside itself uses aria-label="Filters"; nothing inside Sidebar
-    // should carry aria-hidden="true" anymore.
-    const backdrop = document.querySelector('[aria-hidden="true"]');
+    // Check that no `fixed inset-0` backdrop overlay div exists inside Sidebar.
+    // Note: icon spans inside SidebarGroup legitimately use aria-hidden="true"
+    // (added in Phase 12 UI-11), so we query specifically for the backdrop pattern.
+    const backdrop = document.querySelector('div.fixed.inset-0[aria-hidden="true"]');
     expect(backdrop).not.toBeInTheDocument();
   });
 });

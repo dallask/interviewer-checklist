@@ -1,6 +1,15 @@
 # Interviewer Checklist — Chrome Extension
 
-## Current Milestone: v1.0 Chrome Extension Launch
+## Current State
+
+**Shipped:** v1.0 Chrome Extension Launch — 2026-06-18
+**Status:** Code complete with 515/515 tests passing; manual CWS submission tasks (privacy-policy hosting, screenshots, fresh-profile smoke test, dashboard upload) pending user action per `cws-assets/` checklists.
+
+**Next:** No active milestone. Run `/gsd-new-milestone` to plan v1.1.
+
+---
+
+## Previous Milestone: v1.0 Chrome Extension Launch
 
 **Goal:** Build and ship the complete Interviewer Checklist Chrome MV3 extension — full feature parity with the stack-checklist.html prototype — to the public Chrome Web Store.
 
@@ -30,7 +39,25 @@ A single interviewer/candidate can run an end-to-end weighted scoring session �
 
 <!-- Shipped and confirmed valuable. -->
 
-(None yet — ship to validate)
+- ✓ Chrome MV3 extension with toolbar action that opens the checklist in a new full-page tab — v1.0
+- ✓ React + Vite + TypeScript build that bundles into the extension — v1.0
+- ✓ Full feature parity with `stack-checklist.html` (built-in bank, 4 difficulty levels) — v1.0
+- ✓ 0–10 per-question scoring with difficulty-weighted topic marks, manual topic overrides, plain-mean overall and group marks, live recompute, colored mark bands — v1.0
+- ✓ Per-question and per-topic notes, persisted with state — v1.0
+- ✓ Candidate details modal with Save/Cancel/Reset — v1.0
+- ✓ Custom questions per topic with difficulty selection, "custom" badge, deletion, full participation in scoring/sorting/filtering/export — v1.0
+- ✓ Sidebar with collapsible groups; debounced search; multi-select difficulty/section filters with live counts — v1.0
+- ✓ AI candidate-feedback prompt modal — generates tool-agnostic editable prompt with copy-to-clipboard + manual-select fallback — v1.0
+- ✓ YAML export (full structural) and YAML import supporting both structural and legacy progress-only formats — v1.0
+- ✓ Multiple named sessions stored in `chrome.storage.local` with in-app session switcher — v1.0
+- ✓ Dark mode toggle (respects OS preference with manual override) — v1.0
+- ✓ All state persisted to `chrome.storage.local` with schema-migration on load — v1.0
+- ✓ Reset all (with confirmation) — v1.0
+- ✓ Keyboard shortcuts: `/`, `\`, `Esc`, `_execute_action` toolbar — v1.0
+- ✓ Foldable sidebar, collapsible sub-groups with remembered state — v1.0
+- ✓ Accessibility: focus traps in all 6 modals, ARIA labels, focus-visible rings — v1.0
+- ✓ Print stylesheet (expands all topics via JS hook due to virtualizer; hides controls) — v1.0
+- ◆ Published listing on the Chrome Web Store — v1.0 artifacts ready (PRIVACY.md, docs/cws-submission.md, dist.zip 120K); manual submission pending
 
 ### Active
 
@@ -70,6 +97,9 @@ A single interviewer/candidate can run an end-to-end weighted scoring session �
 
 ## Context
 
+- **Shipped state:** 17,862 LOC TypeScript across 38 test files with 515/515 passing tests. 30 plans executed across 11 phases (including audit closure Phase 7.1). Stack: React 19 + Vite 8 + CRXJS 2.6 + TypeScript 6 + Biome 2.5 + Vitest 4 + Tailwind 4 + Zustand + js-yaml 4.2 + @tanstack/react-virtual. Zero new dependencies after Phase 7 (js-yaml installation).
+- **Known deferred:** 5 phases (5, 6, 7, 8, 9) have `human_needed` verifications deferred during execution — manual browser-level UAT not performed. 3 UAT scenarios pending (phases 3, 5, 6). All are documented in STATE.md Deferred Items.
+- **Final manual actions for CWS launch:** publish PRIVACY.md to stable HTTPS URL (GitHub Pages), capture 3 screenshots at 1280×800 per `cws-assets/CWS-SCREENSHOTS.md`, run smoke test per `cws-assets/CWS-SMOKE-TEST.md`, upload `dist.zip` to CWS dashboard with copy from `docs/cws-submission.md`.
 - **Source artifact:** `stack-checklist.html` at the repo root is the behavioral source of truth for parity features. The 3,053-line file ships the built-in bank, the scoring engine, the AI prompt builder, the YAML import/export, and the sidebar UX. Requirements phase will derive REQ-IDs by reading it.
 - **Current persistence:** the prototype uses `localStorage` under a single key. The extension will migrate that semantically to `chrome.storage.local` plus session slots, and continue to honor legacy progress-only YAML imports.
 - **Distribution intent:** Chrome Web Store, public listing. Implies CWS review checklist (manifest, permissions justification, privacy policy, screenshots) as a v1 release blocker.

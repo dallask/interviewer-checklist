@@ -2,10 +2,10 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: Chrome Extension Launch
-status: executing
+status: Awaiting next milestone
 stopped_at: Roadmap written; REQUIREMENTS.md traceability already present; ready to plan Phase 1
-last_updated: "2026-06-18T05:53:49.358Z"
-last_activity: 2026-06-18
+last_updated: "2026-06-18T05:55:05.837Z"
+last_activity: 2026-06-18 — Milestone v1.0 completed and archived
 progress:
   total_phases: 11
   completed_phases: 10
@@ -25,12 +25,10 @@ See: .planning/PROJECT.md (updated 2026-06-16)
 
 ## Current Position
 
-Phase: 08
-Plan: Not started
-Status: Executing Phase 09
-Last activity: 2026-06-18
-
-Progress: [░░░░░░░░░░] 0%
+Phase: Milestone v1.0 complete
+Plan: —
+Status: Awaiting next milestone
+Last activity: 2026-06-18 — Milestone v1.0 completed and archived
 
 ## Performance Metrics
 
@@ -94,3 +92,25 @@ None yet.
 Last session: 2026-06-16
 Stopped at: Roadmap written; REQUIREMENTS.md traceability already present; ready to plan Phase 1
 Resume file: None
+
+## Deferred Items
+
+Items acknowledged and deferred at v1.0 milestone close on 2026-06-18:
+
+| Category | Item | Status |
+|----------|------|--------|
+| UAT | Phase 03 (storage layer) — 2 pending scenarios | deferred |
+| UAT | Phase 05 (scoring UI) — 1 pending scenario | deferred |
+| UAT | Phase 06 (session switcher) — 1 pending scenario | deferred |
+| Verification | Phase 05 (scoring UI) human_needed | deferred |
+| Verification | Phase 06 (session switcher) human_needed | deferred |
+| Verification | Phase 07 (YAML I/O) human_needed | deferred |
+| Verification | Phase 08 (AI prompt modal) human_needed | deferred |
+| Verification | Phase 09 (polish) human_needed | deferred |
+
+All deferred items are manual browser tests, not unsatisfied requirements. 515/515 unit/integration tests passing.
+Phase 10 manual CWS submission (publish PRIVACY.md to HTTPS URL, capture 1280×800 screenshots, fresh-profile smoke test per cws-assets/CWS-SMOKE-TEST.md, upload dist.zip + copy from docs/cws-submission.md) is the final user action before public release.
+
+## Operator Next Steps
+
+- Start the next milestone with /gsd-new-milestone

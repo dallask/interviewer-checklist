@@ -260,6 +260,14 @@ export function parseStructural(
 
   const obj = yamlObj as Record<string, unknown>;
 
+  // Extract schemaVersion early — needed to augment topicIdSet before the
+  // main sections loop (CR-04: added-section topics must be "known").
+  const schemaVersion =
+    typeof (obj.meta as Record<string, unknown> | null | undefined)
+      ?.schemaVersion === 'number'
+      ? ((obj.meta as Record<string, unknown>).schemaVersion as number)
+      : 1;
+
   // Build canonical ID set from sections param for counting
   const topicIdSet = new Set<string>();
   // CR-02: also build a per-topic question count map so we can reject out-of-bounds
@@ -269,6 +277,31 @@ export function parseStructural(
     for (const topic of section.items) {
       topicIdSet.add(topic.id);
       topicQuestionCount.set(topic.id, topic.questions.length);
+    }
+  }
+
+  // CR-04: also register topics from bank.addedSections so that the main
+  // sections loop treats them as "known" and does not discard their scores,
+  // notes, and overrides. This must happen before `incomingSections` is
+  // iterated below.
+  if (
+    schemaVersion >= 2 &&
+    obj.bank != null &&
+    Array.isArray((obj.bank as Record<string, unknown>).addedSections)
+  ) {
+    for (const rawSec of (obj.bank as Record<string, unknown>).addedSections as unknown[]) {
+      if (rawSec == null || typeof rawSec !== 'object') continue;
+      const sec = rawSec as Record<string, unknown>;
+      if (!Array.isArray(sec.topics)) continue;
+      for (const rawTopic of sec.topics as unknown[]) {
+        if (rawTopic == null || typeof rawTopic !== 'object') continue;
+        const t = rawTopic as Record<string, unknown>;
+        const tid = typeof t.id === 'string' ? t.id : '';
+        if (!tid) continue;
+        topicIdSet.add(tid);
+        const qCount = Array.isArray(t.questions) ? t.questions.length : 0;
+        topicQuestionCount.set(tid, qCount);
+      }
     }
   }
 
@@ -479,11 +512,7 @@ export function parseStructural(
   }
 
   // YAML-06: bank delta — only for schemaVersion >= 2
-  const schemaVersion =
-    typeof (obj.meta as Record<string, unknown> | null | undefined)
-      ?.schemaVersion === 'number'
-      ? ((obj.meta as Record<string, unknown>).schemaVersion as number)
-      : 1;
+  // (schemaVersion is extracted early above for CR-04 topicIdSet augmentation)
   if (schemaVersion >= 2 && obj.bank != null) {
     const bank = obj.bank as Record<string, unknown>;
 

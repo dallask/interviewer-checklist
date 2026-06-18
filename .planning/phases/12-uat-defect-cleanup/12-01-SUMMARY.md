@@ -110,6 +110,17 @@ None — both fixes are complete DOM event wiring with no placeholder values or 
 - Phase 12 Plan 02 (UI-09 hide notes) can proceed immediately — no blockers from this plan
 - The `phase-12-defects.test.tsx` file is ready for Plan 02 to extend with UI-09 tests
 
+## Self-Check: PASSED
+
+- src/test/phase-12-defects.test.tsx: FOUND
+- src/components/TopicMarkDisplay.tsx: FOUND
+- src/components/SessionSwitcherModal.tsx: FOUND
+- .planning/phases/12-uat-defect-cleanup/12-01-SUMMARY.md: FOUND
+- Commit 94fe6f3 (RED test): FOUND
+- Commit 8fa48fa (SCORE-07 feat): FOUND
+- Commit ade4739 (SESS-05 feat): FOUND
+- Commit 6baa44d (docs metadata): FOUND
+
 ---
 *Phase: 12-uat-defect-cleanup*
 *Completed: 2026-06-18*

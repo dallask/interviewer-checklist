@@ -11,6 +11,27 @@ import { useAppStore } from '../store/app.js';
 
 const mockUseAppStore = useAppStore as unknown as ReturnType<typeof vi.fn>;
 
+// Convert DEFAULT_SECTIONS to V4Section shape for store mock
+const mockSections = DEFAULT_SECTIONS.map((s) => ({
+  id: s.id,
+  label: s.label,
+  icon: s.icon,
+  isDefault: true,
+  topics: s.items.map((t, ti) => ({
+    id: t.id,
+    name: t.name,
+    desc: t.desc,
+    tag: t.tag,
+    isDefault: true,
+    questions: t.questions.map((q, qi) => ({
+      id: `${t.id}-q${qi}`,
+      text: q.q,
+      level: q.level,
+      isDefault: true,
+    })),
+  })),
+}));
+
 describe('SectionFilter', () => {
   const toggleSection = vi.fn();
   const clearSections = vi.fn();
@@ -22,6 +43,8 @@ describe('SectionFilter', () => {
         selectedSections: new Set(),
         toggleSection,
         clearSections,
+        sections: mockSections,
+        removedDefaultQuestionIds: new Set<string>(),
       }),
     );
   });
@@ -76,6 +99,8 @@ describe('SectionFilter', () => {
         selectedSections: new Set([calledId]),
         toggleSection,
         clearSections,
+        sections: mockSections,
+        removedDefaultQuestionIds: new Set<string>(),
       }),
     );
     render(<SectionFilter />);
@@ -112,6 +137,8 @@ describe('SectionFilter', () => {
         selectedSections: new Set(['frontend']),
         toggleSection,
         clearSections: vi.fn(),
+        sections: mockSections,
+        removedDefaultQuestionIds: new Set<string>(),
       }),
     );
     render(<SectionFilter />);
@@ -126,6 +153,8 @@ describe('SectionFilter', () => {
         selectedSections: new Set(['frontend']),
         toggleSection,
         clearSections: localClearSections,
+        sections: mockSections,
+        removedDefaultQuestionIds: new Set<string>(),
       }),
     );
     render(<SectionFilter />);
@@ -140,6 +169,8 @@ describe('SectionFilter', () => {
         selectedSections: new Set(),
         toggleSection,
         clearSections: localClearSections,
+        sections: mockSections,
+        removedDefaultQuestionIds: new Set<string>(),
       }),
     );
     render(<SectionFilter />);

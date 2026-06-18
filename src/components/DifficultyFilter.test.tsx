@@ -6,9 +6,31 @@ vi.mock('../store/app.js', () => ({
   useAppStore: vi.fn(),
 }));
 
+import { DEFAULT_SECTIONS } from '../data/bank/index.js';
 import { useAppStore } from '../store/app.js';
 
 const mockUseAppStore = useAppStore as unknown as ReturnType<typeof vi.fn>;
+
+// Convert DEFAULT_SECTIONS to V4Section shape for store mock
+const mockSections = DEFAULT_SECTIONS.map((s) => ({
+  id: s.id,
+  label: s.label,
+  icon: s.icon,
+  isDefault: true,
+  topics: s.items.map((t) => ({
+    id: t.id,
+    name: t.name,
+    desc: t.desc,
+    tag: t.tag,
+    isDefault: true,
+    questions: t.questions.map((q, qi) => ({
+      id: `${t.id}-q${qi}`,
+      text: q.q,
+      level: q.level,
+      isDefault: true,
+    })),
+  })),
+}));
 
 describe('DifficultyFilter', () => {
   const toggleDifficulty = vi.fn();
@@ -21,6 +43,8 @@ describe('DifficultyFilter', () => {
         selectedDifficulties: new Set(),
         toggleDifficulty,
         clearDifficulties,
+        sections: mockSections,
+        removedDefaultQuestionIds: new Set<string>(),
       }),
     );
   });
@@ -46,6 +70,8 @@ describe('DifficultyFilter', () => {
         selectedDifficulties: new Set(['novice']),
         toggleDifficulty,
         clearDifficulties,
+        sections: mockSections,
+        removedDefaultQuestionIds: new Set<string>(),
       }),
     );
     render(<DifficultyFilter />);
@@ -97,6 +123,8 @@ describe('DifficultyFilter', () => {
         selectedDifficulties: new Set(['novice']),
         toggleDifficulty,
         clearDifficulties: vi.fn(),
+        sections: mockSections,
+        removedDefaultQuestionIds: new Set<string>(),
       }),
     );
     render(<DifficultyFilter />);
@@ -111,6 +139,8 @@ describe('DifficultyFilter', () => {
         selectedDifficulties: new Set(['novice']),
         toggleDifficulty,
         clearDifficulties: localClearDifficulties,
+        sections: mockSections,
+        removedDefaultQuestionIds: new Set<string>(),
       }),
     );
     render(<DifficultyFilter />);
@@ -125,6 +155,8 @@ describe('DifficultyFilter', () => {
         selectedDifficulties: new Set(),
         toggleDifficulty,
         clearDifficulties: localClearDifficulties,
+        sections: mockSections,
+        removedDefaultQuestionIds: new Set<string>(),
       }),
     );
     render(<DifficultyFilter />);

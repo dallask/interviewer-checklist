@@ -1,6 +1,5 @@
 import { useMemo } from 'react';
 import type { Difficulty } from '../data/bank/types.js';
-import { DEFAULT_SECTIONS } from '../data/bank/index.js';
 import { useAppStore } from '../store/app.js';
 
 const DIFFICULTIES: Difficulty[] = [
@@ -29,17 +28,21 @@ export function DifficultyFilter() {
   const selectedDifficulties = useAppStore((s) => s.selectedDifficulties);
   const toggleDifficulty = useAppStore((s) => s.toggleDifficulty);
   const clearDifficulties = useAppStore((s) => s.clearDifficulties);
+  const sections = useAppStore((s) => s.sections);
+  const removedDefaultQuestionIds = useAppStore((s) => s.removedDefaultQuestionIds);
 
-  // D-05: compute counts once at mount; DEFAULT_SECTIONS is a compile-time constant in v1.1
   const questionCounts = useMemo(() => {
-    const all = DEFAULT_SECTIONS.flatMap(s => s.items).flatMap(t => t.questions);
+    const all = sections
+      .flatMap((s) => s.topics)
+      .flatMap((t) => t.questions)
+      .filter((q) => !removedDefaultQuestionIds.has(q.id));
     return {
       novice: all.filter(q => q.level === 'novice').length,
       intermediate: all.filter(q => q.level === 'intermediate').length,
       advanced: all.filter(q => q.level === 'advanced').length,
       expert: all.filter(q => q.level === 'expert').length,
     };
-  }, []);
+  }, [sections, removedDefaultQuestionIds]);
 
   const totalCount =
     questionCounts.novice +

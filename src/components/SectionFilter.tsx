@@ -1,26 +1,34 @@
 import { useMemo } from 'react';
-import { DEFAULT_SECTIONS } from '../data/bank/index.js';
 import { useAppStore } from '../store/app.js';
 
 export function SectionFilter() {
   const selectedSections = useAppStore((s) => s.selectedSections);
   const toggleSection = useAppStore((s) => s.toggleSection);
   const clearSections = useAppStore((s) => s.clearSections);
+  const sections = useAppStore((s) => s.sections);
+  const removedDefaultQuestionIds = useAppStore((s) => s.removedDefaultQuestionIds);
 
-  // D-05: compute section counts once at mount; DEFAULT_SECTIONS is a compile-time constant in v1.1
   const sectionCounts = useMemo(
     () =>
       Object.fromEntries(
-        DEFAULT_SECTIONS.map(s => [s.id, s.items.reduce((n, t) => n + t.questions.length, 0)]),
+        sections.map(s => [
+          s.id,
+          s.topics.reduce(
+            (n, t) =>
+              n +
+              t.questions.filter((q) => !removedDefaultQuestionIds.has(q.id)).length,
+            0,
+          ),
+        ]),
       ),
-    [],
+    [sections, removedDefaultQuestionIds],
   );
 
   const totalCount = Object.values(sectionCounts).reduce((a, b) => a + b, 0);
 
   return (
     <div className="flex flex-col">
-      {/* "All sections" row — D-01: pressed when Set is empty */}
+      {/* "All sections" row — pressed when Set is empty */}
       <button
         type="button"
         aria-pressed={selectedSections.size === 0}
@@ -44,7 +52,7 @@ export function SectionFilter() {
         </span>
       </button>
 
-      {DEFAULT_SECTIONS.map((section) => {
+      {sections.map((section) => {
         const isSelected = selectedSections.has(section.id);
 
         return (

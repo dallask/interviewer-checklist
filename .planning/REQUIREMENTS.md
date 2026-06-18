@@ -36,17 +36,17 @@
 
 ### Editable Bank
 
-- [ ] **BANK-01**: User can add a new section to the active session (sidebar affordance mirrors the existing "add custom question" pattern)
-- [ ] **BANK-02**: User can remove a non-default or user-added section from the active session
-- [ ] **BANK-03**: User can add a new topic to any section (default or user-added) in the active session
-- [ ] **BANK-04**: User can remove a non-default or user-added topic from any section in the active session
-- [ ] **BANK-05**: User can remove default questions from any topic using the same affordance as for custom questions (extends D4 / E4 user-edit scope to default questions)
+- [x] **BANK-01**: User can add a new section to the active session (sidebar affordance mirrors the existing "add custom question" pattern)
+- [x] **BANK-02**: User can remove a non-default or user-added section from the active session
+- [x] **BANK-03**: User can add a new topic to any section (default or user-added) in the active session
+- [x] **BANK-04**: User can remove a non-default or user-added topic from any section in the active session
+- [x] **BANK-05**: User can remove default questions from any topic using the same affordance as for custom questions (extends D4 / E4 user-edit scope to default questions)
 
 ### Data & YAML
 
-- [ ] **YAML-04**: YAML export schema for default questions includes per-question `text` and `level` fields in addition to `index`, `score`, and `note` (D4, test 7)
-- [ ] **YAML-05**: YAML export preserves per-custom-question notes that the user added (fix for D5, test 7)
-- [ ] **YAML-06**: YAML export/import schema represents user-added and user-removed sections/topics so that the editable-bank state round-trips through export → import (covers BANK-01..05 in YAML)
+- [x] **YAML-04**: YAML export schema for default questions includes per-question `text` and `level` fields in addition to `index`, `score`, and `note` (D4, test 7)
+- [x] **YAML-05**: YAML export preserves per-custom-question notes that the user added (fix for D5, test 7)
+- [x] **YAML-06**: YAML export/import schema represents user-added and user-removed sections/topics so that the editable-bank state round-trips through export → import (covers BANK-01..05 in YAML)
 - [x] **DATA-01**: V3 → V4 session migration applies on load to materialize default sections/topics into the user-editable bank shape; V3 sessions hydrate without data loss; legacy progress-only YAML imports still work
 - [x] **DATA-02**: Importing a v1.0-era full-structural YAML export (V3 schema) into v1.1 produces an equivalent V4 session with no loss of scores, notes, candidate details, or custom questions
 
@@ -88,14 +88,14 @@ Deferred. Not in v1.1 roadmap.
 | UI-15 | Phase 15 | Complete |
 | UI-16 | Phase 13 | Complete |
 | UI-17 | Phase 13 | Complete |
-| BANK-01 | Phase 14 | Pending |
-| BANK-02 | Phase 14 | Pending |
-| BANK-03 | Phase 14 | Pending |
-| BANK-04 | Phase 14 | Pending |
-| BANK-05 | Phase 14 | Pending |
-| YAML-04 | Phase 14 | Pending |
-| YAML-05 | Phase 14 | Pending |
-| YAML-06 | Phase 14 | Pending |
+| BANK-01 | Phase 14 | Complete |
+| BANK-02 | Phase 14 | Complete |
+| BANK-03 | Phase 14 | Complete |
+| BANK-04 | Phase 14 | Complete |
+| BANK-05 | Phase 14 | Complete |
+| YAML-04 | Phase 14 | Complete |
+| YAML-05 | Phase 14 | Complete |
+| YAML-06 | Phase 14 | Complete |
 | DATA-01 | Phase 11 | Complete |
 | DATA-02 | Phase 11 | Complete |
 

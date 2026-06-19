@@ -1,4 +1,5 @@
 import { useMemo } from 'react';
+import { ClipboardList } from 'lucide-react';
 import { useAppStore } from '../store/app.js';
 
 export function SectionFilter() {
@@ -41,7 +42,7 @@ export function SectionFilter() {
             : 'border-l-2 border-transparent'
         }`}
       >
-        <span aria-hidden="true" className="mr-1">📋</span>
+        <span aria-hidden="true" className="mr-1"><ClipboardList className="w-4 h-4" /></span>
         <span className="flex-1">All sections</span>
         <span className={`ml-auto text-xs tabular-nums ${
           selectedSections.size === 0

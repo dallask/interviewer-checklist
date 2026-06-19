@@ -49,7 +49,7 @@ describe('SidebarGroup', () => {
     expect(screen.getByText('Visible content')).toBeInTheDocument();
   });
 
-  it('region div has hidden attribute when isOpen=false (aria-controls always resolves)', () => {
+  it('region div is always in DOM when isOpen=false (aria-controls always resolves)', () => {
     render(
       <SidebarGroup
         groupId="search"
@@ -60,11 +60,12 @@ describe('SidebarGroup', () => {
         <p>Hidden content</p>
       </SidebarGroup>,
     );
-    // WR-02 fix: region is always in the DOM so aria-controls resolves;
-    // the HTML hidden attribute removes it from the accessibility tree.
+    // D-03: region is always in the DOM so aria-controls resolves;
+    // grid-template-rows: 0fr collapses visually without display:none.
     const region = document.getElementById('sidebar-group-search');
     expect(region).toBeInTheDocument();
-    expect(region).toHaveAttribute('hidden');
+    expect(region).not.toHaveAttribute('hidden');
+    expect(region?.style.gridTemplateRows).toBe('0fr');
   });
 
   it('calls onToggle when button is clicked', () => {

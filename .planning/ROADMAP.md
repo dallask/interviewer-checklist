@@ -106,7 +106,13 @@ Plans:
   3. Icon sizes, colors, and alignment are visually consistent across all replaced locations
   4. All 675+ existing tests continue to pass after the icon library migration
 
-**Plans**: TBD
+**Plans**: 3 plans
+Plans:
+
+- [ ] 18-01-PLAN.md — Install lucide-react + replace icons in App.tsx, SidebarHeader.tsx, Sidebar.tsx, SectionFilter.tsx, ActionsGroup.tsx (Action-tier files)
+- [ ] 18-02-PLAN.md — Replace icons in remaining 11 Inline-tier files (QuestionCard, SearchGroup, SessionRow, SectionRow, TopicRow, SessionSwitcherModal, StorageToast, UndoToast, UpdateBanner, TopicMarkDisplay, MigrationErrorBanner)
+- [ ] 18-03-PLAN.md — Fix SessionRow.test.tsx getByText('✓') assertions + run full acceptance gates (tests, tsc, biome)
+
 **UI hint**: yes
 
 ### Phase 19: Typography & Transitions
@@ -146,5 +152,5 @@ Plans:
 | 15. Sidebar Shell Refactor & Compact QuestionCard | v1.1 | 4/4 | Complete | 2026-06-18 |
 | 16. Bug Fixes & Dark Mode Polish | v1.2 | 0/TBD | Not started | - |
 | 17. Difficulty Indicators | v1.2 | 1/1 | Complete | 2026-06-19 |
-| 18. Icon Library | v1.2 | 0/TBD | Not started | - |
+| 18. Icon Library | v1.2 | 0/3 | Not started | - |
 | 19. Typography & Transitions | v1.2 | 0/TBD | Not started | - |

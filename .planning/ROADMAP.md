@@ -87,7 +87,11 @@ Full archive: [milestones/v1.1-ROADMAP.md](milestones/v1.1-ROADMAP.md)
   3. Difficulty colors are consistent between the left border and the badge chip on the same card
   4. All 675+ existing tests continue to pass after the visual changes
 
-**Plans**: TBD
+**Plans**: 1 plan
+
+Plans:
+- [ ] 17-01-PLAN.md — Add BORDER_CLASSES + BADGE_CLASSES maps to QuestionCard, apply left border (VIS-01) and badge chip (VIS-02) in screen and print rows, add class-presence tests
+
 **UI hint**: yes
 
 ### Phase 18: Icon Library

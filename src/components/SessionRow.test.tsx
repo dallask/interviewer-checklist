@@ -83,7 +83,9 @@ describe('SessionRow', () => {
         onDelete={onDelete}
       />,
     );
-    const checkmarkSpan = document.querySelector('[data-testid="session-checkmark"]');
+    const checkmarkSpan = document.querySelector(
+      '[data-testid="session-checkmark"]',
+    );
     expect(checkmarkSpan).toBeTruthy();
     expect(checkmarkSpan?.className).not.toContain('text-transparent');
     expect(checkmarkSpan?.className).toContain('text-blue-600');
@@ -100,7 +102,9 @@ describe('SessionRow', () => {
         onDelete={onDelete}
       />,
     );
-    const checkmarkSpan = document.querySelector('[data-testid="session-checkmark"]');
+    const checkmarkSpan = document.querySelector(
+      '[data-testid="session-checkmark"]',
+    );
     expect(checkmarkSpan).toBeTruthy();
     expect(checkmarkSpan?.className).toContain('text-transparent');
   });

@@ -127,12 +127,19 @@ Plans:
   3. Sidebar open/close, topic/section expand/collapse, modal open/close, and note-textarea toggle each have a visible CSS transition or animation
   4. All 675+ existing tests continue to pass after typography and transition changes
 
-**Plans**: 3 plans
-Plans:
+**Plans**: 3 plansPlans:
+**Wave 1**
 
 - [ ] 19-01-PLAN.md — text-sm → text-[13px] across all 20 component files (D-01) + 7 padding reductions per D-02 table (POL-02)
-- [ ] 19-02-PLAN.md — SidebarGroup grid-rows transition D-03 + QuestionCard/TopicRow textarea grid-rows D-04 + broken test updates (POL-03)
 - [ ] 19-03-PLAN.md — @keyframes fade-in + dialog @starting-style in styles.css + fade-in class on SectionRow/TopicRow/QuestionCard outermost divs (POL-03)
+
+**Wave 2** *(blocked on Wave 1 completion)*
+
+- [ ] 19-02-PLAN.md — SidebarGroup grid-rows transition D-03 + QuestionCard/TopicRow textarea grid-rows D-04 + broken test updates (POL-03)
+
+**Cross-cutting constraints:**
+
+- All 2693 existing tests pass
 
 **UI hint**: yes
 

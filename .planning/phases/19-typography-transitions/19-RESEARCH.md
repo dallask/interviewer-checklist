@@ -464,7 +464,7 @@ dialog {
 
 ---
 
-## Open Questions
+## Open Questions (RESOLVED)
 
 1. **QuestionCard outer `hideNotes` wrapper and D-04 interaction**
    - What we know: QuestionCard has two layers — an outer `div` with `className={hideNotes && !printMode ? 'hidden' : ''}` controlling the entire notes section visibility, and the textarea's own className toggle (`!notesOpen && !printMode ? ' hidden' : ''`). D-04 wraps the textarea in a grid-rows div to animate the open/close.

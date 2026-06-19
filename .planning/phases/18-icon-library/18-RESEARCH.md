@@ -522,22 +522,16 @@ import { Check } from 'lucide-react';
 
 ---
 
-## Open Questions
+## Open Questions (RESOLVED)
 
 1. **`MigrationErrorBanner.tsx` line 40 `×` button — aria-label present?**
-   - What we know: not confirmed by codebase read in this research session
-   - What's unclear: whether the button has an existing `aria-label`
-   - Recommendation: check during implementation; add `aria-label="Dismiss migration error"` if missing
+   - RESOLVED: check during implementation; add `aria-label="Dismiss migration error"` if missing (Plan 18-02 Task 2 action covers this)
 
 2. **`UpdateBanner.tsx` line 123 `×` button — aria-label present?**
-   - What we know: the banner has aria-label context on its container
-   - What's unclear: whether the specific `×` dismiss button carries one
-   - Recommendation: check during implementation; add `aria-label="Dismiss update notification"` if missing
+   - RESOLVED: check during implementation; add `aria-label="Dismiss update notification"` if missing (Plan 18-02 Task 2 action covers this)
 
 3. **Test count after icon migration**
-   - What we know: current test suite is 2693 tests across 168 test files; 2 tests in `SessionRow.test.tsx` will break on `getByText('✓')` (lines 85, 101)
-   - What's unclear: whether any other test file queries emoji/special chars we haven't found
-   - Recommendation: run `npm test` immediately after the icon replacement wave and before the test-fix wave to confirm the exact list of failures
+   - RESOLVED: run `npm test` after icon replacement wave (Plan 18-02 verify step) to surface any unexpected failures before test-fix wave
 
 ---
 

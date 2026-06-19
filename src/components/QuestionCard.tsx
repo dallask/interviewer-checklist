@@ -1,6 +1,26 @@
 import { useEffect, useRef, useState } from 'react';
+import type { Difficulty } from '../data/bank/types.js';
 import { useAppStore } from '../store/app.js';
 import type { QuestionRow } from '../utils/buildFlatRows.js';
+
+// Full class strings as static literals so Tailwind's content scanner includes them (D-06)
+const BORDER_CLASSES: Record<Difficulty, string> = {
+  novice: 'border-green-500',
+  intermediate: 'border-blue-500',
+  advanced: 'border-orange-500',
+  expert: 'border-pink-500',
+};
+
+// Full class strings as static literals so Tailwind's content scanner includes them (D-06)
+const BADGE_CLASSES: Record<Difficulty, string> = {
+  novice:
+    'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400',
+  intermediate:
+    'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400',
+  advanced:
+    'bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400',
+  expert: 'bg-pink-100 text-pink-700 dark:bg-pink-900/30 dark:text-pink-400',
+};
 
 interface Props {
   row: QuestionRow;
@@ -54,7 +74,9 @@ export function QuestionCard({ row }: Props) {
   }
 
   return (
-    <div className="bg-white dark:bg-gray-900 border-b border-gray-100 dark:border-gray-800">
+    <div
+      className={`bg-white dark:bg-gray-900 border-b border-gray-100 dark:border-gray-800 border-l-4 ${BORDER_CLASSES[question.level]}`}
+    >
       {/* Single-line compact row — hidden on print */}
       <div className="px-3 py-1.5 pl-10 flex items-center gap-2 min-h-[44px] group print:hidden">
         {/* Score dropdown (left) */}
@@ -80,6 +102,15 @@ export function QuestionCard({ row }: Props) {
           {question.q}
         </span>
 
+        {/* Difficulty badge — always visible, VIS-02 */}
+        <span
+          role="img"
+          className={`text-xs font-normal px-1.5 py-0.5 rounded uppercase shrink-0 ${BADGE_CLASSES[question.level]}`}
+          aria-label={`${question.level} difficulty`}
+        >
+          {question.level}
+        </span>
+
         {/* Custom badge — shown only for custom questions */}
         {row.isCustom === true && (
           <span className="text-xs font-normal px-1.5 py-0.5 rounded bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400 shrink-0">
@@ -103,7 +134,9 @@ export function QuestionCard({ row }: Props) {
         {(row.isCustom === true || row.isDefaultQuestion === true) && (
           <button
             type="button"
-            aria-label={row.isCustom ? 'Delete custom question' : 'Remove question'}
+            aria-label={
+              row.isCustom ? 'Delete custom question' : 'Remove question'
+            }
             onClick={() => {
               if (row.isCustom && row.customId != null) {
                 deleteCustomQuestion(row.customId);
@@ -121,6 +154,13 @@ export function QuestionCard({ row }: Props) {
       {/* Print-only score readout — replaces the hidden dropdown row on print */}
       <div className="hidden print:flex print:items-center print:gap-2 print:px-3 print:py-1.5 print:pl-10">
         <span className="text-sm font-normal text-gray-900">{question.q}</span>
+        <span
+          role="img"
+          className={`text-xs font-normal px-1.5 py-0.5 rounded uppercase shrink-0 ${BADGE_CLASSES[question.level]}`}
+          aria-label={`${question.level} difficulty`}
+        >
+          {question.level}
+        </span>
         <span className="ml-auto text-sm font-normal text-gray-700">
           Score: {score !== null ? `${score} / 10` : '— / 10'}
         </span>

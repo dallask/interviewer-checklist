@@ -85,14 +85,18 @@ describe('QuestionCard', () => {
       selector(makeState({ scores: { 'react-q0': 5 }, setScore })),
     );
     render(<QuestionCard row={mockRow} />);
-    const select = screen.getByRole('combobox', { name: /What is JSX\? score/ });
+    const select = screen.getByRole('combobox', {
+      name: /What is JSX\? score/,
+    });
     fireEvent.change(select, { target: { value: 'skip' } });
     expect(setScore).toHaveBeenCalledWith('react-q0', null);
   });
 
   it('score select calls setScore with 7 when "7" is selected', () => {
     render(<QuestionCard row={mockRow} />);
-    const select = screen.getByRole('combobox', { name: /What is JSX\? score/ });
+    const select = screen.getByRole('combobox', {
+      name: /What is JSX\? score/,
+    });
     fireEvent.change(select, { target: { value: '7' } });
     expect(setScore).toHaveBeenCalledWith('react-q0', 7);
   });
@@ -110,13 +114,17 @@ describe('QuestionCard', () => {
 
   it('score select has min-w-[52px] class', () => {
     render(<QuestionCard row={mockRow} />);
-    const select = screen.getByRole('combobox', { name: /What is JSX\? score/ });
+    const select = screen.getByRole('combobox', {
+      name: /What is JSX\? score/,
+    });
     expect(select.className).toContain('min-w-[52px]');
   });
 
   it('score select has dark:[color-scheme:dark] class for dark mode option readability', () => {
     render(<QuestionCard row={mockRow} />);
-    const select = screen.getByRole('combobox', { name: /What is JSX\? score/ });
+    const select = screen.getByRole('combobox', {
+      name: /What is JSX\? score/,
+    });
     expect(select.className).toContain('[color-scheme:dark]');
   });
 
@@ -128,7 +136,9 @@ describe('QuestionCard', () => {
       question: { q: 'What is Twig?', level: 'intermediate' as const },
     };
     render(<QuestionCard row={row} />);
-    const select = screen.getByRole('combobox', { name: /What is Twig\? score/ });
+    const select = screen.getByRole('combobox', {
+      name: /What is Twig\? score/,
+    });
     expect(select).toBeInTheDocument();
   });
 
@@ -286,5 +296,111 @@ describe('QuestionCard', () => {
     const deleteBtn = screen.getByRole('button', { name: 'Remove question' });
     fireEvent.click(deleteBtn);
     expect(removeDefaultQuestion).not.toHaveBeenCalled();
+  });
+
+  // VIS-01: Left border class-presence tests (one per difficulty level)
+  describe('difficulty indicators', () => {
+    it('outer container has border-l-4 and border-green-500 for novice (VIS-01)', () => {
+      const noviceRow = {
+        ...mockRow,
+        question: { q: 'What is JSX?', level: 'novice' as const },
+      };
+      const { container } = render(<QuestionCard row={noviceRow} />);
+      const outerDiv = container.firstChild as HTMLElement;
+      expect(outerDiv.className).toContain('border-l-4');
+      expect(outerDiv.className).toContain('border-green-500');
+    });
+
+    it('outer container has border-l-4 and border-blue-500 for intermediate (VIS-01)', () => {
+      const { container } = render(<QuestionCard row={mockRow} />);
+      const outerDiv = container.firstChild as HTMLElement;
+      expect(outerDiv.className).toContain('border-l-4');
+      expect(outerDiv.className).toContain('border-blue-500');
+    });
+
+    it('outer container has border-l-4 and border-orange-500 for advanced (VIS-01)', () => {
+      const advancedRow = {
+        ...mockRow,
+        question: { q: 'What is JSX?', level: 'advanced' as const },
+      };
+      const { container } = render(<QuestionCard row={advancedRow} />);
+      const outerDiv = container.firstChild as HTMLElement;
+      expect(outerDiv.className).toContain('border-l-4');
+      expect(outerDiv.className).toContain('border-orange-500');
+    });
+
+    it('outer container has border-l-4 and border-pink-500 for expert (VIS-01)', () => {
+      const expertRow = {
+        ...mockRow,
+        question: { q: 'What is JSX?', level: 'expert' as const },
+      };
+      const { container } = render(<QuestionCard row={expertRow} />);
+      const outerDiv = container.firstChild as HTMLElement;
+      expect(outerDiv.className).toContain('border-l-4');
+      expect(outerDiv.className).toContain('border-pink-500');
+    });
+
+    // VIS-02: Badge chip class-presence tests (one per difficulty level)
+    // Note: getByLabelText would find two elements (screen row + print row share same aria-label)
+    // so we use getAllByLabelText and verify the screen-row badge (index 0)
+    it('renders difficulty badge chip with aria-label and correct classes for novice (VIS-02)', () => {
+      const noviceRow = {
+        ...mockRow,
+        question: { q: 'What is JSX?', level: 'novice' as const },
+      };
+      render(<QuestionCard row={noviceRow} />);
+      const badges = screen.getAllByLabelText('novice difficulty');
+      const badge = badges[0];
+      expect(badge.className).toContain('uppercase');
+      expect(badge.className).toContain('shrink-0');
+      expect(badge.className).toContain('bg-green-100');
+      expect(badge.className).toContain('text-green-700');
+      expect(badge.className).toContain('dark:bg-green-900/30');
+      expect(badge.className).toContain('dark:text-green-400');
+    });
+
+    it('renders difficulty badge chip with aria-label and correct classes for intermediate (VIS-02)', () => {
+      render(<QuestionCard row={mockRow} />);
+      const badges = screen.getAllByLabelText('intermediate difficulty');
+      const badge = badges[0];
+      expect(badge.className).toContain('uppercase');
+      expect(badge.className).toContain('shrink-0');
+      expect(badge.className).toContain('bg-blue-100');
+      expect(badge.className).toContain('text-blue-700');
+      expect(badge.className).toContain('dark:bg-blue-900/30');
+      expect(badge.className).toContain('dark:text-blue-400');
+    });
+
+    it('renders difficulty badge chip with aria-label and correct classes for advanced (VIS-02)', () => {
+      const advancedRow = {
+        ...mockRow,
+        question: { q: 'What is JSX?', level: 'advanced' as const },
+      };
+      render(<QuestionCard row={advancedRow} />);
+      const badges = screen.getAllByLabelText('advanced difficulty');
+      const badge = badges[0];
+      expect(badge.className).toContain('uppercase');
+      expect(badge.className).toContain('shrink-0');
+      expect(badge.className).toContain('bg-orange-100');
+      expect(badge.className).toContain('text-orange-700');
+      expect(badge.className).toContain('dark:bg-orange-900/30');
+      expect(badge.className).toContain('dark:text-orange-400');
+    });
+
+    it('renders difficulty badge chip with aria-label and correct classes for expert (VIS-02)', () => {
+      const expertRow = {
+        ...mockRow,
+        question: { q: 'What is JSX?', level: 'expert' as const },
+      };
+      render(<QuestionCard row={expertRow} />);
+      const badges = screen.getAllByLabelText('expert difficulty');
+      const badge = badges[0];
+      expect(badge.className).toContain('uppercase');
+      expect(badge.className).toContain('shrink-0');
+      expect(badge.className).toContain('bg-pink-100');
+      expect(badge.className).toContain('text-pink-700');
+      expect(badge.className).toContain('dark:bg-pink-900/30');
+      expect(badge.className).toContain('dark:text-pink-400');
+    });
   });
 });

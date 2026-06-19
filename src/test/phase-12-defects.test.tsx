@@ -302,11 +302,11 @@ describe('UI-09: QuestionCard note suppression (D-08)', () => {
 
     render(<QuestionCard row={mockQuestionRow} />);
 
-    // Phase 15: compact card — notes wrapper is the textarea's parent div, not the
-    // note-icon button's parent (which is the compact row and carries print:hidden).
+    // D-04: textarea is now nested inside min-h-0 > grid > hideNotes wrapper.
+    // Traverse up to the hideNotes wrapper (3 levels: min-h-0 > grid > wrapper).
     const textarea = document.getElementById('notes-topic-js-q0');
     expect(textarea).not.toBeNull();
-    const wrapper = textarea!.parentElement as HTMLElement;
+    const wrapper = textarea!.parentElement!.parentElement!.parentElement as HTMLElement;
     expect(wrapper.className).toContain('hidden');
   });
 
@@ -326,9 +326,10 @@ describe('UI-09: QuestionCard note suppression (D-08)', () => {
     render(<QuestionCard row={mockQuestionRow} />);
 
     // In print mode, the notes section wrapper must NOT have the "hidden" class
+    // D-04: traverse up 3 levels to reach the hideNotes wrapper.
     const textarea = document.getElementById('notes-topic-js-q0');
     expect(textarea).not.toBeNull();
-    const wrapper = textarea!.parentElement as HTMLElement;
+    const wrapper = textarea!.parentElement!.parentElement!.parentElement as HTMLElement;
     expect(wrapper.className).not.toContain('hidden');
   });
 
@@ -348,9 +349,10 @@ describe('UI-09: QuestionCard note suppression (D-08)', () => {
     render(<QuestionCard row={mockQuestionRow} />);
 
     // Notes section wrapper should not have class "hidden"
+    // D-04: traverse up 3 levels to reach the hideNotes wrapper.
     const textarea = document.getElementById('notes-topic-js-q0');
     expect(textarea).not.toBeNull();
-    const wrapper = textarea!.parentElement as HTMLElement;
+    const wrapper = textarea!.parentElement!.parentElement!.parentElement as HTMLElement;
     expect(wrapper.className).not.toContain('hidden');
   });
 });

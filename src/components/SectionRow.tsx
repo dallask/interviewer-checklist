@@ -26,7 +26,7 @@ export function SectionRow({ row }: Props) {
         <span>
           <span aria-hidden="true">{row.icon}</span> {row.label}
         </span>
-        <span className="text-sm font-normal text-gray-500 dark:text-gray-400">
+        <span className="text-[13px] font-normal text-gray-500 dark:text-gray-400">
           {row.questionCount} questions
         </span>
       </button>

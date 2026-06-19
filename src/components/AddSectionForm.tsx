@@ -35,7 +35,7 @@ export function AddSectionForm({ onDismiss }: Props) {
         placeholder="Section name…"
         value={name}
         onChange={(e) => setName(e.target.value)}
-        className="text-sm font-normal border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 rounded p-2 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none placeholder:text-gray-400 dark:placeholder:text-gray-600 text-gray-900 dark:text-gray-100"
+        className="text-[13px] font-normal border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 rounded p-2 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none placeholder:text-gray-400 dark:placeholder:text-gray-600 text-gray-900 dark:text-gray-100"
       />
       <input
         type="text"
@@ -44,19 +44,19 @@ export function AddSectionForm({ onDismiss }: Props) {
         maxLength={2}
         value={icon}
         onChange={(e) => setIcon(e.target.value)}
-        className="text-sm font-normal border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 rounded p-2 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none placeholder:text-gray-400 dark:placeholder:text-gray-600 text-gray-900 dark:text-gray-100"
+        className="text-[13px] font-normal border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 rounded p-2 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none placeholder:text-gray-400 dark:placeholder:text-gray-600 text-gray-900 dark:text-gray-100"
       />
       <div className="flex gap-2">
         <button
           type="submit"
-          className="text-sm bg-blue-600 dark:bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-700 dark:hover:bg-blue-600 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none"
+          className="text-[13px] bg-blue-600 dark:bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-700 dark:hover:bg-blue-600 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none"
         >
           Add section
         </button>
         <button
           type="button"
           onClick={onDismiss}
-          className="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none px-3 py-1"
+          className="text-[13px] text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none px-3 py-1"
         >
           Discard
         </button>

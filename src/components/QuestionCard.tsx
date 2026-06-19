@@ -99,7 +99,7 @@ export function QuestionCard({ row }: Props) {
         </select>
 
         {/* Question text (flex-1, truncates) */}
-        <span className="text-sm font-normal text-gray-900 dark:text-gray-100 flex-1 truncate">
+        <span className="text-[13px] font-normal text-gray-900 dark:text-gray-100 flex-1 truncate">
           {question.q}
         </span>
 
@@ -154,14 +154,14 @@ export function QuestionCard({ row }: Props) {
 
       {/* Print-only score readout — replaces the hidden dropdown row on print */}
       <div className="hidden print:flex print:items-center print:gap-2 print:px-3 print:py-1.5 print:pl-10">
-        <span className="text-sm font-normal text-gray-900">{question.q}</span>
+        <span className="text-[13px] font-normal text-gray-900">{question.q}</span>
         <span
           aria-hidden="true"
           className={`text-xs font-normal px-1.5 py-0.5 rounded uppercase shrink-0 ${BADGE_CLASSES[question.level]}`}
         >
           {question.level}
         </span>
-        <span className="ml-auto text-sm font-normal text-gray-700">
+        <span className="ml-auto text-[13px] font-normal text-gray-700">
           Score: {score !== null ? `${score} / 10` : '— / 10'}
         </span>
       </div>
@@ -174,7 +174,7 @@ export function QuestionCard({ row }: Props) {
           value={localNote}
           onChange={(e) => handleNoteChange(e.target.value)}
           placeholder="Question notes…"
-          className={`w-full resize-y min-h-[64px] text-sm font-normal text-gray-900 dark:text-gray-100 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded p-2 mx-3 mb-2 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none placeholder:text-gray-400 dark:placeholder:text-gray-600 print:h-auto print:overflow-visible print:resize-none print:border-0 print:p-0${!notesOpen && !printMode ? ' hidden' : ''}`}
+          className={`w-full resize-y min-h-[64px] text-[13px] font-normal text-gray-900 dark:text-gray-100 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded p-2 mx-3 mb-2 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none placeholder:text-gray-400 dark:placeholder:text-gray-600 print:h-auto print:overflow-visible print:resize-none print:border-0 print:p-0${!notesOpen && !printMode ? ' hidden' : ''}`}
           style={{ width: 'calc(100% - 1.5rem)' }}
         />
       </div>

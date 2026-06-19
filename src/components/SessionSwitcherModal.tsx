@@ -96,7 +96,7 @@ export function SessionSwitcherModal({ dialogRef }: Props) {
             aria-label="Close sessions"
             id="close-session-switcher"
             onClick={() => dialogRef.current?.close()}
-            className="text-sm text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none"
+            className="text-[13px] text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none"
           >
             <X className="w-4 h-4" aria-hidden="true" />
           </button>
@@ -157,7 +157,7 @@ export function SessionSwitcherModal({ dialogRef }: Props) {
           <button
             type="button"
             onClick={handleNewSession}
-            className="w-full text-sm font-normal px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none"
+            className="w-full text-[13px] font-normal px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none"
           >
             New session
           </button>

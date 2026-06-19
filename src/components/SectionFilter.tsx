@@ -39,7 +39,7 @@ export function SectionFilter() {
         onClick={() => {
           if (selectedSections.size > 0) clearSections();
         }}
-        className={`w-full flex items-center px-3 py-2 text-sm text-left text-gray-900 dark:text-gray-100 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none ${
+        className={`w-full flex items-center px-3 py-2 text-[13px] text-left text-gray-900 dark:text-gray-100 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none ${
           selectedSections.size === 0
             ? 'border-l-2 border-blue-600 dark:border-blue-400 bg-blue-50 dark:bg-blue-900/20'
             : 'border-l-2 border-transparent'
@@ -69,7 +69,7 @@ export function SectionFilter() {
             type="button"
             aria-pressed={isSelected}
             onClick={() => toggleSection(section.id)}
-            className={`w-full flex items-center px-3 py-2 text-sm text-left text-gray-900 dark:text-gray-100 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none ${
+            className={`w-full flex items-center px-3 py-2 text-[13px] text-left text-gray-900 dark:text-gray-100 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none ${
               isSelected
                 ? 'border-l-2 border-blue-600 dark:border-blue-400 bg-blue-50 dark:bg-blue-900/20'
                 : 'border-l-2 border-transparent'

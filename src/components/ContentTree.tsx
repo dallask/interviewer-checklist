@@ -84,7 +84,7 @@ export function ContentTree({ rows }: Props) {
         <h1 className="text-xl font-semibold">
           {candidateName || 'Interview Session'}
         </h1>
-        <p className="text-sm text-gray-600">
+        <p className="text-[13px] text-gray-600">
           {candidateRole}
           {candidateRole && candidateDate ? ' — ' : ''}
           {candidateDate}

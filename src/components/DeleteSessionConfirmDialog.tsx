@@ -82,7 +82,7 @@ export function DeleteSessionConfirmDialog({ dialogRef, sessionId, sessionName, 
       >
         Delete session?
       </h2>
-      <p className="text-sm font-normal text-gray-600 dark:text-gray-400 mb-6">
+      <p className="text-[13px] font-normal text-gray-600 dark:text-gray-400 mb-6">
         &ldquo;{sessionName}&rdquo; will be permanently deleted. An undo option will appear briefly after deletion.
       </p>
       <div className="flex gap-4 justify-end">
@@ -90,7 +90,7 @@ export function DeleteSessionConfirmDialog({ dialogRef, sessionId, sessionName, 
           type="button"
           id="cancel-delete-session"
           onClick={() => dialogRef.current?.close()}
-          className="text-sm font-normal px-4 py-2 text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none"
+          className="text-[13px] font-normal px-4 py-2 text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none"
         >
           Keep session
         </button>
@@ -100,7 +100,7 @@ export function DeleteSessionConfirmDialog({ dialogRef, sessionId, sessionName, 
           onClick={() => {
             void handleDelete();
           }}
-          className="text-sm font-normal px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 dark:bg-red-500 dark:hover:bg-red-600 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none"
+          className="text-[13px] font-normal px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 dark:bg-red-500 dark:hover:bg-red-600 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none"
         >
           Delete session
         </button>

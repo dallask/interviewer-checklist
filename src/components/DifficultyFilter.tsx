@@ -59,7 +59,7 @@ export function DifficultyFilter() {
         onClick={() => {
           if (selectedDifficulties.size > 0) clearDifficulties();
         }}
-        className={`flex items-center gap-2 text-sm px-3 py-2 rounded-full text-left focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none ${
+        className={`flex items-center gap-2 text-[13px] px-3 py-2 rounded-full text-left focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none ${
           selectedDifficulties.size === 0
             ? 'bg-blue-600 text-white dark:bg-blue-500'
             : 'bg-gray-200 text-gray-700 dark:bg-gray-700 dark:text-gray-200'
@@ -84,7 +84,7 @@ export function DifficultyFilter() {
             type="button"
             aria-pressed={isSelected}
             onClick={() => toggleDifficulty(difficulty)}
-            className={`flex items-center gap-2 text-sm px-3 py-2 rounded-full text-left focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none ${
+            className={`flex items-center gap-2 text-[13px] px-3 py-2 rounded-full text-left focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none ${
               isSelected
                 ? 'bg-blue-600 text-white dark:bg-blue-500'
                 : 'bg-gray-200 text-gray-700 dark:bg-gray-700 dark:text-gray-200'

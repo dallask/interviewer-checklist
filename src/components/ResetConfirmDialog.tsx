@@ -71,7 +71,7 @@ export function ResetConfirmDialog({ dialogRef }: Props) {
       >
         Reset all scores?
       </h2>
-      <p className="text-sm font-normal text-gray-600 dark:text-gray-400 mb-6">
+      <p className="text-[13px] font-normal text-gray-600 dark:text-gray-400 mb-6">
         This will clear all scores, notes, overrides, custom questions,
         candidate details, and active filters. This cannot be undone.
       </p>
@@ -79,7 +79,7 @@ export function ResetConfirmDialog({ dialogRef }: Props) {
         <button
           type="button"
           onClick={handleKeep}
-          className="text-sm font-normal px-4 py-2 text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none"
+          className="text-[13px] font-normal px-4 py-2 text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none"
         >
           Keep scores
         </button>
@@ -88,7 +88,7 @@ export function ResetConfirmDialog({ dialogRef }: Props) {
           onClick={() => {
             void handleReset();
           }}
-          className="text-sm font-normal px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 dark:bg-red-500 dark:hover:bg-red-600 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none"
+          className="text-[13px] font-normal px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 dark:bg-red-500 dark:hover:bg-red-600 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none"
         >
           Reset
         </button>

@@ -19,7 +19,7 @@ export function StorageToast() {
       role="alert"
       className="fixed bottom-4 right-4 z-50 bg-yellow-50 dark:bg-yellow-900/30 border border-yellow-300 dark:border-yellow-700 text-yellow-800 dark:text-yellow-200 rounded-lg px-4 py-3 shadow-lg flex items-start gap-3 max-w-sm"
     >
-      <p className="flex-1 text-sm">
+      <p className="flex-1 text-[13px]">
         Storage is almost full. Export a YAML backup to free space.
       </p>
       <button

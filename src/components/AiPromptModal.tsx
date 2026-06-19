@@ -113,18 +113,18 @@ export function AiPromptModal({ dialogRef, prompt, onClose }: Props) {
         value={editablePrompt}
         onChange={(e) => setEditablePrompt(e.target.value)}
         rows={10}
-        className="w-full h-64 mt-3 mb-3 text-sm font-normal p-3 resize-y bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-gray-100 border border-gray-300 dark:border-gray-600 rounded focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none"
+        className="w-full h-64 mt-3 mb-3 text-[13px] font-normal p-3 resize-y bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-gray-100 border border-gray-300 dark:border-gray-600 rounded focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none"
         aria-label="Generated AI prompt — editable"
       />
 
       {showFallback && (
-        <p className="mb-2 text-sm font-normal text-gray-500 dark:text-gray-400">
+        <p className="mb-2 text-[13px] font-normal text-gray-500 dark:text-gray-400">
           Select all and copy manually
         </p>
       )}
 
       {copied && (
-        <p aria-live="polite" className="mb-2 text-sm font-normal text-green-600 dark:text-green-400">
+        <p aria-live="polite" className="mb-2 text-[13px] font-normal text-green-600 dark:text-green-400">
           Copied!
         </p>
       )}
@@ -133,7 +133,7 @@ export function AiPromptModal({ dialogRef, prompt, onClose }: Props) {
         <button
           type="button"
           onClick={onClose}
-          className="text-sm font-normal px-4 py-2 text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none"
+          className="text-[13px] font-normal px-4 py-2 text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none"
         >
           Close
         </button>
@@ -143,7 +143,7 @@ export function AiPromptModal({ dialogRef, prompt, onClose }: Props) {
           onClick={() => {
             void handleCopy();
           }}
-          className="text-sm font-normal px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
+          className="text-[13px] font-normal px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
         >
           Copy to clipboard
         </button>

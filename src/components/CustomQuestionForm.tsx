@@ -35,14 +35,14 @@ export function CustomQuestionForm({ topicId, onDismiss }: Props) {
         placeholder="Enter question…"
         value={text}
         onChange={(e) => setText(e.target.value)}
-        className="text-sm font-normal text-gray-900 dark:text-gray-100 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded px-3 py-2 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none placeholder:text-gray-400 dark:placeholder:text-gray-600 w-full"
+        className="text-[13px] font-normal text-gray-900 dark:text-gray-100 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded px-3 py-2 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none placeholder:text-gray-400 dark:placeholder:text-gray-600 w-full"
       />
       <div className="flex items-center gap-3">
         <select
           aria-label="Question difficulty"
           value={level}
           onChange={(e) => setLevel(e.target.value as Difficulty)}
-          className="text-sm font-normal text-gray-900 dark:text-gray-100 bg-gray-100 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded px-3 py-2 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none dark:[color-scheme:dark]"
+          className="text-[13px] font-normal text-gray-900 dark:text-gray-100 bg-gray-100 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded px-3 py-2 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none dark:[color-scheme:dark]"
         >
           <option value="novice">Beginner (1.00×)</option>
           <option value="intermediate">Intermediate (1.25×)</option>
@@ -51,7 +51,7 @@ export function CustomQuestionForm({ topicId, onDismiss }: Props) {
         </select>
         <button
           type="submit"
-          className="text-sm font-normal px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none"
+          className="text-[13px] font-normal px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none"
         >
           Add question
         </button>
@@ -59,7 +59,7 @@ export function CustomQuestionForm({ topicId, onDismiss }: Props) {
           type="button"
           aria-label="Discard question"
           onClick={onDismiss}
-          className="text-sm font-normal px-3 py-2 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none"
+          className="text-[13px] font-normal px-3 py-2 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none"
         >
           Discard question
         </button>

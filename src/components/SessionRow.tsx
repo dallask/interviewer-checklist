@@ -97,7 +97,7 @@ export function SessionRow({
           onBlur={commitRename}
           onKeyDown={handleKeyDown}
           aria-label="Rename session"
-          className="flex-1 text-sm font-normal text-gray-900 dark:text-gray-100 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded px-1 py-1 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none"
+          className="flex-1 text-[13px] font-normal text-gray-900 dark:text-gray-100 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded px-1 py-1 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none"
         />
       ) : (
         <>
@@ -105,7 +105,7 @@ export function SessionRow({
             type="button"
             aria-label={`Switch to ${session.name}`}
             onClick={onSwitch}
-            className="flex-1 text-sm font-normal text-left text-gray-900 dark:text-gray-100 truncate focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none focus-visible:rounded"
+            className="flex-1 text-[13px] font-normal text-left text-gray-900 dark:text-gray-100 truncate focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none focus-visible:rounded"
           >
             {session.name}
           </button>

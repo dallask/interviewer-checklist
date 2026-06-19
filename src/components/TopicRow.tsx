@@ -61,7 +61,7 @@ export function TopicRow({ row }: Props) {
     <div className="motion-safe:animate-[fade-in_150ms_ease-out]">
       {/* WR-01: topic header — split into container div + toggle button + sibling
            delete button to avoid invalid nested <button> HTML (§4.8.2). */}
-      <div className="bg-white dark:bg-gray-900 font-normal text-sm border-b border-gray-100 dark:border-gray-800 w-full flex items-center text-gray-900 dark:text-gray-100 print:px-0 print:pl-0">
+      <div className="bg-white dark:bg-gray-900 font-normal text-[13px] border-b border-gray-100 dark:border-gray-800 w-full flex items-center text-gray-900 dark:text-gray-100 print:px-0 print:pl-0">
         <button
           type="button"
           aria-expanded={row.isOpen}
@@ -110,7 +110,7 @@ export function TopicRow({ row }: Props) {
           onChange={(e) => handleTopicNoteChange(e.target.value)}
           hidden={!topicNotesOpen && !localTopicNote && !printMode}
           placeholder="Topic notes…"
-          className="mt-2 w-full resize-y min-h-[80px] text-sm font-normal text-gray-900 dark:text-gray-100 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded p-2 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none placeholder:text-gray-400 dark:placeholder:text-gray-600 print:h-auto print:overflow-visible print:resize-none print:border-0 print:p-0"
+          className="mt-2 w-full resize-y min-h-[80px] text-[13px] font-normal text-gray-900 dark:text-gray-100 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded p-2 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none placeholder:text-gray-400 dark:placeholder:text-gray-600 print:h-auto print:overflow-visible print:resize-none print:border-0 print:p-0"
         />
       </div>
 

@@ -95,7 +95,7 @@ export function ImportPreviewModal({ dialogRef, preview, onConfirm }: Props) {
       </h2>
 
       {preview ? (
-        <div className="mb-4 text-sm text-gray-700 dark:text-gray-300 space-y-1">
+        <div className="mb-4 text-[13px] text-gray-700 dark:text-gray-300 space-y-1">
           {preview.sessionName && (
             <p>
               <span className="font-medium">Session:</span> {preview.sessionName}
@@ -118,7 +118,7 @@ export function ImportPreviewModal({ dialogRef, preview, onConfirm }: Props) {
           aria-label="Import as new session"
           aria-pressed={!overwriteActive}
           onClick={() => setOverwriteActive(false)}
-          className={`flex-1 text-sm px-3 py-2 rounded focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none ${
+          className={`flex-1 text-[13px] px-3 py-2 rounded focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none ${
             !overwriteActive
               ? 'bg-blue-600 text-white'
               : 'bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-gray-100 hover:bg-gray-200 dark:hover:bg-gray-600'
@@ -131,7 +131,7 @@ export function ImportPreviewModal({ dialogRef, preview, onConfirm }: Props) {
           aria-label="Overwrite active session"
           aria-pressed={overwriteActive}
           onClick={() => setOverwriteActive(true)}
-          className={`flex-1 text-sm px-3 py-2 rounded focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none ${
+          className={`flex-1 text-[13px] px-3 py-2 rounded focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none ${
             overwriteActive
               ? 'bg-blue-600 text-white'
               : 'bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-gray-100 hover:bg-gray-200 dark:hover:bg-gray-600'
@@ -144,7 +144,7 @@ export function ImportPreviewModal({ dialogRef, preview, onConfirm }: Props) {
       {importError && (
         <p
           role="alert"
-          className="mb-3 text-sm text-red-600 dark:text-red-400"
+          className="mb-3 text-[13px] text-red-600 dark:text-red-400"
         >
           {importError}
         </p>
@@ -155,7 +155,7 @@ export function ImportPreviewModal({ dialogRef, preview, onConfirm }: Props) {
           type="button"
           disabled={isPending}
           onClick={handleCancel}
-          className="text-sm font-normal px-4 py-2 text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
+          className="text-[13px] font-normal px-4 py-2 text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
         >
           Cancel
         </button>
@@ -165,7 +165,7 @@ export function ImportPreviewModal({ dialogRef, preview, onConfirm }: Props) {
           onClick={() => {
             void handleConfirm();
           }}
-          className="text-sm font-normal px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
+          className="text-[13px] font-normal px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {isPending ? 'Importing…' : 'Confirm'}
         </button>

@@ -156,9 +156,9 @@ export function ActionsGroup() {
   };
 
   const btnBase =
-    'p-2 min-h-[36px] min-w-[36px] text-sm text-gray-900 dark:text-gray-100 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none';
+    'p-2 min-h-[36px] min-w-[36px] text-[13px] text-gray-900 dark:text-gray-100 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none';
   const btnActive =
-    'p-2 min-h-[36px] min-w-[36px] text-sm rounded focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300';
+    'p-2 min-h-[36px] min-w-[36px] text-[13px] rounded focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300';
 
   return (
     <div className="flex flex-col gap-2">
@@ -266,7 +266,7 @@ export function ActionsGroup() {
           title="Reset all"
           aria-label="Reset all"
           onClick={() => resetDialogRef.current?.showModal()}
-          className="p-2 min-h-[36px] min-w-[36px] text-sm text-red-600 dark:text-red-400 bg-gray-100 dark:bg-gray-700 hover:bg-red-50 dark:hover:bg-red-900/20 rounded focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none"
+          className="p-2 min-h-[36px] min-w-[36px] text-[13px] text-red-600 dark:text-red-400 bg-gray-100 dark:bg-gray-700 hover:bg-red-50 dark:hover:bg-red-900/20 rounded focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none"
         >
           <Trash2 className="w-5 h-5" aria-hidden="true" />
         </button>

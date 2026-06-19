@@ -66,11 +66,11 @@ export function AboutModal({ dialogRef }: AboutModalProps) {
         v{version}
       </p>
 
-      <p className="text-sm font-normal text-gray-700 dark:text-gray-300 mb-3">
+      <p className="text-[13px] font-normal text-gray-700 dark:text-gray-300 mb-3">
         A Chrome extension for structured technical interviews. Score candidates across topics, manage sessions, and export results as YAML.
       </p>
 
-      <ul className="text-sm font-normal text-gray-600 dark:text-gray-400 mb-4 space-y-1 list-disc list-inside">
+      <ul className="text-[13px] font-normal text-gray-600 dark:text-gray-400 mb-4 space-y-1 list-disc list-inside">
         <li>Weighted per-topic scoring with manual override</li>
         <li>Built-in question bank across 9 tech areas (Frontend, Backend, DevOps…)</li>
         <li>Add custom sections, topics, and questions per session</li>
@@ -82,7 +82,7 @@ export function AboutModal({ dialogRef }: AboutModalProps) {
         <li>Dark mode, print-friendly layout</li>
       </ul>
 
-      <div className="mb-4 text-sm font-normal text-gray-700 dark:text-gray-300">
+      <div className="mb-4 text-[13px] font-normal text-gray-700 dark:text-gray-300">
         Developed by{' '}
         <a
           href="https://kivgila.pro"
@@ -99,7 +99,7 @@ export function AboutModal({ dialogRef }: AboutModalProps) {
           type="button"
           aria-label="Close about modal"
           onClick={() => dialogRef.current?.close()}
-          className="text-sm font-normal px-4 py-2 text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none"
+          className="text-[13px] font-normal px-4 py-2 text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none"
         >
           Close
         </button>

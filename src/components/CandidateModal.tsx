@@ -93,7 +93,7 @@ export function CandidateModal({ dialogRef }: Props) {
   }
 
   const inputClass =
-    'text-sm font-normal text-gray-900 dark:text-gray-100 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded px-3 py-2 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none';
+    'text-[13px] font-normal text-gray-900 dark:text-gray-100 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded px-3 py-2 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none';
 
   return (
     // T-05-03-04: Never pass open prop — always call .showModal() imperatively
@@ -113,7 +113,7 @@ export function CandidateModal({ dialogRef }: Props) {
         <div className="flex flex-col gap-1">
           <label
             htmlFor="candidate-name"
-            className="text-sm font-normal text-gray-700 dark:text-gray-300"
+            className="text-[13px] font-normal text-gray-700 dark:text-gray-300"
           >
             Name
           </label>
@@ -131,7 +131,7 @@ export function CandidateModal({ dialogRef }: Props) {
         <div className="flex flex-col gap-1">
           <label
             htmlFor="candidate-email"
-            className="text-sm font-normal text-gray-700 dark:text-gray-300"
+            className="text-[13px] font-normal text-gray-700 dark:text-gray-300"
           >
             Email
           </label>
@@ -149,7 +149,7 @@ export function CandidateModal({ dialogRef }: Props) {
         <div className="flex flex-col gap-1">
           <label
             htmlFor="candidate-role"
-            className="text-sm font-normal text-gray-700 dark:text-gray-300"
+            className="text-[13px] font-normal text-gray-700 dark:text-gray-300"
           >
             Role
           </label>
@@ -167,7 +167,7 @@ export function CandidateModal({ dialogRef }: Props) {
         <div className="flex flex-col gap-1">
           <label
             htmlFor="candidate-date"
-            className="text-sm font-normal text-gray-700 dark:text-gray-300"
+            className="text-[13px] font-normal text-gray-700 dark:text-gray-300"
           >
             Date
           </label>
@@ -185,7 +185,7 @@ export function CandidateModal({ dialogRef }: Props) {
         <div className="flex flex-col gap-1">
           <label
             htmlFor="candidate-interviewer"
-            className="text-sm font-normal text-gray-700 dark:text-gray-300"
+            className="text-[13px] font-normal text-gray-700 dark:text-gray-300"
           >
             Interviewer
           </label>
@@ -203,7 +203,7 @@ export function CandidateModal({ dialogRef }: Props) {
         <div className="flex flex-col gap-1">
           <label
             htmlFor="candidate-details"
-            className="text-sm font-normal text-gray-700 dark:text-gray-300"
+            className="text-[13px] font-normal text-gray-700 dark:text-gray-300"
           >
             Details
           </label>
@@ -214,7 +214,7 @@ export function CandidateModal({ dialogRef }: Props) {
             value={details}
             onChange={(e) => setDetails(e.target.value)}
             placeholder="Note candidate details…"
-            className="resize-y min-h-[80px] text-sm font-normal text-gray-900 dark:text-gray-100 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded px-3 py-2 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none"
+            className="resize-y min-h-[80px] text-[13px] font-normal text-gray-900 dark:text-gray-100 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded px-3 py-2 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none"
           />
         </div>
 
@@ -223,7 +223,7 @@ export function CandidateModal({ dialogRef }: Props) {
             type="button"
             aria-label="Reset candidate details"
             onClick={handleResetDetails}
-            className="text-sm font-normal text-red-600 dark:text-red-400 hover:text-red-800 dark:hover:text-red-300 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none"
+            className="text-[13px] font-normal text-red-600 dark:text-red-400 hover:text-red-800 dark:hover:text-red-300 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none"
           >
             Reset details
           </button>
@@ -231,13 +231,13 @@ export function CandidateModal({ dialogRef }: Props) {
             <button
               type="button"
               onClick={handleDiscard}
-              className="text-sm font-normal px-4 py-2 text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none"
+              className="text-[13px] font-normal px-4 py-2 text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none"
             >
               Discard changes
             </button>
             <button
               type="submit"
-              className="text-sm font-normal px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none"
+              className="text-[13px] font-normal px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none"
             >
               Save details
             </button>

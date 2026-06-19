@@ -5,10 +5,10 @@ import type { QuestionRow } from '../utils/buildFlatRows.js';
 
 // Full class strings as static literals so Tailwind's content scanner includes them (D-06)
 const BORDER_CLASSES: Record<Difficulty, string> = {
-  novice: 'border-green-500',
-  intermediate: 'border-blue-500',
-  advanced: 'border-orange-500',
-  expert: 'border-pink-500',
+  novice: 'border-l-4 border-green-500',
+  intermediate: 'border-l-4 border-blue-500',
+  advanced: 'border-l-4 border-orange-500',
+  expert: 'border-l-4 border-pink-500',
 };
 
 // Full class strings as static literals so Tailwind's content scanner includes them (D-06)
@@ -75,7 +75,7 @@ export function QuestionCard({ row }: Props) {
 
   return (
     <div
-      className={`bg-white dark:bg-gray-900 border-b border-gray-100 dark:border-gray-800 border-l-4 ${BORDER_CLASSES[question.level]}`}
+      className={`bg-white dark:bg-gray-900 border-b border-gray-100 dark:border-gray-800 ${BORDER_CLASSES[question.level]}`}
     >
       {/* Single-line compact row — hidden on print */}
       <div className="px-3 py-1.5 pl-10 flex items-center gap-2 min-h-[44px] group print:hidden">
@@ -105,8 +105,8 @@ export function QuestionCard({ row }: Props) {
         {/* Difficulty badge — always visible, VIS-02 */}
         <span
           role="img"
-          className={`text-xs font-normal px-1.5 py-0.5 rounded uppercase shrink-0 ${BADGE_CLASSES[question.level]}`}
           aria-label={`${question.level} difficulty`}
+          className={`text-xs font-normal px-1.5 py-0.5 rounded uppercase shrink-0 ${BADGE_CLASSES[question.level]}`}
         >
           {question.level}
         </span>
@@ -155,9 +155,8 @@ export function QuestionCard({ row }: Props) {
       <div className="hidden print:flex print:items-center print:gap-2 print:px-3 print:py-1.5 print:pl-10">
         <span className="text-sm font-normal text-gray-900">{question.q}</span>
         <span
-          role="img"
+          aria-hidden="true"
           className={`text-xs font-normal px-1.5 py-0.5 rounded uppercase shrink-0 ${BADGE_CLASSES[question.level]}`}
-          aria-label={`${question.level} difficulty`}
         >
           {question.level}
         </span>

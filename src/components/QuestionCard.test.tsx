@@ -341,16 +341,14 @@ describe('QuestionCard', () => {
     });
 
     // VIS-02: Badge chip class-presence tests (one per difficulty level)
-    // Note: getByLabelText would find two elements (screen row + print row share same aria-label)
-    // so we use getAllByLabelText and verify the screen-row badge (index 0)
+    // Print-row badge has aria-hidden="true" so getByLabelText finds only the screen-row badge
     it('renders difficulty badge chip with aria-label and correct classes for novice (VIS-02)', () => {
       const noviceRow = {
         ...mockRow,
         question: { q: 'What is JSX?', level: 'novice' as const },
       };
       render(<QuestionCard row={noviceRow} />);
-      const badges = screen.getAllByLabelText('novice difficulty');
-      const badge = badges[0];
+      const badge = screen.getByLabelText('novice difficulty');
       expect(badge.className).toContain('uppercase');
       expect(badge.className).toContain('shrink-0');
       expect(badge.className).toContain('bg-green-100');
@@ -361,8 +359,7 @@ describe('QuestionCard', () => {
 
     it('renders difficulty badge chip with aria-label and correct classes for intermediate (VIS-02)', () => {
       render(<QuestionCard row={mockRow} />);
-      const badges = screen.getAllByLabelText('intermediate difficulty');
-      const badge = badges[0];
+      const badge = screen.getByLabelText('intermediate difficulty');
       expect(badge.className).toContain('uppercase');
       expect(badge.className).toContain('shrink-0');
       expect(badge.className).toContain('bg-blue-100');
@@ -377,8 +374,7 @@ describe('QuestionCard', () => {
         question: { q: 'What is JSX?', level: 'advanced' as const },
       };
       render(<QuestionCard row={advancedRow} />);
-      const badges = screen.getAllByLabelText('advanced difficulty');
-      const badge = badges[0];
+      const badge = screen.getByLabelText('advanced difficulty');
       expect(badge.className).toContain('uppercase');
       expect(badge.className).toContain('shrink-0');
       expect(badge.className).toContain('bg-orange-100');
@@ -393,8 +389,7 @@ describe('QuestionCard', () => {
         question: { q: 'What is JSX?', level: 'expert' as const },
       };
       render(<QuestionCard row={expertRow} />);
-      const badges = screen.getAllByLabelText('expert difficulty');
-      const badge = badges[0];
+      const badge = screen.getByLabelText('expert difficulty');
       expect(badge.className).toContain('uppercase');
       expect(badge.className).toContain('shrink-0');
       expect(badge.className).toContain('bg-pink-100');

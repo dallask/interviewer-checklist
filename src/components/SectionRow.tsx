@@ -24,7 +24,7 @@ export function SectionRow({ row }: Props) {
         className="flex-1 flex items-center justify-between px-4 py-3 cursor-pointer focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none text-left"
       >
         <span>
-          {row.icon} {row.label}
+          <span aria-hidden="true">{row.icon}</span> {row.label}
         </span>
         <span className="text-sm font-normal text-gray-500 dark:text-gray-400">
           {row.questionCount} questions

@@ -79,8 +79,8 @@ export function SessionRow({
 
   return (
     <li id={`session-row-${session.id}`} className={liClass}>
-      <span className={checkmarkClass} aria-hidden="true">
-        <Check className="w-4 h-4" />
+      <span data-testid="session-checkmark" className={checkmarkClass} aria-hidden="true">
+        <Check className="w-4 h-4" aria-hidden="true" />
       </span>
 
       {editing ? (

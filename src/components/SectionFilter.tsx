@@ -46,7 +46,7 @@ export function SectionFilter() {
         }`}
       >
         <span aria-hidden="true" className="mr-1">
-          <ClipboardList className="w-4 h-4" />
+          <ClipboardList className="w-4 h-4" aria-hidden="true" />
         </span>
         <span className="flex-1">All sections</span>
         <span

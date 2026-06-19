@@ -83,10 +83,7 @@ describe('SessionRow', () => {
         onDelete={onDelete}
       />,
     );
-    // Find the checkmark span by aria-hidden attribute (Check SVG has no text node)
-    const checkmarkSpan = document
-      .getElementById('session-row-session-1')
-      ?.querySelector('[aria-hidden="true"]');
+    const checkmarkSpan = document.querySelector('[data-testid="session-checkmark"]');
     expect(checkmarkSpan).toBeTruthy();
     expect(checkmarkSpan?.className).not.toContain('text-transparent');
     expect(checkmarkSpan?.className).toContain('text-blue-600');
@@ -103,10 +100,7 @@ describe('SessionRow', () => {
         onDelete={onDelete}
       />,
     );
-    // Find the checkmark span by aria-hidden attribute (Check SVG has no text node)
-    const checkmarkSpan = document
-      .getElementById('session-row-session-1')
-      ?.querySelector('[aria-hidden="true"]');
+    const checkmarkSpan = document.querySelector('[data-testid="session-checkmark"]');
     expect(checkmarkSpan).toBeTruthy();
     expect(checkmarkSpan?.className).toContain('text-transparent');
   });

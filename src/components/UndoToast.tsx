@@ -1,3 +1,4 @@
+import { X } from 'lucide-react';
 import { useAppStore } from '../store/app.js';
 
 export function UndoToast() {
@@ -33,7 +34,7 @@ export function UndoToast() {
           onClick={() => setUndoBuffer(null)}
           className="text-gray-400 hover:text-white dark:hover:text-gray-900 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none"
         >
-          ×
+          <X className="w-4 h-4" aria-hidden="true" />
         </button>
       </div>
     </div>

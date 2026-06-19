@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { X } from 'lucide-react';
 import type { Topic } from '../data/bank/types.js';
 import {
   computeTopicMark,
@@ -113,7 +114,7 @@ export function TopicMarkDisplay({ topicId, topic }: Props) {
           }}
           className="text-xs text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none"
         >
-          ×
+          <X className="w-4 h-4" aria-hidden="true" />
         </button>
       )}
     </fieldset>

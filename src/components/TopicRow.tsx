@@ -1,5 +1,5 @@
-import { useEffect, useRef, useState } from 'react';
 import { X } from 'lucide-react';
+import { useEffect, useRef, useState } from 'react';
 import { useAppStore } from '../store/app.js';
 import type { TopicRow as TopicRowType } from '../utils/buildFlatRows.js';
 import { CustomQuestionForm } from './CustomQuestionForm.js';
@@ -91,7 +91,9 @@ export function TopicRow({ row }: Props) {
 
       {/* Topic notes panel — outside the button for correct semantics (SCORE-03) */}
       {/* hideNotes=true hides this panel; printMode overrides to keep notes visible (D-08) */}
-      <div className={`px-8 py-2 bg-white dark:bg-gray-900 border-b border-gray-100 dark:border-gray-800 print:px-0 print:py-1 print:border-0${hideNotes && !printMode ? ' hidden' : ''}`}>
+      <div
+        className={`px-8 py-2 bg-white dark:bg-gray-900 border-b border-gray-100 dark:border-gray-800 print:px-0 print:py-1 print:border-0${hideNotes && !printMode ? ' hidden' : ''}`}
+      >
         <button
           type="button"
           aria-expanded={topicNotesOpen}

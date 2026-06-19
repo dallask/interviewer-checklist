@@ -1,5 +1,5 @@
-import { useEffect, useRef, useState } from 'react';
 import { X } from 'lucide-react';
+import { useEffect, useRef, useState } from 'react';
 
 /**
  * UpdateBanner (POLISH-07).
@@ -29,7 +29,10 @@ export function UpdateBanner() {
     versionRef.current = version;
     setCurrentVersion(version);
 
-    function evaluate(lastSeen: string | undefined, dismissed: string | undefined) {
+    function evaluate(
+      lastSeen: string | undefined,
+      dismissed: string | undefined,
+    ) {
       if (lastSeen && lastSeen !== version && dismissed !== version) {
         setShowBanner(true);
       } else {

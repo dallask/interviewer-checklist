@@ -63,7 +63,10 @@ export function SidebarHeader({ onCandidateClick }: SidebarHeaderProps) {
 
   const progressPercent =
     totalTopics > 0
-      ? Math.min(100, Math.max(0, Math.round((scoredTopics / totalTopics) * 100)))
+      ? Math.min(
+          100,
+          Math.max(0, Math.round((scoredTopics / totalTopics) * 100)),
+        )
       : 0;
 
   return (

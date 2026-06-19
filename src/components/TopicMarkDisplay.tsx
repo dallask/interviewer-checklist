@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react';
 import { X } from 'lucide-react';
+import { useEffect, useState } from 'react';
 import type { Topic } from '../data/bank/types.js';
 import {
   computeTopicMark,

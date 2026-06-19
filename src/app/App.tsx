@@ -1,6 +1,6 @@
 import './styles.css';
-import { useMemo } from 'react';
 import { Menu } from 'lucide-react';
+import { useMemo } from 'react';
 import { ContentTree } from '../components/ContentTree.js';
 import { MigrationErrorBanner } from '../components/MigrationErrorBanner.js';
 import { Sidebar } from '../components/Sidebar.js';
@@ -34,7 +34,9 @@ export function App() {
   const sections = useAppStore((s) => s.sections);
   // CR-01: subscribe to removedDefaultQuestionIds so removed questions are
   // filtered out of the rendered rows immediately after removal.
-  const removedDefaultQuestionIds = useAppStore((s) => s.removedDefaultQuestionIds);
+  const removedDefaultQuestionIds = useAppStore(
+    (s) => s.removedDefaultQuestionIds,
+  );
 
   // Compute set of topic IDs that have at least one scored question.
   // A topic is "marked" when it has a score != null — used by hideMarked toggle.

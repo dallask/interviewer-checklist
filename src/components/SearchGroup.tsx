@@ -1,5 +1,5 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
 import { X } from 'lucide-react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useAppStore } from '../store/app.js';
 import { buildFlatRows } from '../utils/buildFlatRows.js';
 
@@ -12,7 +12,9 @@ export function SearchGroup() {
   const sectionOpen = useAppStore((s) => s.sectionOpen);
   // Phase 14: use store sections (V4Section[]) instead of DEFAULT_SECTIONS (Plan 01 pattern)
   const sections = useAppStore((s) => s.sections);
-  const removedDefaultQuestionIds = useAppStore((s) => s.removedDefaultQuestionIds);
+  const removedDefaultQuestionIds = useAppStore(
+    (s) => s.removedDefaultQuestionIds,
+  );
   const hideMarked = useAppStore((s) => s.hideMarked);
   const scores = useAppStore((s) => s.scores);
   const customQuestions = useAppStore((s) => s.customQuestions);
@@ -43,7 +45,9 @@ export function SearchGroup() {
           acc +
           s.topics.reduce(
             (a, t) =>
-              a + t.questions.filter((q) => !removedDefaultQuestionIds.has(q.id)).length,
+              a +
+              t.questions.filter((q) => !removedDefaultQuestionIds.has(q.id))
+                .length,
             0,
           ),
         0,

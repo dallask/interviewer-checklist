@@ -1,5 +1,5 @@
+import { Check, Copy, Pencil, X } from 'lucide-react';
 import { useRef, useState } from 'react';
-import { Check, Pencil, Copy, X } from 'lucide-react';
 import type { V2Manifest } from '../storage/types.js';
 
 type SessionMeta = V2Manifest['sessions'][number];
@@ -13,7 +13,14 @@ interface Props {
   onDelete: () => void;
 }
 
-export function SessionRow({ session, isActive, onSwitch, onRename, onDuplicate, onDelete }: Props) {
+export function SessionRow({
+  session,
+  isActive,
+  onSwitch,
+  onRename,
+  onDuplicate,
+  onDelete,
+}: Props) {
   const [editing, setEditing] = useState(false);
   const [draft, setDraft] = useState(session.name);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -71,10 +78,7 @@ export function SessionRow({ session, isActive, onSwitch, onRename, onDuplicate,
     : 'w-4 shrink-0 text-xs text-transparent';
 
   return (
-    <li
-      id={`session-row-${session.id}`}
-      className={liClass}
-    >
+    <li id={`session-row-${session.id}`} className={liClass}>
       <span className={checkmarkClass} aria-hidden="true">
         <Check className="w-4 h-4" />
       </span>

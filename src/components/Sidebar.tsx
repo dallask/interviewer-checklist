@@ -1,5 +1,5 @@
+import { ClipboardList, Search, Target, Zap } from 'lucide-react';
 import { useRef } from 'react';
-import { Search, Target, ClipboardList, Zap } from 'lucide-react';
 import { useAppStore } from '../store/app.js';
 import { ActionsGroup } from './ActionsGroup.js';
 import { CandidateModal } from './CandidateModal.js';

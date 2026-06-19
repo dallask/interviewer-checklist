@@ -18,7 +18,11 @@ interface Props {
   onDismiss: () => void;
 }
 
-export function MigrationErrorBanner({ failedCount, sessionIds: _sessionIds, onDismiss }: Props) {
+export function MigrationErrorBanner({
+  failedCount,
+  sessionIds: _sessionIds,
+  onDismiss,
+}: Props) {
   if (failedCount === 0) return null;
 
   return (

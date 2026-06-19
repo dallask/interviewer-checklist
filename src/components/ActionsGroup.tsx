@@ -1,8 +1,19 @@
-import { useRef, useState } from 'react';
+import {
+  Bot,
+  ChevronsLeftRight,
+  ChevronsUpDown,
+  Download,
+  Eye,
+  Moon,
+  RefreshCw,
+  Sun,
+  Trash2,
+  Upload,
+} from 'lucide-react';
 import type { ChangeEvent } from 'react';
-import { RefreshCw, Bot, Sun, Moon, ChevronsUpDown, ChevronsLeftRight, Eye, Download, Upload, Trash2 } from 'lucide-react';
-import { useAppStore } from '../store/app.js';
+import { useRef, useState } from 'react';
 import { DEFAULT_SECTIONS } from '../data/bank/index.js';
+import { useAppStore } from '../store/app.js';
 import { buildAiPrompt } from '../utils/buildAiPrompt.js';
 import {
   buildFilename,
@@ -11,12 +22,12 @@ import {
 } from '../utils/yamlExport.js';
 import {
   detectFormat,
+  type ImportPreview,
   MAX_YAML_BYTES,
   parseLegacy,
   parseStructural,
   parseYaml,
   reKeyImportResultToV4,
-  type ImportPreview,
 } from '../utils/yamlImport.js';
 import { AiPromptModal } from './AiPromptModal.js';
 import { ImportPreviewModal } from './ImportPreviewModal.js';
@@ -39,7 +50,9 @@ export function ActionsGroup() {
   const customQuestions = useAppStore((s) => s.customQuestions);
   const candidate = useAppStore((s) => s.candidate);
   const sections = useAppStore((s) => s.sections);
-  const removedDefaultQuestionIds = useAppStore((s) => s.removedDefaultQuestionIds);
+  const removedDefaultQuestionIds = useAppStore(
+    (s) => s.removedDefaultQuestionIds,
+  );
 
   const resetDialogRef = useRef<HTMLDialogElement>(null);
   const sessionSwitcherRef = useRef<HTMLDialogElement>(null);
@@ -92,9 +105,7 @@ export function ActionsGroup() {
     importFileInputRef.current?.click();
   };
 
-  const handleImportFileChange = async (
-    e: ChangeEvent<HTMLInputElement>,
-  ) => {
+  const handleImportFileChange = async (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
     if (file.size > MAX_YAML_BYTES) {
@@ -123,7 +134,10 @@ export function ActionsGroup() {
       e.target.value = '';
       return;
     }
-    const v4Preview = { ...preview, result: reKeyImportResultToV4(preview.result) };
+    const v4Preview = {
+      ...preview,
+      result: reKeyImportResultToV4(preview.result),
+    };
     setImportPreview(v4Preview);
     importDialogRef.current?.showModal();
     // Allow re-import of the same file
@@ -141,8 +155,10 @@ export function ActionsGroup() {
     }
   };
 
-  const btnBase = 'p-2 min-h-[36px] min-w-[36px] text-sm text-gray-900 dark:text-gray-100 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none';
-  const btnActive = 'p-2 min-h-[36px] min-w-[36px] text-sm rounded focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300';
+  const btnBase =
+    'p-2 min-h-[36px] min-w-[36px] text-sm text-gray-900 dark:text-gray-100 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none';
+  const btnActive =
+    'p-2 min-h-[36px] min-w-[36px] text-sm rounded focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300';
 
   return (
     <div className="flex flex-col gap-2">
@@ -181,7 +197,11 @@ export function ActionsGroup() {
           onClick={() => setDarkMode(!darkMode)}
           className={darkMode ? btnActive : btnBase}
         >
-          {darkMode ? <Sun className="w-5 h-5" aria-hidden="true" /> : <Moon className="w-5 h-5" aria-hidden="true" />}
+          {darkMode ? (
+            <Sun className="w-5 h-5" aria-hidden="true" />
+          ) : (
+            <Moon className="w-5 h-5" aria-hidden="true" />
+          )}
         </button>
         <button
           type="button"
@@ -265,7 +285,9 @@ export function ActionsGroup() {
       <AiPromptModal
         dialogRef={aiPromptRef}
         prompt={aiPrompt}
-        onClose={() => { aiPromptRef.current?.close(); }}
+        onClose={() => {
+          aiPromptRef.current?.close();
+        }}
       />
       <ImportPreviewModal
         dialogRef={importDialogRef}

@@ -1,9 +1,9 @@
-import { type RefObject, useEffect, useRef, useState } from 'react';
 import { X } from 'lucide-react';
+import { type RefObject, useEffect, useRef, useState } from 'react';
+import type { V2Manifest } from '../storage/types.js';
 import { useAppStore } from '../store/app.js';
 import { DeleteSessionConfirmDialog } from './DeleteSessionConfirmDialog.js';
 import { SessionRow } from './SessionRow.js';
-import type { V2Manifest } from '../storage/types.js';
 
 interface Props {
   dialogRef: RefObject<HTMLDialogElement | null>;
@@ -83,87 +83,98 @@ export function SessionSwitcherModal({ dialogRef }: Props) {
       }}
     >
       <div className="flex flex-col">
-      {/* Header */}
-      <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between">
-        <h2
-          id="session-switcher-title"
-          className="text-base font-semibold text-gray-900 dark:text-gray-100"
-        >
-          Sessions
-        </h2>
-        <button
-          type="button"
-          aria-label="Close sessions"
-          id="close-session-switcher"
-          onClick={() => dialogRef.current?.close()}
-          className="text-sm text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none"
-        >
-          <X className="w-4 h-4" aria-hidden="true" />
-        </button>
-      </div>
+        {/* Header */}
+        <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between">
+          <h2
+            id="session-switcher-title"
+            className="text-base font-semibold text-gray-900 dark:text-gray-100"
+          >
+            Sessions
+          </h2>
+          <button
+            type="button"
+            aria-label="Close sessions"
+            id="close-session-switcher"
+            onClick={() => dialogRef.current?.close()}
+            className="text-sm text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none"
+          >
+            <X className="w-4 h-4" aria-hidden="true" />
+          </button>
+        </div>
 
-      {/* Session list */}
-      <ul
-        aria-label="Sessions"
-        className="flex-1 overflow-y-auto max-h-[352px] py-1"
-      >
-        {manifest?.sessions.map((session) => (
-          <SessionRow
-            key={session.id}
-            session={session}
-            isActive={session.id === activeSessionId}
-            onSwitch={async () => {
-              // WR-03: await switchSession before closing so the dialog does not
-              // close before session data is loaded, and errors are not silently
-              // discarded by fire-and-forget void.
-              try {
-                await switchSession(session.id);
-                dialogRef.current?.close();
-              } catch (err) {
-                console.error('[SessionSwitcherModal] switchSession failed:', err);
-              }
-            }}
-            onRename={(name) => {
-              // WR-07: catch rejection so silent no-op renames surface in console
-              renameSession(session.id, name).catch((err) => {
-                console.error('[SessionSwitcherModal] renameSession failed:', err);
-              });
-            }}
-            onDuplicate={() => {
-              // WR-07: catch rejection so failed duplicate is not silently discarded
-              duplicateSession(session.id).catch((err) => {
-                console.error('[SessionSwitcherModal] duplicateSession failed:', err);
-              });
-            }}
-            onDelete={() => {
-              setPendingDelete(session);
-              deleteDialogRef.current?.showModal();
-            }}
-          />
-        ))}
-      </ul>
-
-      {/* Footer */}
-      <div className="px-6 py-4 border-t border-gray-200 dark:border-gray-700">
-        <button
-          type="button"
-          onClick={handleNewSession}
-          className="w-full text-sm font-normal px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none"
+        {/* Session list */}
+        <ul
+          aria-label="Sessions"
+          className="flex-1 overflow-y-auto max-h-[352px] py-1"
         >
-          New session
-        </button>
-      </div>
+          {manifest?.sessions.map((session) => (
+            <SessionRow
+              key={session.id}
+              session={session}
+              isActive={session.id === activeSessionId}
+              onSwitch={async () => {
+                // WR-03: await switchSession before closing so the dialog does not
+                // close before session data is loaded, and errors are not silently
+                // discarded by fire-and-forget void.
+                try {
+                  await switchSession(session.id);
+                  dialogRef.current?.close();
+                } catch (err) {
+                  console.error(
+                    '[SessionSwitcherModal] switchSession failed:',
+                    err,
+                  );
+                }
+              }}
+              onRename={(name) => {
+                // WR-07: catch rejection so silent no-op renames surface in console
+                renameSession(session.id, name).catch((err) => {
+                  console.error(
+                    '[SessionSwitcherModal] renameSession failed:',
+                    err,
+                  );
+                });
+              }}
+              onDuplicate={() => {
+                // WR-07: catch rejection so failed duplicate is not silently discarded
+                duplicateSession(session.id).catch((err) => {
+                  console.error(
+                    '[SessionSwitcherModal] duplicateSession failed:',
+                    err,
+                  );
+                });
+              }}
+              onDelete={() => {
+                setPendingDelete(session);
+                deleteDialogRef.current?.showModal();
+              }}
+            />
+          ))}
+        </ul>
 
-      {/* DeleteSessionConfirmDialog nested inside modal */}
-      {/* WR-04: pass focusRestoreId so the dialog restores focus to the specific
+        {/* Footer */}
+        <div className="px-6 py-4 border-t border-gray-200 dark:border-gray-700">
+          <button
+            type="button"
+            onClick={handleNewSession}
+            className="w-full text-sm font-normal px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none"
+          >
+            New session
+          </button>
+        </div>
+
+        {/* DeleteSessionConfirmDialog nested inside modal */}
+        {/* WR-04: pass focusRestoreId so the dialog restores focus to the specific
           delete button that opened it (not the parent session-switcher trigger). */}
-      <DeleteSessionConfirmDialog
-        dialogRef={deleteDialogRef}
-        sessionId={pendingDelete?.id ?? ''}
-        sessionName={pendingDelete?.name ?? ''}
-        onDeleted={() => dialogRef.current?.close()}
-        focusRestoreId={pendingDelete ? `delete-session-${pendingDelete.id}` : undefined}
-      />
+        <DeleteSessionConfirmDialog
+          dialogRef={deleteDialogRef}
+          sessionId={pendingDelete?.id ?? ''}
+          sessionName={pendingDelete?.name ?? ''}
+          onDeleted={() => dialogRef.current?.close()}
+          focusRestoreId={
+            pendingDelete ? `delete-session-${pendingDelete.id}` : undefined
+          }
+        />
       </div>
     </dialog>
   );

@@ -1,5 +1,5 @@
-import { useMemo } from 'react';
 import { ClipboardList } from 'lucide-react';
+import { useMemo } from 'react';
 import { useAppStore } from '../store/app.js';
 
 export function SectionFilter() {
@@ -7,17 +7,20 @@ export function SectionFilter() {
   const toggleSection = useAppStore((s) => s.toggleSection);
   const clearSections = useAppStore((s) => s.clearSections);
   const sections = useAppStore((s) => s.sections);
-  const removedDefaultQuestionIds = useAppStore((s) => s.removedDefaultQuestionIds);
+  const removedDefaultQuestionIds = useAppStore(
+    (s) => s.removedDefaultQuestionIds,
+  );
 
   const sectionCounts = useMemo(
     () =>
       Object.fromEntries(
-        sections.map(s => [
+        sections.map((s) => [
           s.id,
           s.topics.reduce(
             (n, t) =>
               n +
-              t.questions.filter((q) => !removedDefaultQuestionIds.has(q.id)).length,
+              t.questions.filter((q) => !removedDefaultQuestionIds.has(q.id))
+                .length,
             0,
           ),
         ]),
@@ -42,13 +45,17 @@ export function SectionFilter() {
             : 'border-l-2 border-transparent'
         }`}
       >
-        <span aria-hidden="true" className="mr-1"><ClipboardList className="w-4 h-4" /></span>
+        <span aria-hidden="true" className="mr-1">
+          <ClipboardList className="w-4 h-4" />
+        </span>
         <span className="flex-1">All sections</span>
-        <span className={`ml-auto text-xs tabular-nums ${
-          selectedSections.size === 0
-            ? 'text-blue-500 dark:text-blue-400'
-            : 'text-gray-400 dark:text-gray-500'
-        }`}>
+        <span
+          className={`ml-auto text-xs tabular-nums ${
+            selectedSections.size === 0
+              ? 'text-blue-500 dark:text-blue-400'
+              : 'text-gray-400 dark:text-gray-500'
+          }`}
+        >
           {totalCount}
         </span>
       </button>
@@ -68,13 +75,17 @@ export function SectionFilter() {
                 : 'border-l-2 border-transparent'
             }`}
           >
-            <span aria-hidden="true" className="mr-1">{section.icon}</span>
+            <span aria-hidden="true" className="mr-1">
+              {section.icon}
+            </span>
             <span className="flex-1">{section.label}</span>
-            <span className={`ml-auto text-xs tabular-nums ${
-              isSelected
-                ? 'text-blue-500 dark:text-blue-400'
-                : 'text-gray-400 dark:text-gray-500'
-            }`}>
+            <span
+              className={`ml-auto text-xs tabular-nums ${
+                isSelected
+                  ? 'text-blue-500 dark:text-blue-400'
+                  : 'text-gray-400 dark:text-gray-500'
+              }`}
+            >
               {sectionCounts[section.id] ?? 0}
             </span>
           </button>

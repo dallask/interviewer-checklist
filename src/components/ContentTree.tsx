@@ -122,7 +122,7 @@ export function ContentTree({ rows }: Props) {
                   <button
                     type="button"
                     onClick={() => setAddSectionOpen(true)}
-                    className="text-xs text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none px-4 py-2 print:hidden"
+                    className="text-xs text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none px-4 py-1.5 print:hidden"
                   >
                     + Add section
                   </button>
@@ -138,7 +138,7 @@ export function ContentTree({ rows }: Props) {
                   <button
                     type="button"
                     onClick={() => setAddTopicOpenFor(row.sectionId)}
-                    className="text-xs text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none px-8 py-2 print:hidden"
+                    className="text-xs text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none px-8 py-1.5 print:hidden"
                   >
                     + Add topic
                   </button>

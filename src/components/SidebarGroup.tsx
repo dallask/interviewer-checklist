@@ -40,7 +40,7 @@ export function SidebarGroup({
       <div
         id={regionId}
         hidden={!isOpen}
-        className="px-4 pb-3"
+        className="px-4 pb-2"
       >
         {children}
       </div>

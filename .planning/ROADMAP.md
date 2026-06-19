@@ -47,7 +47,7 @@ Full archive: [milestones/v1.1-ROADMAP.md](milestones/v1.1-ROADMAP.md)
 - [x] **Phase 16: Bug Fixes & Dark Mode Polish** — Fix add-section/topic tree refresh, note-icon collapse, and score dropdown dark mode contrast
 - [x] **Phase 17: Difficulty Indicators** — QuestionCard left border + badge chip colored by difficulty
 - [x] **Phase 18: Icon Library** — Replace all ad-hoc emoji in UI chrome with Lucide React glyphs (completed 2026-06-19)
-- [ ] **Phase 19: Typography & Transitions** — 13px base font with compact density + CSS transitions throughout
+- [x] **Phase 19: Typography & Transitions** — 13px base font with compact density + CSS transitions throughout (completed 2026-06-19)
 
 ## Phase Details
 
@@ -130,12 +130,12 @@ Plans:
 **Plans**: 3 plansPlans:
 **Wave 1**
 
-- [ ] 19-01-PLAN.md — text-sm → text-[13px] across all 20 component files (D-01) + 7 padding reductions per D-02 table (POL-02)
-- [ ] 19-03-PLAN.md — @keyframes fade-in + dialog @starting-style in styles.css + fade-in class on SectionRow/TopicRow/QuestionCard outermost divs (POL-03)
+- [x] 19-01-PLAN.md — text-sm → text-[13px] across all 20 component files (D-01) + 7 padding reductions per D-02 table (POL-02)
+- [x] 19-03-PLAN.md — @keyframes fade-in + dialog @starting-style in styles.css + fade-in class on SectionRow/TopicRow/QuestionCard outermost divs (POL-03)
 
 **Wave 2** *(blocked on Wave 1 completion)*
 
-- [ ] 19-02-PLAN.md — SidebarGroup grid-rows transition D-03 + QuestionCard/TopicRow textarea grid-rows D-04 + broken test updates (POL-03)
+- [x] 19-02-PLAN.md — SidebarGroup grid-rows transition D-03 + QuestionCard/TopicRow textarea grid-rows D-04 + broken test updates (POL-03)
 
 **Cross-cutting constraints:**
 
@@ -166,4 +166,4 @@ Plans:
 | 16. Bug Fixes & Dark Mode Polish | v1.2 | 0/TBD | Not started | - |
 | 17. Difficulty Indicators | v1.2 | 1/1 | Complete | 2026-06-19 |
 | 18. Icon Library | v1.2 | 3/3 | Complete   | 2026-06-19 |
-| 19. Typography & Transitions | v1.2 | 0/3 | Not started | - |
+| 19. Typography & Transitions | v1.2 | 3/3 | Complete    | 2026-06-19 |

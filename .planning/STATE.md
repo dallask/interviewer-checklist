@@ -2,16 +2,16 @@
 gsd_state_version: 1.0
 milestone: v1.2
 milestone_name: UAT Closure & Visual Polish
-status: executing
-stopped_at: Phase 17 UI-SPEC approved
-last_updated: "2026-06-19T05:36:23.688Z"
-last_activity: 2026-06-19 -- Phase 16 marked complete
+status: planning
+stopped_at: Phase 17 complete
+last_updated: "2026-06-19T08:51:00.000Z"
+last_activity: 2026-06-19 -- Phase 17 complete (VIS-01 + VIS-02, PASS)
 progress:
   total_phases: 4
-  completed_phases: 1
-  total_plans: 2
-  completed_plans: 2
-  percent: 25
+  completed_phases: 2
+  total_plans: 4
+  completed_plans: 3
+  percent: 50
 ---
 
 # Project State
@@ -21,14 +21,14 @@ progress:
 See: .planning/PROJECT.md (updated 2026-06-18)
 
 **Core value:** A single interviewer/candidate can run an end-to-end weighted scoring session — pick topics, score questions on 0–10 with difficulty weighting, capture notes, see live overall + per-group marks, and export a structured YAML / AI-feedback prompt — entirely inside a browser tab with no backend.
-**Current focus:** Milestone v1.2 — roadmap created, ready to plan Phase 16
+**Current focus:** Phase 18 — Icon Library
 
 ## Current Position
 
-Phase: 16 — COMPLETE
-Plan: —
-Status: Ready to execute
-Last activity: 2026-06-19 -- Phase 16 marked complete
+Phase: 18 (Icon Library) — PLANNING
+Plan: TBD
+Status: Phase 17 complete, beginning Phase 18 discuss
+Last activity: 2026-06-19 -- Phase 17 complete (VIS-01 + VIS-02, PASS)
 
 Progress: [░░░░░░░░░░] 0%
 

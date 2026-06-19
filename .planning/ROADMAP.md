@@ -45,7 +45,7 @@ Full archive: [milestones/v1.1-ROADMAP.md](milestones/v1.1-ROADMAP.md)
 **Milestone Goal:** Close the remaining UAT gaps from v1.1 — two virtualizer scroll bugs, one note-collapse bug, dark mode contrast — then layer in the visual enhancements (difficulty indicators, icon library, font density, transitions).
 
 - [x] **Phase 16: Bug Fixes & Dark Mode Polish** — Fix add-section/topic tree refresh, note-icon collapse, and score dropdown dark mode contrast
-- [ ] **Phase 17: Difficulty Indicators** — QuestionCard left border + badge chip colored by difficulty
+- [x] **Phase 17: Difficulty Indicators** — QuestionCard left border + badge chip colored by difficulty
 - [ ] **Phase 18: Icon Library** — Replace all ad-hoc emoji in UI chrome with Lucide React glyphs
 - [ ] **Phase 19: Typography & Transitions** — 13px base font with compact density + CSS transitions throughout
 
@@ -90,7 +90,7 @@ Full archive: [milestones/v1.1-ROADMAP.md](milestones/v1.1-ROADMAP.md)
 **Plans**: 1 plan
 Plans:
 
-- [ ] 17-01-PLAN.md — Add BORDER_CLASSES + BADGE_CLASSES maps to QuestionCard, apply left border (VIS-01) and badge chip (VIS-02) in screen and print rows, add class-presence tests
+- [x] 17-01-PLAN.md — Add BORDER_CLASSES + BADGE_CLASSES maps to QuestionCard, apply left border (VIS-01) and badge chip (VIS-02) in screen and print rows, add class-presence tests
 
 **UI hint**: yes
 
@@ -145,6 +145,6 @@ Plans:
 | 14. Editable Bank & YAML Schema Expansion | v1.1 | 5/5 | Complete | 2026-06-18 |
 | 15. Sidebar Shell Refactor & Compact QuestionCard | v1.1 | 4/4 | Complete | 2026-06-18 |
 | 16. Bug Fixes & Dark Mode Polish | v1.2 | 0/TBD | Not started | - |
-| 17. Difficulty Indicators | v1.2 | 0/TBD | Not started | - |
+| 17. Difficulty Indicators | v1.2 | 1/1 | Complete | 2026-06-19 |
 | 18. Icon Library | v1.2 | 0/TBD | Not started | - |
 | 19. Typography & Transitions | v1.2 | 0/TBD | Not started | - |

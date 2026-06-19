@@ -421,7 +421,7 @@ it('renders difficulty badge chip with correct classes for novice', () => {
 
 ---
 
-## Open Questions
+## Open Questions (RESOLVED)
 
 1. **Outer div vs. inner sub-element for left border**
    - What we know: CONTEXT.md leaves this to Claude's discretion; UI-SPEC recommends the outer container

@@ -88,8 +88,8 @@ Full archive: [milestones/v1.1-ROADMAP.md](milestones/v1.1-ROADMAP.md)
   4. All 675+ existing tests continue to pass after the visual changes
 
 **Plans**: 1 plan
-
 Plans:
+
 - [ ] 17-01-PLAN.md — Add BORDER_CLASSES + BADGE_CLASSES maps to QuestionCard, apply left border (VIS-01) and badge chip (VIS-02) in screen and print rows, add class-presence tests
 
 **UI hint**: yes

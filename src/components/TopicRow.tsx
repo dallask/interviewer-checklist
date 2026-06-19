@@ -103,15 +103,21 @@ export function TopicRow({ row }: Props) {
         >
           {topicNotesOpen ? 'Hide topic notes' : 'Add topic notes'}
         </button>
-        <textarea
-          id={`topic-notes-${topicId}`}
-          aria-label={`Notes for ${row.topic.name}`}
-          value={localTopicNote}
-          onChange={(e) => handleTopicNoteChange(e.target.value)}
-          hidden={!topicNotesOpen && !localTopicNote && !printMode}
-          placeholder="Topic notes…"
-          className="mt-2 w-full resize-y min-h-[80px] text-[13px] font-normal text-gray-900 dark:text-gray-100 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded p-2 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none placeholder:text-gray-400 dark:placeholder:text-gray-600 print:h-auto print:overflow-visible print:resize-none print:border-0 print:p-0"
-        />
+        <div
+          className="grid motion-safe:transition-[grid-template-rows] motion-safe:duration-200 overflow-hidden"
+          style={{ gridTemplateRows: (topicNotesOpen || localTopicNote || printMode) ? '1fr' : '0fr' }}
+        >
+          <div className="min-h-0">
+            <textarea
+              id={`topic-notes-${topicId}`}
+              aria-label={`Notes for ${row.topic.name}`}
+              value={localTopicNote}
+              onChange={(e) => handleTopicNoteChange(e.target.value)}
+              placeholder="Topic notes…"
+              className="mt-2 w-full resize-y min-h-[80px] text-[13px] font-normal text-gray-900 dark:text-gray-100 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded p-2 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none placeholder:text-gray-400 dark:placeholder:text-gray-600 print:h-auto print:overflow-visible print:resize-none print:border-0 print:p-0"
+            />
+          </div>
+        </div>
       </div>
 
       {/* Add custom question trigger and inline form (SCORE-05) */}

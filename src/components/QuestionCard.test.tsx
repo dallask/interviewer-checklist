@@ -176,15 +176,17 @@ describe('QuestionCard', () => {
     expect(btn).toHaveAttribute('aria-expanded', 'true');
   });
 
-  it('clicking note icon button shows the textarea (className toggle, not hidden attribute)', () => {
+  it('clicking note icon button expands the textarea grid wrapper', () => {
     render(<QuestionCard row={mockRow} />);
     const textarea = screen.getByLabelText('Notes for What is JSX?');
-    expect(textarea.className).toContain('hidden');
+    expect(textarea.className).not.toContain('hidden');
+    const wrapper = textarea.closest('.grid') as HTMLElement;
+    expect(wrapper?.style.gridTemplateRows).toBe('0fr');
     const btn = screen.getByRole('button', {
       name: /Toggle note for What is JSX\?/,
     });
     fireEvent.click(btn);
-    expect(textarea.className).not.toContain('hidden');
+    expect(wrapper?.style.gridTemplateRows).toBe('1fr');
     expect(textarea).not.toHaveAttribute('hidden');
   });
 

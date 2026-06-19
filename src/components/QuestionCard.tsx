@@ -76,7 +76,7 @@ export function QuestionCard({ row }: Props) {
 
   return (
     <div
-      className={`bg-white dark:bg-gray-900 border-b border-gray-100 dark:border-gray-800 ${BORDER_CLASSES[question.level]}`}
+      className={`bg-white dark:bg-gray-900 border-b border-gray-100 dark:border-gray-800 motion-safe:animate-[fade-in_150ms_ease-out] ${BORDER_CLASSES[question.level]}`}
     >
       {/* Single-line compact row — hidden on print */}
       <div className="px-3 py-1.5 pl-10 flex items-center gap-2 min-h-[44px] group print:hidden">

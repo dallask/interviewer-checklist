@@ -16,7 +16,7 @@ export function SectionRow({ row }: Props) {
   return (
     // WR-01: split into container div + toggle button + sibling delete button
     // to avoid invalid nested <button> HTML (HTML spec §4.8.2 interactive content).
-    <div className="bg-gray-50 dark:bg-gray-800/50 font-semibold text-base border-b border-gray-200 dark:border-gray-700 w-full flex items-center text-gray-900 dark:text-gray-100">
+    <div className="bg-gray-50 dark:bg-gray-800/50 font-semibold text-base border-b border-gray-200 dark:border-gray-700 w-full flex items-center text-gray-900 dark:text-gray-100 motion-safe:animate-[fade-in_150ms_ease-out]">
       <button
         type="button"
         aria-expanded={!isCollapsed}

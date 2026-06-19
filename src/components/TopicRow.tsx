@@ -58,7 +58,7 @@ export function TopicRow({ row }: Props) {
   }
 
   return (
-    <div>
+    <div className="motion-safe:animate-[fade-in_150ms_ease-out]">
       {/* WR-01: topic header — split into container div + toggle button + sibling
            delete button to avoid invalid nested <button> HTML (§4.8.2). */}
       <div className="bg-white dark:bg-gray-900 font-normal text-sm border-b border-gray-100 dark:border-gray-800 w-full flex items-center text-gray-900 dark:text-gray-100 print:px-0 print:pl-0">

@@ -1,3 +1,4 @@
+import { X } from 'lucide-react';
 import { useAppStore } from '../store/app.js';
 import type { SectionRow as SectionRowType } from '../utils/buildFlatRows.js';
 
@@ -36,7 +37,7 @@ export function SectionRow({ row }: Props) {
           onClick={() => removeSection(row.id)}
           className="text-xs text-red-600 dark:text-red-400 hover:text-red-800 dark:hover:text-red-300 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none px-4 py-3 print:hidden"
         >
-          ×
+          <X className="w-4 h-4" aria-hidden="true" />
         </button>
       )}
     </div>

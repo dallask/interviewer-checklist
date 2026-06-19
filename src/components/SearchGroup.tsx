@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
+import { X } from 'lucide-react';
 import { useAppStore } from '../store/app.js';
 import { buildFlatRows } from '../utils/buildFlatRows.js';
 
@@ -121,7 +122,7 @@ export function SearchGroup() {
             onClick={handleClear}
             className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none"
           >
-            ×
+            <X className="w-4 h-4" aria-hidden="true" />
           </button>
         )}
       </div>

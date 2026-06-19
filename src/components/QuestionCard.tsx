@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { Pencil, X } from 'lucide-react';
 import type { Difficulty } from '../data/bank/types.js';
 import { useAppStore } from '../store/app.js';
 import type { QuestionRow } from '../utils/buildFlatRows.js';
@@ -127,7 +128,7 @@ export function QuestionCard({ row }: Props) {
           onClick={() => setNotesOpen((prev) => !prev)}
           className={`p-1.5 min-h-[44px] min-w-[44px] flex items-center justify-center focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none ${notesOpen || localNote ? 'text-blue-600 dark:text-blue-400' : 'text-gray-400 dark:text-gray-500 hover:text-gray-700 dark:hover:text-gray-200'}`}
         >
-          📝
+          <Pencil className="w-4 h-4" aria-hidden="true" />
         </button>
 
         {/* Delete button — custom and default questions only, hover-revealed */}
@@ -146,7 +147,7 @@ export function QuestionCard({ row }: Props) {
             }}
             className="p-1.5 min-h-[44px] min-w-[44px] flex items-center justify-center text-gray-400 dark:text-gray-500 hover:text-red-600 dark:hover:text-red-400 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none opacity-0 group-hover:opacity-100 focus-visible:opacity-100 print:hidden"
           >
-            ×
+            <X className="w-4 h-4" aria-hidden="true" />
           </button>
         )}
       </div>

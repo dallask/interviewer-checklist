@@ -44,7 +44,7 @@ Full archive: [milestones/v1.1-ROADMAP.md](milestones/v1.1-ROADMAP.md)
 
 **Milestone Goal:** Close the remaining UAT gaps from v1.1 — two virtualizer scroll bugs, one note-collapse bug, dark mode contrast — then layer in the visual enhancements (difficulty indicators, icon library, font density, transitions).
 
-- [ ] **Phase 16: Bug Fixes & Dark Mode Polish** — Fix add-section/topic tree refresh, note-icon collapse, and score dropdown dark mode contrast
+- [x] **Phase 16: Bug Fixes & Dark Mode Polish** — Fix add-section/topic tree refresh, note-icon collapse, and score dropdown dark mode contrast
 - [ ] **Phase 17: Difficulty Indicators** — QuestionCard left border + badge chip colored by difficulty
 - [ ] **Phase 18: Icon Library** — Replace all ad-hoc emoji in UI chrome with Lucide React glyphs
 - [ ] **Phase 19: Typography & Transitions** — 13px base font with compact density + CSS transitions throughout

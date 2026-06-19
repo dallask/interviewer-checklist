@@ -42,7 +42,7 @@ export function CustomQuestionForm({ topicId, onDismiss }: Props) {
           aria-label="Question difficulty"
           value={level}
           onChange={(e) => setLevel(e.target.value as Difficulty)}
-          className="text-sm font-normal text-gray-900 dark:text-gray-100 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded px-3 py-2 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none"
+          className="text-sm font-normal text-gray-900 dark:text-gray-100 bg-gray-100 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded px-3 py-2 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none dark:[color-scheme:dark]"
         >
           <option value="novice">Beginner (1.00×)</option>
           <option value="intermediate">Intermediate (1.25×)</option>

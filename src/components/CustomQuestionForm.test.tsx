@@ -154,4 +154,17 @@ describe('CustomQuestionForm', () => {
       level: 'expert',
     });
   });
+
+  it('difficulty select has dark:[color-scheme:dark] class for dark mode option readability', () => {
+    render(<CustomQuestionForm topicId="react" onDismiss={onDismiss} />);
+    const select = screen.getByLabelText('Question difficulty');
+    expect(select.className).toContain('[color-scheme:dark]');
+  });
+
+  it('difficulty select uses standard dark mode bg and border classes', () => {
+    render(<CustomQuestionForm topicId="react" onDismiss={onDismiss} />);
+    const select = screen.getByLabelText('Question difficulty');
+    expect(select.className).toContain('dark:bg-gray-700');
+    expect(select.className).toContain('dark:border-gray-600');
+  });
 });

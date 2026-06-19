@@ -1,5 +1,6 @@
 import './styles.css';
 import { useMemo } from 'react';
+import { Menu } from 'lucide-react';
 import { ContentTree } from '../components/ContentTree.js';
 import { MigrationErrorBanner } from '../components/MigrationErrorBanner.js';
 import { Sidebar } from '../components/Sidebar.js';
@@ -93,7 +94,7 @@ export function App() {
             aria-label="Open sidebar"
             className="fixed top-2 left-2 z-50 p-2 min-h-[44px] min-w-[44px] text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-100 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none rounded print:hidden"
           >
-            ☰
+            <Menu className="w-5 h-5" aria-hidden="true" />
           </button>
         )}
         <Sidebar />

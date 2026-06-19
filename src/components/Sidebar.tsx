@@ -1,4 +1,5 @@
 import { useRef } from 'react';
+import { Search, Target, ClipboardList, Zap } from 'lucide-react';
 import { useAppStore } from '../store/app.js';
 import { ActionsGroup } from './ActionsGroup.js';
 import { CandidateModal } from './CandidateModal.js';
@@ -35,7 +36,7 @@ export function Sidebar() {
           <SidebarGroup
             groupId="search"
             label="Search"
-            icon="🔍"
+            icon={<Search className="w-5 h-5" />}
             isOpen={groupOpen.search ?? true}
             onToggle={() => toggleGroup('search')}
           >
@@ -45,7 +46,7 @@ export function Sidebar() {
           <SidebarGroup
             groupId="difficulty"
             label="Difficulty"
-            icon="🎯"
+            icon={<Target className="w-5 h-5" />}
             isOpen={groupOpen.difficulty ?? true}
             onToggle={() => toggleGroup('difficulty')}
           >
@@ -55,7 +56,7 @@ export function Sidebar() {
           <SidebarGroup
             groupId="sections"
             label="Sections"
-            icon="📋"
+            icon={<ClipboardList className="w-5 h-5" />}
             isOpen={groupOpen.sections ?? true}
             onToggle={() => toggleGroup('sections')}
           >
@@ -65,7 +66,7 @@ export function Sidebar() {
           <SidebarGroup
             groupId="actions"
             label="Actions"
-            icon="⚡"
+            icon={<Zap className="w-5 h-5" />}
             isOpen={groupOpen.actions ?? true}
             onToggle={() => toggleGroup('actions')}
           >

@@ -1,3 +1,4 @@
+import { Menu, User } from 'lucide-react';
 import {
   computeOverallMark,
   computeTopicMark,
@@ -76,7 +77,7 @@ export function SidebarHeader({ onCandidateClick }: SidebarHeaderProps) {
           className="p-2 min-h-[44px] min-w-[44px] text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-100 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none rounded"
           onClick={() => setSidebarOpen(false)}
         >
-          ☰
+          <Menu className="w-5 h-5" aria-hidden="true" />
         </button>
         <button
           type="button"
@@ -86,7 +87,7 @@ export function SidebarHeader({ onCandidateClick }: SidebarHeaderProps) {
           className="ml-auto p-2 min-h-[44px] min-w-[44px] text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-100 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none rounded"
           onClick={onCandidateClick}
         >
-          👤
+          <User className="w-5 h-5" aria-hidden="true" />
         </button>
       </div>
       {/* Row 2: progress text */}

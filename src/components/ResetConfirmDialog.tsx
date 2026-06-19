@@ -51,11 +51,17 @@ export function ResetConfirmDialog({ dialogRef }: Props) {
     dialogRef.current?.close();
   }
 
-  // T-05-03-03: snapshot MUST be awaited before resetAll to prevent race condition
+  // T-05-03-03: snapshot MUST be awaited before resetAll to prevent race condition.
+  // If snapshot throws, skip resetAll (no backup = unsafe to wipe) but always close.
   const handleReset = async () => {
-    await storageAdapter.snapshot(activeSessionId);
-    resetAll();
-    dialogRef.current?.close();
+    try {
+      await storageAdapter.snapshot(activeSessionId);
+      resetAll();
+    } catch {
+      // storage failure — skip reset to preserve data, fall through to close
+    } finally {
+      dialogRef.current?.close();
+    }
   };
 
   return (

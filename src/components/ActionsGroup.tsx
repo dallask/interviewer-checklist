@@ -1,5 +1,6 @@
 import { useRef, useState } from 'react';
 import type { ChangeEvent } from 'react';
+import { RefreshCw, Bot, Sun, Moon, ChevronsUpDown, ChevronsLeftRight, Eye, Download, Upload, Trash2 } from 'lucide-react';
 import { useAppStore } from '../store/app.js';
 import { DEFAULT_SECTIONS } from '../data/bank/index.js';
 import { buildAiPrompt } from '../utils/buildAiPrompt.js';
@@ -160,7 +161,7 @@ export function ActionsGroup() {
           onClick={() => sessionSwitcherRef.current?.showModal()}
           className={btnBase}
         >
-          🔄
+          <RefreshCw className="w-5 h-5" aria-hidden="true" />
         </button>
         <button
           type="button"
@@ -170,7 +171,7 @@ export function ActionsGroup() {
           onClick={handleOpenAiPrompt}
           className={btnBase}
         >
-          🤖
+          <Bot className="w-5 h-5" aria-hidden="true" />
         </button>
         <button
           type="button"
@@ -180,7 +181,7 @@ export function ActionsGroup() {
           onClick={() => setDarkMode(!darkMode)}
           className={darkMode ? btnActive : btnBase}
         >
-          {darkMode ? '☀' : '🌙'}
+          {darkMode ? <Sun className="w-5 h-5" aria-hidden="true" /> : <Moon className="w-5 h-5" aria-hidden="true" />}
         </button>
         <button
           type="button"
@@ -189,7 +190,7 @@ export function ActionsGroup() {
           onClick={expandAll}
           className={btnBase}
         >
-          ↕
+          <ChevronsUpDown className="w-5 h-5" aria-hidden="true" />
         </button>
         <button
           type="button"
@@ -198,7 +199,7 @@ export function ActionsGroup() {
           onClick={collapseAll}
           className={btnBase}
         >
-          ↔
+          <ChevronsLeftRight className="w-5 h-5" aria-hidden="true" />
         </button>
         <button
           type="button"
@@ -208,7 +209,7 @@ export function ActionsGroup() {
           onClick={() => setHideMarked(!hideMarked)}
           className={hideMarked ? btnActive : btnBase}
         >
-          👁
+          <Eye className="w-5 h-5" aria-hidden="true" />
         </button>
         <input
           ref={importFileInputRef}
@@ -228,7 +229,7 @@ export function ActionsGroup() {
           onClick={handleOpenImportYaml}
           className={btnBase}
         >
-          📥
+          <Download className="w-5 h-5" aria-hidden="true" />
         </button>
         <button
           type="button"
@@ -237,7 +238,7 @@ export function ActionsGroup() {
           onClick={handleExportYaml}
           className={btnBase}
         >
-          📤
+          <Upload className="w-5 h-5" aria-hidden="true" />
         </button>
         <button
           type="button"
@@ -247,7 +248,7 @@ export function ActionsGroup() {
           onClick={() => resetDialogRef.current?.showModal()}
           className="p-2 min-h-[36px] min-w-[36px] text-sm text-red-600 dark:text-red-400 bg-gray-100 dark:bg-gray-700 hover:bg-red-50 dark:hover:bg-red-900/20 rounded focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none"
         >
-          🗑
+          <Trash2 className="w-5 h-5" aria-hidden="true" />
         </button>
       </div>
       {importError && (

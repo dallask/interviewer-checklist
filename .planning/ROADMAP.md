@@ -46,7 +46,7 @@ Full archive: [milestones/v1.1-ROADMAP.md](milestones/v1.1-ROADMAP.md)
 
 - [x] **Phase 16: Bug Fixes & Dark Mode Polish** — Fix add-section/topic tree refresh, note-icon collapse, and score dropdown dark mode contrast
 - [x] **Phase 17: Difficulty Indicators** — QuestionCard left border + badge chip colored by difficulty
-- [ ] **Phase 18: Icon Library** — Replace all ad-hoc emoji in UI chrome with Lucide React glyphs
+- [x] **Phase 18: Icon Library** — Replace all ad-hoc emoji in UI chrome with Lucide React glyphs (completed 2026-06-19)
 - [ ] **Phase 19: Typography & Transitions** — 13px base font with compact density + CSS transitions throughout
 
 ## Phase Details
@@ -111,7 +111,7 @@ Plans:
 
 - [x] 18-01-PLAN.md — Install lucide-react + replace icons in App.tsx, SidebarHeader.tsx, Sidebar.tsx, SectionFilter.tsx, ActionsGroup.tsx (Action-tier files)
 - [x] 18-02-PLAN.md — Replace icons in remaining 11 Inline-tier files (QuestionCard, SearchGroup, SessionRow, SectionRow, TopicRow, SessionSwitcherModal, StorageToast, UndoToast, UpdateBanner, TopicMarkDisplay, MigrationErrorBanner)
-- [ ] 18-03-PLAN.md — Fix SessionRow.test.tsx getByText('✓') assertions + run full acceptance gates (tests, tsc, biome)
+- [x] 18-03-PLAN.md — Fix SessionRow.test.tsx getByText('✓') assertions + run full acceptance gates (tests, tsc, biome)
 
 **UI hint**: yes
 
@@ -152,5 +152,5 @@ Plans:
 | 15. Sidebar Shell Refactor & Compact QuestionCard | v1.1 | 4/4 | Complete | 2026-06-18 |
 | 16. Bug Fixes & Dark Mode Polish | v1.2 | 0/TBD | Not started | - |
 | 17. Difficulty Indicators | v1.2 | 1/1 | Complete | 2026-06-19 |
-| 18. Icon Library | v1.2 | 2/3 | In Progress|  |
+| 18. Icon Library | v1.2 | 3/3 | Complete   | 2026-06-19 |
 | 19. Typography & Transitions | v1.2 | 0/TBD | Not started | - |

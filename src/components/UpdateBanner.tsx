@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { X } from 'lucide-react';
 
 /**
  * UpdateBanner (POLISH-07).
@@ -120,7 +121,7 @@ export function UpdateBanner() {
         onClick={handleDismiss}
         className="text-amber-700 dark:text-yellow-300 hover:text-amber-900 dark:hover:text-yellow-100 font-semibold focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none flex-shrink-0 ml-3"
       >
-        ×
+        <X className="w-4 h-4" aria-hidden="true" />
       </button>
     </div>
   );

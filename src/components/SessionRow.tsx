@@ -1,4 +1,5 @@
 import { useRef, useState } from 'react';
+import { Check, Pencil, Copy, X } from 'lucide-react';
 import type { V2Manifest } from '../storage/types.js';
 
 type SessionMeta = V2Manifest['sessions'][number];
@@ -75,7 +76,7 @@ export function SessionRow({ session, isActive, onSwitch, onRename, onDuplicate,
       className={liClass}
     >
       <span className={checkmarkClass} aria-hidden="true">
-        ✓
+        <Check className="w-4 h-4" />
       </span>
 
       {editing ? (
@@ -108,7 +109,7 @@ export function SessionRow({ session, isActive, onSwitch, onRename, onDuplicate,
               onClick={startRename}
               className="p-1 text-xs text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 rounded focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none"
             >
-              ✎
+              <Pencil className="w-4 h-4" aria-hidden="true" />
             </button>
             <button
               type="button"
@@ -116,7 +117,7 @@ export function SessionRow({ session, isActive, onSwitch, onRename, onDuplicate,
               onClick={onDuplicate}
               className="p-1 text-xs text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 rounded focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none"
             >
-              ⧉
+              <Copy className="w-4 h-4" aria-hidden="true" />
             </button>
             <button
               type="button"
@@ -125,7 +126,7 @@ export function SessionRow({ session, isActive, onSwitch, onRename, onDuplicate,
               onClick={onDelete}
               className="p-1 text-xs text-red-600 dark:text-red-400 hover:text-red-800 dark:hover:text-red-300 rounded focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none"
             >
-              ×
+              <X className="w-4 h-4" aria-hidden="true" />
             </button>
           </div>
         </>

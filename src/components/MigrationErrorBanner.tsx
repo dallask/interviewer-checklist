@@ -10,6 +10,8 @@
  * stored snapshot keys remain in chrome.storage.local).
  */
 
+import { X } from 'lucide-react';
+
 interface Props {
   failedCount: number;
   sessionIds: string[];
@@ -37,7 +39,7 @@ export function MigrationErrorBanner({ failedCount, sessionIds: _sessionIds, onD
         onClick={onDismiss}
         className="text-amber-700 dark:text-yellow-300 hover:text-amber-900 dark:hover:text-yellow-100 font-semibold focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none flex-shrink-0 ml-3"
       >
-        ×
+        <X className="w-4 h-4" aria-hidden="true" />
       </button>
     </div>
   );

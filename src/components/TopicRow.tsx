@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { X } from 'lucide-react';
 import { useAppStore } from '../store/app.js';
 import type { TopicRow as TopicRowType } from '../utils/buildFlatRows.js';
 import { CustomQuestionForm } from './CustomQuestionForm.js';
@@ -83,7 +84,7 @@ export function TopicRow({ row }: Props) {
             onClick={() => removeTopic(row.topic.id)}
             className="text-xs text-red-600 dark:text-red-400 hover:text-red-800 dark:hover:text-red-300 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none px-4 py-2 print:hidden"
           >
-            ×
+            <X className="w-4 h-4" aria-hidden="true" />
           </button>
         )}
       </div>

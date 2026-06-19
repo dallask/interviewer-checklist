@@ -1,4 +1,5 @@
 import { type RefObject, useEffect, useRef, useState } from 'react';
+import { X } from 'lucide-react';
 import { useAppStore } from '../store/app.js';
 import { DeleteSessionConfirmDialog } from './DeleteSessionConfirmDialog.js';
 import { SessionRow } from './SessionRow.js';
@@ -97,7 +98,7 @@ export function SessionSwitcherModal({ dialogRef }: Props) {
           onClick={() => dialogRef.current?.close()}
           className="text-sm text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none"
         >
-          ×
+          <X className="w-4 h-4" aria-hidden="true" />
         </button>
       </div>
 

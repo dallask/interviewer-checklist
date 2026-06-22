@@ -132,7 +132,13 @@ Plans:
   3. The action buttons panel renders as a two-column grid with visible text labels and smaller icons than before
   4. Accordion sections, sidebar open/close, and any remaining interactive element without a transition now animate smoothly
 
-**Plans**: TBD
+**Plans**: 2 plans
+
+Plans:
+
+- [ ] 23-01-PLAN.md — AiPromptModal resize + icon buttons for AiPromptModal, AboutModal, CandidateModal (POL-01, POL-02, POL-04)
+- [ ] 23-02-PLAN.md — Icon buttons for ResetConfirmDialog, ImportPreviewModal + ActionsGroup two-column grid (POL-02, POL-03, POL-04)
+
 **UI hint**: yes
 
 ## Progress
@@ -162,4 +168,4 @@ Plans:
 | 20. Bug Fixes | v1.3 | 2/2 | Complete   | 2026-06-22 |
 | 21. Layout & Content Ordering | v1.3 | 2/2 | Complete   | 2026-06-22 |
 | 22. Extension Icon | v1.3 | 1/1 | Complete | 2026-06-22 |
-| 23. UI Polish | v1.3 | 0/TBD | Not started | - |
+| 23. UI Polish | v1.3 | 0/2 | Not started | - |

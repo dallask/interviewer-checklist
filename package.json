@@ -15,7 +15,8 @@
     "ci:check-dist": "node scripts/check-dist.js",
     "icons": "node scripts/generate-icons.js",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "package": "npm run build && cd dist && zip -r ../extension.zip . && cd .. && echo \"Created extension.zip\""
   },
   "dependencies": {
     "@tanstack/react-virtual": "^3.14.3",

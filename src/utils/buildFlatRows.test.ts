@@ -710,3 +710,49 @@ describe('buildFlatRows — hideMarked filter', () => {
     expect(topicRows).toHaveLength(1);
   });
 });
+
+describe('buildFlatRows — BUG-01: empty topic visibility', () => {
+  it('includes a topic with no questions so it appears in the tree', () => {
+    const emptyTopicSection: V4Section = {
+      id: 'sec-empty',
+      label: 'Section With Empty Topic',
+      icon: 'E',
+      isDefault: false,
+      topics: [
+        {
+          id: 'topic-empty',
+          name: 'Empty Topic',
+          desc: '',
+          tag: '',
+          isDefault: false,
+          questions: [],
+        },
+      ],
+    };
+    const rows = buildFlatRows([emptyTopicSection], {}, {}, emptyFilters);
+    const topicRow = rows.find((r) => r.type === 'topic' && r.topic.id === 'topic-empty');
+    expect(topicRow).toBeDefined();
+  });
+
+  it('section containing only empty topic is NOT skipped by section-skip guard', () => {
+    const emptyTopicSection: V4Section = {
+      id: 'sec-empty2',
+      label: 'Section',
+      icon: 'S',
+      isDefault: false,
+      topics: [
+        {
+          id: 'topic-e',
+          name: 'T',
+          desc: '',
+          tag: '',
+          isDefault: false,
+          questions: [],
+        },
+      ],
+    };
+    const rows = buildFlatRows([emptyTopicSection], {}, {}, emptyFilters);
+    const sectionRow = rows.find((r) => r.type === 'section' && r.id === 'sec-empty2');
+    expect(sectionRow).toBeDefined();
+  });
+});

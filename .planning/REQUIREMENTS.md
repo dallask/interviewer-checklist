@@ -1,60 +1,68 @@
 # Requirements: Interviewer Checklist — Chrome Extension
 
-**Defined:** 2026-06-18
-**Milestone:** v1.2 UAT Closure & Visual Polish
-**Core Value:** A single interviewer/candidate can run an end-to-end weighted scoring session entirely inside a browser tab with no backend.
+**Defined:** 2026-06-22
+**Milestone:** v1.3 UX Refinement & Layout
+**Core Value:** A single interviewer/candidate can run an end-to-end weighted scoring session — pick topics, score questions on 0–10 with difficulty weighting, capture notes, see live overall + per-group marks, and export a structured YAML / AI-feedback prompt — entirely inside a browser tab with no backend.
 
-## v1.2 Requirements
+## v1.3 Requirements
 
-All requirements derived from open UAT gaps in Phases 12–15.
+### Layout
+
+- [ ] **LAYOUT-01**: Content container has max-width 1200px and is horizontally centered (margin: 0 auto)
 
 ### Bug Fixes
 
-- [ ] **BUG-01**: User can submit the Add Section form and the new section appears immediately in the content tree
-- [ ] **BUG-02**: User can submit the Add Topic form and the new topic appears immediately under the target section
-- [ ] **BUG-03**: User can click the note icon to close the textarea even when the textarea contains text
+- [ ] **BUG-01**: User submits a new section name and it appears in the tree immediately without requiring a refresh
+- [ ] **BUG-02**: QuestionCard left border color matches the difficulty label color for that question (Novice/Beginner/Intermediate/Expert)
 
-### Visual Polish
+### Content Ordering
 
-- [ ] **POL-01**: Score dropdown is clearly readable in dark mode (explicit bg/text/border dark-mode colors, sufficient contrast)
-- [x] **POL-02**: Base font size is 13px and key spacing is tightened for a more compact layout throughout the sidebar and content tree
-- [x] **POL-03**: Key interactions (sidebar open/close, topic/section expand/collapse, modal open/close, note toggle) have CSS transitions or animations for a smooth feel
+- [ ] **CONT-01**: Questions within each section are sorted by difficulty level (Novice → Beginner → Intermediate → Expert) in the rendered list
 
-### Visual Enhancements
+### Extension
 
-- [ ] **VIS-01**: Each QuestionCard row has a thick left border whose color corresponds to its difficulty (green = novice, blue = intermediate, orange = advanced, pink = expert)
-- [ ] **VIS-02**: Each QuestionCard shows a difficulty badge chip (NOVICE / INTERMEDIATE / ADVANCED / EXPERT) on the right side of the row
-- [ ] **VIS-03**: All UI chrome icons (sidebar actions, toggle buttons, section icons, badges) are replaced with glyphs from a consistent material-like icon library (e.g. Lucide React) instead of ad-hoc emoji
+- [ ] **EXT-01**: Extension icon (from BACKLOG/icon.png or equivalent) is visible in the Chrome toolbar and extension manager
+
+### UI Polish
+
+- [ ] **POL-01**: AI feedback prompt dialog is enlarged so more content is visible without scrolling
+- [ ] **POL-02**: All modal action buttons include a Lucide icon alongside their text label
+- [ ] **POL-03**: Action buttons panel uses a two-column grid layout; buttons show text labels; icons inside buttons are smaller than current
+- [ ] **POL-04**: Accordion sections, sidebar, and all remaining interactive elements animate smoothly (any gaps left after v1.2 Phase 19 CSS transitions)
+
+## Future Requirements
+
+*(None identified for this milestone — all BACKLOG items are in scope)*
 
 ## Out of Scope
 
 | Feature | Reason |
 |---------|--------|
-| Cloud sync / backend | Explicit architectural constraint — chrome.storage.local only |
-| New question bank sections | Bank content additions are independent of this milestone |
-| CWS re-submission | Manual action; artifacts from v1.0 still valid |
-| New AI/prompt features | Out of UAT scope |
+| Cloud backend / cross-device sync | Explicit architectural choice — chrome.storage.local only |
+| chrome.storage.sync | 100KB cap incompatible with question bank |
+| Mobile / non-Chromium support | Chrome MV3 extension is the product surface |
+| Role-switch screen (interviewer vs candidate) | Same UI serves both by design |
+| New question bank content | Bank is the interview tech-stack content; users extend via YAML |
 
 ## Traceability
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| BUG-01 | Phase 16 | Pending |
-| BUG-02 | Phase 16 | Pending |
-| BUG-03 | Phase 16 | Pending |
-| POL-01 | Phase 16 | Pending |
-| VIS-01 | Phase 17 | Pending |
-| VIS-02 | Phase 17 | Pending |
-| POL-02 | Phase 19 | Complete |
-| POL-03 | Phase 19 | Complete |
-| VIS-03 | Phase 18 | Pending |
+| LAYOUT-01 | Phase TBD | Pending |
+| BUG-01 | Phase TBD | Pending |
+| BUG-02 | Phase TBD | Pending |
+| CONT-01 | Phase TBD | Pending |
+| EXT-01 | Phase TBD | Pending |
+| POL-01 | Phase TBD | Pending |
+| POL-02 | Phase TBD | Pending |
+| POL-03 | Phase TBD | Pending |
+| POL-04 | Phase TBD | Pending |
 
 **Coverage:**
-
-- v1.2 requirements: 9 total
-- Mapped to phases: 9
-- Unmapped: 0 ✓
+- v1.3 requirements: 9 total
+- Mapped to phases: 0 (roadmap pending)
+- Unmapped: 9 ⚠️
 
 ---
-*Requirements defined: 2026-06-18*
-*Last updated: 2026-06-18 after initial definition*
+*Requirements defined: 2026-06-22*
+*Last updated: 2026-06-22 after initial definition*

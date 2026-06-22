@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { DEFAULT_SECTIONS } from '../data/bank/index.js';
-import type { V4Section } from '../storage/types.js';
+import type { CustomQuestion, V4Section } from '../storage/types.js';
 import {
   buildFlatRows,
   type AddSectionTriggerRow,
@@ -47,6 +47,29 @@ const emptyFilters = {
     import('../data/bank/types.js').Difficulty
   >,
   selectedSections: new Set<string>(),
+};
+
+// Synthetic fixture for CONT-01 difficulty sort tests (questions in intentionally wrong order)
+const mixedDiffSection: V4Section = {
+  id: 'sort-test-section',
+  label: 'Sort Test',
+  icon: 'S',
+  isDefault: true,
+  topics: [
+    {
+      id: 'sort-test-topic',
+      name: 'Sort Topic',
+      desc: 'desc',
+      tag: 'sort',
+      isDefault: true,
+      questions: [
+        { id: 'sort-q0', text: 'Q0 expert', level: 'expert', isDefault: true },
+        { id: 'sort-q1', text: 'Q1 novice', level: 'novice', isDefault: true },
+        { id: 'sort-q2', text: 'Q2 advanced', level: 'advanced', isDefault: true },
+        { id: 'sort-q3', text: 'Q3 intermediate', level: 'intermediate', isDefault: true },
+      ],
+    },
+  ],
 };
 
 // V4 synthetic section for unit tests (matches V4Section shape)
@@ -754,5 +777,67 @@ describe('buildFlatRows — BUG-01: empty topic visibility', () => {
     const rows = buildFlatRows([emptyTopicSection], {}, {}, emptyFilters);
     const sectionRow = rows.find((r) => r.type === 'section' && r.id === 'sec-empty2');
     expect(sectionRow).toBeDefined();
+  });
+});
+
+// ---------------------------------------------------------------------------
+// CONT-01 difficulty sort regression tests
+// ---------------------------------------------------------------------------
+
+describe('buildFlatRows — CONT-01 difficulty sort', () => {
+  it('emits question rows in novice→intermediate→advanced→expert order', () => {
+    const rows = buildFlatRows([mixedDiffSection], {}, {}, emptyFilters);
+    const questionRows = rows.filter((r) => r.type === 'question');
+    expect(questionRows).toHaveLength(4);
+    const levels = questionRows.map((r) => (r.type === 'question' ? r.question.level : undefined));
+    expect(levels).toEqual(['novice', 'intermediate', 'advanced', 'expert']);
+  });
+
+  it('originalIndex is preserved after sort (score key stability)', () => {
+    // sort-q1 (novice) is at index 1 in topic.questions — after sort it's emitted first,
+    // but its QuestionRow.index must still be 1 (original position), not 0 (sorted position).
+    const rows = buildFlatRows([mixedDiffSection], {}, {}, emptyFilters);
+    const questionRows = rows.filter((r) => r.type === 'question');
+    const noviceRow = questionRows.find((r) => r.type === 'question' && r.question.level === 'novice');
+    expect(noviceRow).toBeDefined();
+    if (noviceRow?.type === 'question') {
+      expect(noviceRow.index).toBe(1); // original index in topic.questions[], not sorted position
+    }
+  });
+});
+
+describe('buildFlatRows — CONT-01 custom question merge', () => {
+  it('custom question appears at its difficulty position, not appended at end', () => {
+    // One custom question at 'novice' level — should appear alongside the default novice question,
+    // not at the end after all default questions.
+    const customQuestions: CustomQuestion[] = [
+      { id: 'custom-sort-test-topic-1', topicId: 'sort-test-topic', text: 'Custom novice', level: 'novice' },
+    ];
+    const rows = buildFlatRows([mixedDiffSection], {}, {}, { ...emptyFilters, customQuestions });
+    const questionRows = rows.filter((r) => r.type === 'question');
+    expect(questionRows).toHaveLength(5); // 4 default + 1 custom
+    const levels = questionRows.map((r) => (r.type === 'question' ? r.question.level : undefined));
+    // Both novice questions (default sort-q1 and custom) appear at the start
+    expect(levels[0]).toBe('novice');
+    expect(levels[1]).toBe('novice');
+    // Last row must NOT be the custom question — it was formerly appended at end (old bug)
+    const lastRow = questionRows[questionRows.length - 1];
+    if (lastRow?.type === 'question') {
+      expect(lastRow.isCustom).toBeFalsy();
+    }
+  });
+
+  it('custom question row has isCustom=true and customId set after merge', () => {
+    const customQuestions: CustomQuestion[] = [
+      { id: 'custom-sort-test-topic-2', topicId: 'sort-test-topic', text: 'Custom expert', level: 'expert' },
+    ];
+    const rows = buildFlatRows([mixedDiffSection], {}, {}, { ...emptyFilters, customQuestions });
+    const questionRows = rows.filter((r) => r.type === 'question');
+    const customRows = questionRows.filter((r) => r.type === 'question' && r.isCustom);
+    expect(customRows).toHaveLength(1);
+    if (customRows[0]?.type === 'question') {
+      expect(customRows[0].isCustom).toBe(true);
+      expect(customRows[0].customId).toBe('custom-sort-test-topic-2');
+    }
   });
 });

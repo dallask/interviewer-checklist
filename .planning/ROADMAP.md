@@ -57,7 +57,7 @@ Full archive: [milestones/v1.2-ROADMAP.md](milestones/v1.2-ROADMAP.md)
 
 **Milestone Goal:** Complete all remaining BACKLOG items — fix lingering section-add and difficulty-border regressions, establish a centered 1200px layout, sort questions by difficulty, enlarge the AI dialog, add icon to the extension, and polish all modal buttons and the action panel.
 
-- [ ] **Phase 20: Bug Fixes** — Re-verify and fix section add persistence and difficulty border color regression
+- [x] **Phase 20: Bug Fixes** — Re-verify and fix section add persistence and difficulty border color regression (completed 2026-06-22)
 - [ ] **Phase 21: Layout & Content Ordering** — Max-width 1200px centered container and difficulty sort within sections
 - [ ] **Phase 22: Extension Icon** — Add icon asset and wire into manifest
 - [ ] **Phase 23: UI Polish** — AI dialog resize, modal button icons, action panel grid, and remaining animations
@@ -77,8 +77,8 @@ Full archive: [milestones/v1.2-ROADMAP.md](milestones/v1.2-ROADMAP.md)
 
 **Plans**: 2 plansPlans:
 
-- [ ] 20-01-PLAN.md — Fix empty-topic visibility in buildFlatRows + regression tests (BUG-01)
-- [ ] 20-02-PLAN.md — Fix difficulty border color in QuestionCard BORDER_CLASSES (BUG-02)
+- [x] 20-01-PLAN.md — Fix empty-topic visibility in buildFlatRows + regression tests (BUG-01)
+- [x] 20-02-PLAN.md — Fix difficulty border color in QuestionCard BORDER_CLASSES (BUG-02)
 
 **UI hint**: yes
 
@@ -149,7 +149,7 @@ Full archive: [milestones/v1.2-ROADMAP.md](milestones/v1.2-ROADMAP.md)
 | 17. Difficulty Indicators | v1.2 | 1/1 | Complete | 2026-06-19 |
 | 18. Icon Library | v1.2 | 3/3 | Complete | 2026-06-19 |
 | 19. Typography & Transitions | v1.2 | 3/3 | Complete | 2026-06-19 |
-| 20. Bug Fixes | v1.3 | 0/2 | Not started | - |
+| 20. Bug Fixes | v1.3 | 2/2 | Complete   | 2026-06-22 |
 | 21. Layout & Content Ordering | v1.3 | 0/TBD | Not started | - |
 | 22. Extension Icon | v1.3 | 0/TBD | Not started | - |
 | 23. UI Polish | v1.3 | 0/TBD | Not started | - |

@@ -17,8 +17,8 @@ All requirements derived from open UAT gaps in Phases 12–15.
 ### Visual Polish
 
 - [ ] **POL-01**: Score dropdown is clearly readable in dark mode (explicit bg/text/border dark-mode colors, sufficient contrast)
-- [ ] **POL-02**: Base font size is 13px and key spacing is tightened for a more compact layout throughout the sidebar and content tree
-- [ ] **POL-03**: Key interactions (sidebar open/close, topic/section expand/collapse, modal open/close, note toggle) have CSS transitions or animations for a smooth feel
+- [x] **POL-02**: Base font size is 13px and key spacing is tightened for a more compact layout throughout the sidebar and content tree
+- [x] **POL-03**: Key interactions (sidebar open/close, topic/section expand/collapse, modal open/close, note toggle) have CSS transitions or animations for a smooth feel
 
 ### Visual Enhancements
 
@@ -45,11 +45,12 @@ All requirements derived from open UAT gaps in Phases 12–15.
 | POL-01 | Phase 16 | Pending |
 | VIS-01 | Phase 17 | Pending |
 | VIS-02 | Phase 17 | Pending |
-| POL-02 | Phase 19 | Pending |
-| POL-03 | Phase 19 | Pending |
+| POL-02 | Phase 19 | Complete |
+| POL-03 | Phase 19 | Complete |
 | VIS-03 | Phase 18 | Pending |
 
 **Coverage:**
+
 - v1.2 requirements: 9 total
 - Mapped to phases: 9
 - Unmapped: 0 ✓

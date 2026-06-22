@@ -94,7 +94,11 @@ Full archive: [milestones/v1.2-ROADMAP.md](milestones/v1.2-ROADMAP.md)
   3. Within any section, questions are ordered Novice first, then Beginner, then Intermediate, then Expert
   4. Custom questions added by the user appear at their assigned difficulty position within the sort order
 
-**Plans**: TBD
+**Plans**: 2 plans
+
+Plans:
+- [ ] 21-01-PLAN.md — Difficulty sort + custom question merge in buildFlatRows (CONT-01)
+- [ ] 21-02-PLAN.md — Centering wrapper in ContentTree virtual rows (LAYOUT-01)
 **UI hint**: yes
 
 ### Phase 22: Extension Icon
@@ -150,6 +154,6 @@ Full archive: [milestones/v1.2-ROADMAP.md](milestones/v1.2-ROADMAP.md)
 | 18. Icon Library | v1.2 | 3/3 | Complete | 2026-06-19 |
 | 19. Typography & Transitions | v1.2 | 3/3 | Complete | 2026-06-19 |
 | 20. Bug Fixes | v1.3 | 2/2 | Complete   | 2026-06-22 |
-| 21. Layout & Content Ordering | v1.3 | 0/TBD | Not started | - |
+| 21. Layout & Content Ordering | v1.3 | 0/2 | Not started | - |
 | 22. Extension Icon | v1.3 | 0/TBD | Not started | - |
 | 23. UI Polish | v1.3 | 0/TBD | Not started | - |

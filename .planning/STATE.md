@@ -2,16 +2,16 @@
 gsd_state_version: 1.0
 milestone: v1.3
 milestone_name: UX Refinement & Layout
-status: executing
+status: verifying
 stopped_at: Phase 20 context gathered
-last_updated: "2026-06-22T09:33:36.796Z"
+last_updated: "2026-06-22T09:35:27.161Z"
 last_activity: 2026-06-22 -- Phase 20 execution started
 progress:
   total_phases: 4
-  completed_phases: 1
+  completed_phases: 2
   total_plans: 4
-  completed_plans: 3
-  percent: 25
+  completed_plans: 4
+  percent: 50
 ---
 
 # Project State
@@ -27,7 +27,7 @@ See: .planning/PROJECT.md (updated 2026-06-22)
 
 Phase: 20 (Bug Fixes) — EXECUTING
 Plan: 2 of 2
-Status: Ready to execute
+Status: Phase complete — ready for verification
 Last activity: 2026-06-22 -- Phase 20 execution started
 
 Progress: [░░░░░░░░░░] 0%
@@ -54,6 +54,8 @@ Progress: [░░░░░░░░░░] 0%
 - Last 5 plans: —
 - Trend: —
 
+| Phase 21-layout-content-ordering P01 | 8min | - tasks | - files |
+
 ## Accumulated Context
 
 ### Decisions
@@ -66,6 +68,8 @@ Recent decisions affecting current work:
 - [Phase 19]: D-06 dialog @starting-style animation — dialog CSS transition + @starting-style entry animation (Chrome 117+)
 - [Phase 16 root cause]: BUG-01/02 — new sections/topics added to Zustand store but virtualizer may not reflect immediately; fix may require scroll-to-bottom or re-render trigger
 - [v1.2]: Lucide React icon library is installed and tree-shakeable; use it for all new icon needs in v1.3
+- [Phase ?]: DIFF_ORDER defined as separate integer-keyed constant for clean difficulty sort comparisons in buildFlatRows
+- [Phase ?]: MergedQuestion discriminated union replaces separate default/custom emit loops enabling unified difficulty sort (CONT-01)
 
 ### Pending Todos
 
@@ -88,6 +92,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-06-22T09:33:36.793Z
+Last session: 2026-06-22T09:35:22.182Z
 Stopped at: Phase 20 context gathered
 Resume file: .planning/phases/20-bug-fixes/20-CONTEXT.md

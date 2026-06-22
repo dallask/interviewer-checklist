@@ -17,7 +17,7 @@
 
 ### Content Ordering
 
-- [ ] **CONT-01**: Questions within each section are sorted by difficulty level (Novice → Beginner → Intermediate → Expert) in the rendered list
+- [x] **CONT-01**: Questions within each section are sorted by difficulty level (Novice → Beginner → Intermediate → Expert) in the rendered list
 
 ### Extension
 
@@ -51,7 +51,7 @@
 | BUG-01 | Phase 20 | Pending |
 | BUG-02 | Phase 20 | Pending |
 | LAYOUT-01 | Phase 21 | Complete |
-| CONT-01 | Phase 21 | Pending |
+| CONT-01 | Phase 21 | Complete |
 | EXT-01 | Phase 22 | Pending |
 | POL-01 | Phase 23 | Pending |
 | POL-02 | Phase 23 | Pending |

@@ -539,7 +539,7 @@ describe('UI-10: ActionsGroup icon-only buttons (D-14, D-15, D-16)', () => {
   });
 
   it('every button inside ActionsGroup has a non-empty title attribute', () => {
-    render(<ActionsGroup />);
+    render(<ActionsGroup sessionSwitcherRef={{ current: null }} />);
 
     // Phase 15: "Candidate details" moved to SidebarHeader; "Hide notes" removed (per-question icon handles it).
     // Remaining action buttons with title: Switch session, AI prompt, Dark mode, Expand all,
@@ -550,7 +550,7 @@ describe('UI-10: ActionsGroup icon-only buttons (D-14, D-15, D-16)', () => {
   });
 
   it('every button with title also has matching aria-label', () => {
-    render(<ActionsGroup />);
+    render(<ActionsGroup sessionSwitcherRef={{ current: null }} />);
 
     const allButtons = Array.from(document.querySelectorAll('button[type="button"]'));
     const buttonsWithTitle = allButtons.filter(btn => {
@@ -567,7 +567,7 @@ describe('UI-10: ActionsGroup icon-only buttons (D-14, D-15, D-16)', () => {
   });
 
   it('every button in ActionsGroup has a short visible text label (POL-03 two-column labeled grid)', () => {
-    render(<ActionsGroup />);
+    render(<ActionsGroup sessionSwitcherRef={{ current: null }} />);
 
     const allButtons = Array.from(document.querySelectorAll('button[type="button"]'));
     const actionButtons = allButtons.filter(btn => {
@@ -584,7 +584,7 @@ describe('UI-10: ActionsGroup icon-only buttons (D-14, D-15, D-16)', () => {
   });
 
   it('all aria-pressed buttons (Hide marked topics, Dark mode) retain aria-pressed attribute', () => {
-    render(<ActionsGroup />);
+    render(<ActionsGroup sessionSwitcherRef={{ current: null }} />);
 
     const hideMarkedBtn = screen.getByRole('button', { name: 'Hide marked topics' });
     expect(hideMarkedBtn.getAttribute('aria-pressed')).toBeDefined();

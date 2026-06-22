@@ -6,6 +6,7 @@ import { CandidateModal } from './CandidateModal.js';
 import { DifficultyFilter } from './DifficultyFilter.js';
 import { SearchGroup } from './SearchGroup.js';
 import { SectionFilter } from './SectionFilter.js';
+import { SessionSwitcherModal } from './SessionSwitcherModal.js';
 import { SidebarFooter } from './SidebarFooter.js';
 import { SidebarGroup } from './SidebarGroup.js';
 import { SidebarHeader } from './SidebarHeader.js';
@@ -16,6 +17,7 @@ export function Sidebar() {
   const toggleGroup = useAppStore((s) => s.toggleGroup);
 
   const candidateDialogRef = useRef<HTMLDialogElement>(null);
+  const sessionSwitcherRef = useRef<HTMLDialogElement>(null);
 
   // Backdrop is owned by App.tsx (the layout shell) — see CR-03 (REVIEW.md):
   // rendering it here too caused two `fixed inset-0` overlays to stack,
@@ -31,6 +33,7 @@ export function Sidebar() {
       >
         <SidebarHeader
           onCandidateClick={() => candidateDialogRef.current?.showModal()}
+          onSessionClick={() => sessionSwitcherRef.current?.showModal()}
         />
         <div className="flex-1 overflow-y-auto flex flex-col">
           <SidebarGroup
@@ -70,12 +73,13 @@ export function Sidebar() {
             isOpen={groupOpen.actions ?? true}
             onToggle={() => toggleGroup('actions')}
           >
-            <ActionsGroup />
+            <ActionsGroup sessionSwitcherRef={sessionSwitcherRef} />
           </SidebarGroup>
         </div>
         <SidebarFooter />
       </aside>
       <CandidateModal dialogRef={candidateDialogRef} />
+      <SessionSwitcherModal dialogRef={sessionSwitcherRef} />
     </>
   );
 }

@@ -62,7 +62,7 @@ describe('ActionsGroup', () => {
   });
 
   it('renders Expand all button that calls expandAll', () => {
-    render(<ActionsGroup />);
+    render(<ActionsGroup sessionSwitcherRef={{ current: null }} />);
     const btn = screen.getByRole('button', { name: /expand all/i });
     expect(btn).toBeInTheDocument();
     fireEvent.click(btn);
@@ -70,7 +70,7 @@ describe('ActionsGroup', () => {
   });
 
   it('renders Collapse all button that calls collapseAll', () => {
-    render(<ActionsGroup />);
+    render(<ActionsGroup sessionSwitcherRef={{ current: null }} />);
     const btn = screen.getByRole('button', { name: /collapse all/i });
     expect(btn).toBeInTheDocument();
     fireEvent.click(btn);
@@ -78,13 +78,13 @@ describe('ActionsGroup', () => {
   });
 
   it('Hide marked topics button has aria-pressed reflecting hideMarked state', () => {
-    render(<ActionsGroup />);
+    render(<ActionsGroup sessionSwitcherRef={{ current: null }} />);
     const btn = screen.getByRole('button', { name: /hide marked topics/i });
     expect(btn).toHaveAttribute('aria-pressed', 'false');
   });
 
   it('dark mode toggle shows "Dark mode" when darkMode=false', () => {
-    render(<ActionsGroup />);
+    render(<ActionsGroup sessionSwitcherRef={{ current: null }} />);
     expect(
       screen.getByRole('button', { name: /dark mode/i }),
     ).toBeInTheDocument();
@@ -111,14 +111,14 @@ describe('ActionsGroup', () => {
         setCandidate: vi.fn(),
       }),
     );
-    render(<ActionsGroup />);
+    render(<ActionsGroup sessionSwitcherRef={{ current: null }} />);
     expect(
       screen.getByRole('button', { name: /light mode/i }),
     ).toBeInTheDocument();
   });
 
   it('dark mode toggle button has aria-pressed reflecting darkMode', () => {
-    render(<ActionsGroup />);
+    render(<ActionsGroup sessionSwitcherRef={{ current: null }} />);
     const darkBtn = screen.getByRole('button', { name: /dark mode/i });
     expect(darkBtn).toHaveAttribute('aria-pressed', 'false');
   });
@@ -144,20 +144,20 @@ describe('ActionsGroup', () => {
         setCandidate: vi.fn(),
       }),
     );
-    render(<ActionsGroup />);
+    render(<ActionsGroup sessionSwitcherRef={{ current: null }} />);
     const lightBtn = screen.getByRole('button', { name: /light mode/i });
     expect(lightBtn).toHaveAttribute('aria-pressed', 'true');
   });
 
   it('clicking dark mode toggle calls setDarkMode with toggled value', () => {
-    render(<ActionsGroup />);
+    render(<ActionsGroup sessionSwitcherRef={{ current: null }} />);
     const btn = screen.getByRole('button', { name: /dark mode/i });
     fireEvent.click(btn);
     expect(setDarkMode).toHaveBeenCalledWith(true);
   });
 
   it('ActionsGroup own buttons have focus-visible ring classes', () => {
-    render(<ActionsGroup />);
+    render(<ActionsGroup sessionSwitcherRef={{ current: null }} />);
     // Phase 15: "Candidate details" button moved to SidebarHeader — not tested here
     const ownButtonNames = [
       /switch session/i,
@@ -178,40 +178,40 @@ describe('ActionsGroup', () => {
   });
 
   it('renders "Reset all" button with id="open-reset-dialog"', () => {
-    render(<ActionsGroup />);
+    render(<ActionsGroup sessionSwitcherRef={{ current: null }} />);
     const btn = screen.getByRole('button', { name: /reset all/i });
     expect(btn).toBeInTheDocument();
     expect(btn).toHaveAttribute('id', 'open-reset-dialog');
   });
 
   it('"Reset all" button has text-red-600 class', () => {
-    render(<ActionsGroup />);
+    render(<ActionsGroup sessionSwitcherRef={{ current: null }} />);
     const btn = screen.getByRole('button', { name: /reset all/i });
     expect(btn.className).toContain('text-red-600');
   });
 
   it('renders "AI feedback prompt" button with id="open-ai-prompt"', () => {
-    render(<ActionsGroup />);
+    render(<ActionsGroup sessionSwitcherRef={{ current: null }} />);
     const btn = screen.getByRole('button', { name: /ai feedback prompt/i });
     expect(btn).toBeInTheDocument();
     expect(btn).toHaveAttribute('id', 'open-ai-prompt');
   });
 
   it('renders "Import YAML" button with id="open-import-yaml"', () => {
-    render(<ActionsGroup />);
+    render(<ActionsGroup sessionSwitcherRef={{ current: null }} />);
     const btn = screen.getByRole('button', { name: /import yaml/i });
     expect(btn).toBeInTheDocument();
     expect(btn).toHaveAttribute('id', 'open-import-yaml');
   });
 
   it('renders "Export YAML" button', () => {
-    render(<ActionsGroup />);
+    render(<ActionsGroup sessionSwitcherRef={{ current: null }} />);
     const btn = screen.getByRole('button', { name: /export yaml/i });
     expect(btn).toBeInTheDocument();
   });
 
   it('renders hidden YAML file input', () => {
-    render(<ActionsGroup />);
+    render(<ActionsGroup sessionSwitcherRef={{ current: null }} />);
     const input = screen.getByTestId('yaml-file-input');
     expect(input).toBeInTheDocument();
     expect(input).toHaveAttribute('type', 'file');
@@ -219,12 +219,12 @@ describe('ActionsGroup', () => {
   });
 
   it('mounts ImportPreviewModal', () => {
-    render(<ActionsGroup />);
+    render(<ActionsGroup sessionSwitcherRef={{ current: null }} />);
     expect(screen.getByTestId('import-preview-modal')).toBeInTheDocument();
   });
 
   it('clicking "AI feedback prompt" calls showModal() on the AI prompt dialog', () => {
-    render(<ActionsGroup />);
+    render(<ActionsGroup sessionSwitcherRef={{ current: null }} />);
     const dialog = document.querySelector(
       'dialog[aria-labelledby="ai-prompt-title"]',
     ) as HTMLDialogElement;
@@ -236,21 +236,21 @@ describe('ActionsGroup', () => {
 
   describe('Session switcher', () => {
     it('renders active session name label with aria-label="Active session"', () => {
-      render(<ActionsGroup />);
+      render(<ActionsGroup sessionSwitcherRef={{ current: null }} />);
       const label = screen.getByLabelText('Active session');
       expect(label).toBeInTheDocument();
       expect(label.textContent).toBe('Session 1');
     });
 
     it('renders "Switch session" button with id="open-session-switcher"', () => {
-      render(<ActionsGroup />);
+      render(<ActionsGroup sessionSwitcherRef={{ current: null }} />);
       const btn = screen.getByRole('button', { name: /switch session/i });
       expect(btn).toBeInTheDocument();
       expect(btn).toHaveAttribute('id', 'open-session-switcher');
     });
 
     it('clicking "Switch session" calls showModal() on the session switcher dialog ref', () => {
-      render(<ActionsGroup />);
+      render(<ActionsGroup sessionSwitcherRef={{ current: null }} />);
       const dialog = screen.getByTestId('session-switcher-modal') as HTMLDialogElement;
       const showModal = vi.fn();
       Object.defineProperty(dialog, 'showModal', { value: showModal, writable: true });

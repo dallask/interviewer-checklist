@@ -10,7 +10,7 @@ import {
   Trash2,
   Upload,
 } from 'lucide-react';
-import type { ChangeEvent } from 'react';
+import type { ChangeEvent, RefObject } from 'react';
 import { useRef, useState } from 'react';
 import { DEFAULT_SECTIONS } from '../data/bank/index.js';
 import { useAppStore } from '../store/app.js';
@@ -32,11 +32,25 @@ import {
 import { AiPromptModal } from './AiPromptModal.js';
 import { ImportPreviewModal } from './ImportPreviewModal.js';
 import { ResetConfirmDialog } from './ResetConfirmDialog.js';
-import { SessionSwitcherModal } from './SessionSwitcherModal.js';
 
-export function ActionsGroup() {
+export interface ActionsGroupProps {
+  sessionSwitcherRef: RefObject<HTMLDialogElement | null>;
+}
+
+export function ActionsGroup({ sessionSwitcherRef }: ActionsGroupProps) {
   const expandAll = useAppStore((s) => s.expandAll);
   const collapseAll = useAppStore((s) => s.collapseAll);
+  const sectionOpen = useAppStore((s) => s.sectionOpen);
+  const topicOpen = useAppStore((s) => s.topicOpen);
+  const sections = useAppStore((s) => s.sections);
+  // Derive expanded state: if any section or topic is open (or none have been toggled yet → default open)
+  const anyOpen =
+    Object.keys(sectionOpen).length === 0 ||
+    sections.some(
+      (sec) =>
+        sectionOpen[sec.id] !== false ||
+        sec.topics.some((t) => topicOpen[t.id] !== false),
+    );
   const hideMarked = useAppStore((s) => s.hideMarked);
   const setHideMarked = useAppStore((s) => s.setHideMarked);
   const darkMode = useAppStore((s) => s.darkMode);
@@ -49,13 +63,11 @@ export function ActionsGroup() {
   const topicNotes = useAppStore((s) => s.topicNotes);
   const customQuestions = useAppStore((s) => s.customQuestions);
   const candidate = useAppStore((s) => s.candidate);
-  const sections = useAppStore((s) => s.sections);
   const removedDefaultQuestionIds = useAppStore(
     (s) => s.removedDefaultQuestionIds,
   );
 
   const resetDialogRef = useRef<HTMLDialogElement>(null);
-  const sessionSwitcherRef = useRef<HTMLDialogElement>(null);
   const aiPromptRef = useRef<HTMLDialogElement>(null);
   const importDialogRef = useRef<HTMLDialogElement>(null);
   const importFileInputRef = useRef<HTMLInputElement>(null);
@@ -162,12 +174,6 @@ export function ActionsGroup() {
 
   return (
     <div className="flex flex-col gap-2">
-      <p
-        className="text-xs font-normal text-gray-500 dark:text-gray-400 px-1 truncate"
-        aria-label="Active session"
-      >
-        {activeSessionName}
-      </p>
       <div className="grid grid-cols-2 gap-2">
         <button
           type="button"
@@ -213,23 +219,23 @@ export function ActionsGroup() {
         </button>
         <button
           type="button"
-          title="Expand all"
-          aria-label="Expand all"
-          onClick={expandAll}
+          title={anyOpen ? 'Collapse all' : 'Expand all'}
+          aria-label={anyOpen ? 'Collapse all' : 'Expand all'}
+          aria-pressed={!anyOpen}
+          onClick={anyOpen ? collapseAll : expandAll}
           className={btnBase}
         >
-          <ChevronsUpDown className="w-4 h-4" aria-hidden="true" />
-          <span className="truncate">Expand</span>
-        </button>
-        <button
-          type="button"
-          title="Collapse all"
-          aria-label="Collapse all"
-          onClick={collapseAll}
-          className={btnBase}
-        >
-          <ChevronsLeftRight className="w-4 h-4" aria-hidden="true" />
-          <span className="truncate">Collapse</span>
+          {anyOpen ? (
+            <>
+              <ChevronsLeftRight className="w-4 h-4" aria-hidden="true" />
+              <span className="truncate">Collapse</span>
+            </>
+          ) : (
+            <>
+              <ChevronsUpDown className="w-4 h-4" aria-hidden="true" />
+              <span className="truncate">Expand</span>
+            </>
+          )}
         </button>
         <button
           type="button"
@@ -294,7 +300,6 @@ export function ActionsGroup() {
           {importError}
         </p>
       )}
-      <SessionSwitcherModal dialogRef={sessionSwitcherRef} />
       <ResetConfirmDialog dialogRef={resetDialogRef} />
       <AiPromptModal
         dialogRef={aiPromptRef}

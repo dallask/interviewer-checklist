@@ -19,15 +19,20 @@ const BAND_COLORS: Record<MarkBand, string> = {
 
 export interface SidebarHeaderProps {
   onCandidateClick: () => void;
+  onSessionClick: () => void;
 }
 
-export function SidebarHeader({ onCandidateClick }: SidebarHeaderProps) {
+export function SidebarHeader({ onCandidateClick, onSessionClick }: SidebarHeaderProps) {
   const sidebarOpen = useAppStore((s) => s.sidebarOpen);
   const setSidebarOpen = useAppStore((s) => s.setSidebarOpen);
   const sections = useAppStore((s) => s.sections);
   const scores = useAppStore((s) => s.scores);
   const overrides = useAppStore((s) => s.overrides);
   const customQuestions = useAppStore((s) => s.customQuestions);
+  const manifest = useAppStore((s) => s.manifest);
+  const activeSessionId = useAppStore((s) => s.activeSessionId);
+  const activeSessionName =
+    manifest?.sessions.find((s) => s.id === activeSessionId)?.name ?? '';
 
   // Compute overall mark across all topics in all sections
   const allTopicResults = sections.flatMap((section) =>
@@ -71,7 +76,7 @@ export function SidebarHeader({ onCandidateClick }: SidebarHeaderProps) {
 
   return (
     <div className="sticky top-0 z-10 bg-gray-100 dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 flex flex-col print:hidden">
-      {/* Row 1: toggle + candidate button */}
+      {/* Row 1: toggle + session name + candidate button */}
       <div className="flex items-center gap-2 px-3 py-2 min-h-[44px]">
         <button
           type="button"
@@ -82,6 +87,17 @@ export function SidebarHeader({ onCandidateClick }: SidebarHeaderProps) {
         >
           <Menu className="w-5 h-5" aria-hidden="true" />
         </button>
+        {activeSessionName && (
+          <button
+            type="button"
+            aria-label={`Session: ${activeSessionName}. Click to switch session`}
+            title="Switch session"
+            className="flex-1 min-w-0 text-left text-xs font-medium text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-100 bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 px-2 py-1 rounded truncate focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none transition-colors duration-150"
+            onClick={onSessionClick}
+          >
+            {activeSessionName}
+          </button>
+        )}
         <button
           type="button"
           id="open-candidate-modal"

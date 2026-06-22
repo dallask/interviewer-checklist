@@ -57,18 +57,18 @@ describe('SidebarHeader', () => {
 
   it('renders without crashing', () => {
     expect(() => {
-      render(<SidebarHeader onCandidateClick={vi.fn()} />);
+      render(<SidebarHeader onCandidateClick={vi.fn()} onSessionClick={vi.fn()} />);
     }).not.toThrow();
   });
 
   it('renders toggle button with aria-label "Close sidebar"', () => {
-    render(<SidebarHeader onCandidateClick={vi.fn()} />);
+    render(<SidebarHeader onCandidateClick={vi.fn()} onSessionClick={vi.fn()} />);
     const btn = screen.getByRole('button', { name: 'Close sidebar' });
     expect(btn).toBeInTheDocument();
   });
 
   it('toggle button has aria-expanded=true when sidebarOpen=true', () => {
-    render(<SidebarHeader onCandidateClick={vi.fn()} />);
+    render(<SidebarHeader onCandidateClick={vi.fn()} onSessionClick={vi.fn()} />);
     const btn = screen.getByRole('button', { name: 'Close sidebar' });
     expect(btn).toHaveAttribute('aria-expanded', 'true');
   });
@@ -78,38 +78,38 @@ describe('SidebarHeader', () => {
     mockUseAppStore.mockImplementation((selector: (s: unknown) => unknown) =>
       selector(makeState({ setSidebarOpen })),
     );
-    render(<SidebarHeader onCandidateClick={vi.fn()} />);
+    render(<SidebarHeader onCandidateClick={vi.fn()} onSessionClick={vi.fn()} />);
     const btn = screen.getByRole('button', { name: 'Close sidebar' });
     fireEvent.click(btn);
     expect(setSidebarOpen).toHaveBeenCalledWith(false);
   });
 
   it('renders candidate button with aria-label "Candidate details"', () => {
-    render(<SidebarHeader onCandidateClick={vi.fn()} />);
+    render(<SidebarHeader onCandidateClick={vi.fn()} onSessionClick={vi.fn()} />);
     const btn = screen.getByRole('button', { name: 'Candidate details' });
     expect(btn).toBeInTheDocument();
   });
 
   it('candidate button calls onCandidateClick on click', () => {
     const onCandidateClick = vi.fn();
-    render(<SidebarHeader onCandidateClick={onCandidateClick} />);
+    render(<SidebarHeader onCandidateClick={onCandidateClick} onSessionClick={vi.fn()} />);
     const btn = screen.getByRole('button', { name: 'Candidate details' });
     fireEvent.click(btn);
     expect(onCandidateClick).toHaveBeenCalledTimes(1);
   });
 
   it('renders "Final mark" progress text', () => {
-    render(<SidebarHeader onCandidateClick={vi.fn()} />);
+    render(<SidebarHeader onCandidateClick={vi.fn()} onSessionClick={vi.fn()} />);
     expect(screen.getByText(/Final mark/)).toBeInTheDocument();
   });
 
   it('mark badge shows "—" when no topics scored', () => {
-    render(<SidebarHeader onCandidateClick={vi.fn()} />);
+    render(<SidebarHeader onCandidateClick={vi.fn()} onSessionClick={vi.fn()} />);
     expect(screen.getByText('—')).toBeInTheDocument();
   });
 
   it('renders progress bar element', () => {
-    render(<SidebarHeader onCandidateClick={vi.fn()} />);
+    render(<SidebarHeader onCandidateClick={vi.fn()} onSessionClick={vi.fn()} />);
     const bar = document.querySelector('.h-1.bg-blue-500');
     expect(bar).not.toBeNull();
   });

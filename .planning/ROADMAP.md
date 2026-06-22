@@ -114,7 +114,11 @@ Plans:
   2. The icon is visible in the Chrome Extensions Manager page
   3. The manifest references the icon asset correctly at all required sizes
 
-**Plans**: TBD
+**Plans**: 1 plan
+
+Plans:
+
+- [ ] 22-01-PLAN.md — Write generate-icons.js script, run it, verify all four PNGs (EXT-01)
 
 ### Phase 23: UI Polish
 

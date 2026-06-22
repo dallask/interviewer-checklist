@@ -38,22 +38,22 @@ export function App() {
     (s) => s.removedDefaultQuestionIds,
   );
 
-  // Compute set of topic IDs that have at least one scored question.
-  // A topic is "marked" when it has a score != null — used by hideMarked toggle.
-  // Phase 11: score keys use V4 format '${topicId}-q${idx}' (D-04 stable ID format).
-  // Phase 14: iterate state.sections (from store) instead of DEFAULT_SECTIONS.
-  // WR-05: skip removed default questions so their stale scores don't keep a
-  // topic "marked" after the question is removed from the visible list.
+  // A topic is "fully done" when every non-removed question has a numeric score
+  // (none are null/Skip). Only fully-done topics are hidden by the hideMarked toggle.
   const markedTopicIds = useMemo(() => {
     const marked = new Set<string>();
     for (const section of sections) {
       for (const topic of section.topics) {
-        const hasScore = topic.questions.some((q, i) => {
-          if (removedDefaultQuestionIds.has(q.id)) return false; // skip removed
-          const key = `${topic.id}-q${i}`;
-          return scores[key] !== null && scores[key] !== undefined;
+        const activeQuestions = topic.questions.filter(
+          (q) => !removedDefaultQuestionIds.has(q.id),
+        );
+        if (activeQuestions.length === 0) continue;
+        const allAnswered = activeQuestions.every((q, i) => {
+          const originalIndex = topic.questions.indexOf(q);
+          const key = `${topic.id}-q${originalIndex}`;
+          return typeof scores[key] === 'number';
         });
-        if (hasScore) marked.add(topic.id);
+        if (allAnswered) marked.add(topic.id);
       }
     }
     return marked;
@@ -66,8 +66,9 @@ export function App() {
     selectedSections,
     hideMarked,
     markedTopicIds,
+    scores,
     customQuestions,
-    removedDefaultQuestionIds, // CR-01: pass so buildFlatRows filters removed questions
+    removedDefaultQuestionIds,
   });
 
   return (

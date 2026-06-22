@@ -184,7 +184,7 @@ export const DEFAULT_STATE: AppState = {
   selectedSections: new Set<string>(),
   hideMarked: false,
   hideNotes: false,
-  darkMode: false,
+  darkMode: true,
   // ScoringState defaults
   scores: {},
   overrides: {},

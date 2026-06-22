@@ -1,4 +1,5 @@
 import './styles.css';
+import { ExternalLink, PlayCircle } from 'lucide-react';
 
 /**
  * Welcome page rendered as a standalone Vite entry point (welcome.html).
@@ -12,7 +13,6 @@ import './styles.css';
  * section, two audience cards, and primary + secondary CTA buttons.
  */
 export function Welcome() {
-  const { version } = chrome.runtime.getManifest();
 
   function handleOpenExtension() {
     // WR-03: mark hasSeenWelcome only on real CTA interaction — closing
@@ -65,10 +65,6 @@ export function Welcome() {
           A structured interview scoring tool — browser-based, private, no
           account needed.
         </p>
-        <p className="text-xs font-normal text-gray-400 dark:text-gray-500 mb-8">
-          v{version}
-        </p>
-
         <section aria-labelledby="pin-heading" className="mb-8">
           <h2
             id="pin-heading"
@@ -120,15 +116,17 @@ export function Welcome() {
           <button
             type="button"
             onClick={handleOpenExtension}
-            className="bg-blue-600 text-white text-base font-semibold px-6 py-4 rounded hover:bg-blue-700 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none min-h-[44px]"
+            className="inline-flex items-center gap-2 bg-blue-600 text-white text-base font-semibold px-6 py-4 rounded hover:bg-blue-700 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none min-h-[44px]"
           >
+            <ExternalLink className="w-5 h-5" aria-hidden="true" />
             Open the extension
           </button>
           <button
             type="button"
             onClick={handleViewDemo}
-            className="text-blue-600 dark:text-blue-400 text-base font-normal underline focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none min-h-[44px] self-center"
+            className="inline-flex items-center gap-2 bg-green-600 text-white text-base font-semibold px-6 py-4 rounded hover:bg-green-700 focus-visible:ring-2 focus-visible:ring-green-500 focus-visible:outline-none min-h-[44px]"
           >
+            <PlayCircle className="w-5 h-5" aria-hidden="true" />
             View demo session
           </button>
         </div>

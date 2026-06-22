@@ -104,10 +104,13 @@ export function buildFlatRows(
     searchQuery: string;
     selectedDifficulties: Set<Difficulty>;
     selectedSections: Set<string>;
-    /** When true, topics whose id is in markedTopicIds are omitted from output */
+    /** When true, topics whose id is in markedTopicIds are omitted from output,
+     *  and individual questions with numeric scores are hidden */
     hideMarked?: boolean;
-    /** Set of topic ids that have been fully marked / reviewed */
+    /** Set of topic ids where ALL questions are answered — hidden when hideMarked is true */
     markedTopicIds?: Set<string>;
+    /** Scores map — used to hide individual answered questions when hideMarked is true */
+    scores?: Record<string, number | null>;
     /** User-created custom questions to append to their topic's rows */
     customQuestions?: CustomQuestion[];
     /** V4Question IDs to skip (removed default questions, D-08) */
@@ -238,6 +241,12 @@ export function buildFlatRows(
 
       for (const entry of merged) {
         if (entry.kind === 'default') {
+          // hideMarked: skip questions with a numeric score (answered, not Skip)
+          if (filters.hideMarked && filters.scores) {
+            const key = `${topic.id}-q${entry.originalIndex}`;
+            const s = filters.scores[key];
+            if (typeof s === 'number') continue;
+          }
           rows.push({
             type: 'question',
             sectionId: section.id,
@@ -249,6 +258,11 @@ export function buildFlatRows(
             isDefaultQuestion: entry.isDefault,
           });
         } else {
+          // hideMarked: skip custom questions with a numeric score
+          if (filters.hideMarked && filters.scores) {
+            const s = filters.scores[entry.cq.id];
+            if (typeof s === 'number') continue;
+          }
           rows.push({
             type: 'question',
             sectionId: section.id,

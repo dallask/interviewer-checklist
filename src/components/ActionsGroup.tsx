@@ -1,15 +1,4 @@
-import {
-  Bot,
-  ChevronsLeftRight,
-  ChevronsUpDown,
-  Download,
-  Eye,
-  Moon,
-  RefreshCw,
-  Sun,
-  Trash2,
-  Upload,
-} from 'lucide-react';
+import { Bot, Download, Moon, Sun, Trash2, Upload } from 'lucide-react';
 import type { ChangeEvent, RefObject } from 'react';
 import { useRef, useState } from 'react';
 import { DEFAULT_SECTIONS } from '../data/bank/index.js';
@@ -38,21 +27,6 @@ export interface ActionsGroupProps {
 }
 
 export function ActionsGroup({ sessionSwitcherRef }: ActionsGroupProps) {
-  const expandAll = useAppStore((s) => s.expandAll);
-  const collapseAll = useAppStore((s) => s.collapseAll);
-  const sectionOpen = useAppStore((s) => s.sectionOpen);
-  const topicOpen = useAppStore((s) => s.topicOpen);
-  const sections = useAppStore((s) => s.sections);
-  // Derive expanded state: if any section or topic is open (or none have been toggled yet → default open)
-  const anyOpen =
-    Object.keys(sectionOpen).length === 0 ||
-    sections.some(
-      (sec) =>
-        sectionOpen[sec.id] !== false ||
-        sec.topics.some((t) => topicOpen[t.id] !== false),
-    );
-  const hideMarked = useAppStore((s) => s.hideMarked);
-  const setHideMarked = useAppStore((s) => s.setHideMarked);
   const darkMode = useAppStore((s) => s.darkMode);
   const setDarkMode = useAppStore((s) => s.setDarkMode);
   const manifest = useAppStore((s) => s.manifest);
@@ -168,24 +142,13 @@ export function ActionsGroup({ sessionSwitcherRef }: ActionsGroupProps) {
   };
 
   const btnBase =
-    'flex flex-col items-center gap-1 px-2 py-2 text-[10px] text-gray-900 dark:text-gray-100 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none transition-colors duration-150';
+    'flex flex-row items-center gap-2 px-3 py-2 text-[10px] text-gray-900 dark:text-gray-100 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none transition-colors duration-150';
   const btnActive =
-    'flex flex-col items-center gap-1 px-2 py-2 text-[10px] rounded focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 transition-colors duration-150';
+    'flex flex-row items-center gap-2 px-3 py-2 text-[10px] rounded focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 transition-colors duration-150';
 
   return (
     <div className="flex flex-col gap-2">
       <div className="grid grid-cols-2 gap-2">
-        <button
-          type="button"
-          id="open-session-switcher"
-          title="Switch session"
-          aria-label="Switch session"
-          onClick={() => sessionSwitcherRef.current?.showModal()}
-          className={btnBase}
-        >
-          <RefreshCw className="w-4 h-4" aria-hidden="true" />
-          <span className="truncate">Sessions</span>
-        </button>
         <button
           type="button"
           id="open-ai-prompt"
@@ -216,37 +179,6 @@ export function ActionsGroup({ sessionSwitcherRef }: ActionsGroupProps) {
               <span className="truncate">Dark</span>
             </>
           )}
-        </button>
-        <button
-          type="button"
-          title={anyOpen ? 'Collapse all' : 'Expand all'}
-          aria-label={anyOpen ? 'Collapse all' : 'Expand all'}
-          aria-pressed={!anyOpen}
-          onClick={anyOpen ? collapseAll : expandAll}
-          className={btnBase}
-        >
-          {anyOpen ? (
-            <>
-              <ChevronsLeftRight className="w-4 h-4" aria-hidden="true" />
-              <span className="truncate">Collapse</span>
-            </>
-          ) : (
-            <>
-              <ChevronsUpDown className="w-4 h-4" aria-hidden="true" />
-              <span className="truncate">Expand</span>
-            </>
-          )}
-        </button>
-        <button
-          type="button"
-          title="Hide marked topics"
-          aria-label="Hide marked topics"
-          aria-pressed={hideMarked}
-          onClick={() => setHideMarked(!hideMarked)}
-          className={hideMarked ? btnActive : btnBase}
-        >
-          <Eye className="w-4 h-4" aria-hidden="true" />
-          <span className="truncate">Hide Done</span>
         </button>
         <input
           ref={importFileInputRef}
@@ -285,7 +217,7 @@ export function ActionsGroup({ sessionSwitcherRef }: ActionsGroupProps) {
           title="Reset all"
           aria-label="Reset all"
           onClick={() => resetDialogRef.current?.showModal()}
-          className="flex flex-col items-center gap-1 px-2 py-2 text-[10px] text-red-600 dark:text-red-400 bg-gray-100 dark:bg-gray-700 hover:bg-red-50 dark:hover:bg-red-900/20 rounded focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none transition-colors duration-150"
+          className="flex flex-row items-center gap-2 px-3 py-2 text-[10px] text-red-600 dark:text-red-400 bg-gray-100 dark:bg-gray-700 hover:bg-red-50 dark:hover:bg-red-900/20 rounded focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none transition-colors duration-150"
         >
           <Trash2 className="w-4 h-4" aria-hidden="true" />
           <span className="truncate">Reset</span>

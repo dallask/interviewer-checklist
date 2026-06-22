@@ -42,8 +42,10 @@ export function SidebarGroup({
         className="grid motion-safe:transition-[grid-template-rows] motion-safe:duration-200 overflow-hidden"
         style={{ gridTemplateRows: isOpen ? '1fr' : '0fr' }}
       >
-        <div className="min-h-0 px-4 pb-2">
-          {children}
+        <div className="min-h-0 overflow-hidden">
+          <div className="px-4 pb-2">
+            {children}
+          </div>
         </div>
       </div>
     </div>

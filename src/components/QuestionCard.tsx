@@ -6,10 +6,10 @@ import type { QuestionRow } from '../utils/buildFlatRows.js';
 
 // Full class strings as static literals so Tailwind's content scanner includes them (D-06, D-09)
 const BORDER_CLASSES: Record<Difficulty, string> = {
-  novice: 'border-l-4 border-l-green-700',
-  intermediate: 'border-l-4 border-l-blue-700',
-  advanced: 'border-l-4 border-l-orange-700',
-  expert: 'border-l-4 border-l-pink-700',
+  novice: 'border-l-4 border-l-green-600 dark:border-l-green-500',
+  intermediate: 'border-l-4 border-l-blue-600 dark:border-l-blue-500',
+  advanced: 'border-l-4 border-l-orange-600 dark:border-l-orange-500',
+  expert: 'border-l-4 border-l-pink-600 dark:border-l-pink-500',
 };
 
 // Full class strings as static literals so Tailwind's content scanner includes them (D-06)

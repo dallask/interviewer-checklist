@@ -6,8 +6,6 @@ interface AboutModalProps {
 }
 
 export function AboutModal({ dialogRef }: AboutModalProps) {
-  const { version } = chrome.runtime.getManifest();
-
   // Focus trap: query focusable elements inside handler each time (for dynamic state safety)
   useEffect(() => {
     const maybeDialog = dialogRef.current;
@@ -63,10 +61,6 @@ export function AboutModal({ dialogRef }: AboutModalProps) {
       >
         Interviewer Checklist
       </h2>
-      <p className="text-xs font-normal text-gray-400 dark:text-gray-500 mb-4">
-        v{version}
-      </p>
-
       <p className="text-[13px] font-normal text-gray-700 dark:text-gray-300 mb-3">
         A Chrome extension for structured technical interviews. Score candidates across topics, manage sessions, and export results as YAML.
       </p>

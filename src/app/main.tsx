@@ -39,6 +39,12 @@ useAppStore.setState({
   activeSessionId,
 });
 
+// Sync DOM dark class from hydrated store value — setState bypasses setDarkMode
+// so the class must be applied explicitly here.
+if (typeof uiState.darkMode === 'boolean') {
+  document.documentElement.classList.toggle('dark', uiState.darkMode);
+}
+
 // Hydrate manifest into store — Phase 6 (SESS-01: reactive session list)
 useAppStore.setState({ manifest: initialState.manifest });
 

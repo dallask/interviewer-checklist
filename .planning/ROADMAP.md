@@ -65,50 +65,63 @@ Full archive: [milestones/v1.2-ROADMAP.md](milestones/v1.2-ROADMAP.md)
 ## Phase Details
 
 ### Phase 20: Bug Fixes
+
 **Goal**: All reported regressions are resolved — new sections appear in the tree immediately on submit and QuestionCard left border color matches the difficulty label
 **Depends on**: Phase 19 (v1.2 complete)
 **Requirements**: BUG-01, BUG-02
 **Success Criteria** (what must be TRUE):
+
   1. User submits the Add Section form and the new section row appears in the content tree without a page reload
   2. Each QuestionCard's left border color visually matches the difficulty label color on that card (Novice = green, Beginner = blue, Intermediate = orange, Expert = pink)
   3. The fix does not regress any of the 2693+ existing tests
-**Plans**: 2 plans
-Plans:
+
+**Plans**: 2 plansPlans:
+
 - [ ] 20-01-PLAN.md — Fix empty-topic visibility in buildFlatRows + regression tests (BUG-01)
 - [ ] 20-02-PLAN.md — Fix difficulty border color in QuestionCard BORDER_CLASSES (BUG-02)
+
 **UI hint**: yes
 
 ### Phase 21: Layout & Content Ordering
+
 **Goal**: The content area is horizontally centered at 1200px max-width and questions within every section are displayed in Novice → Expert difficulty order
 **Depends on**: Phase 20
 **Requirements**: LAYOUT-01, CONT-01
 **Success Criteria** (what must be TRUE):
+
   1. On wide viewports the content tree is visually centered with whitespace on both sides, capping at 1200px
   2. On narrow viewports the container spans full width without a horizontal scrollbar
   3. Within any section, questions are ordered Novice first, then Beginner, then Intermediate, then Expert
   4. Custom questions added by the user appear at their assigned difficulty position within the sort order
+
 **Plans**: TBD
 **UI hint**: yes
 
 ### Phase 22: Extension Icon
+
 **Goal**: The extension displays a proper icon everywhere Chrome renders extension identity — toolbar button, extensions manager, and chrome://extensions
 **Depends on**: Phase 21
 **Requirements**: EXT-01
 **Success Criteria** (what must be TRUE):
+
   1. The Interviewer Checklist icon is visible in the Chrome toolbar (not the default puzzle piece)
   2. The icon is visible in the Chrome Extensions Manager page
   3. The manifest references the icon asset correctly at all required sizes
+
 **Plans**: TBD
 
 ### Phase 23: UI Polish
+
 **Goal**: The AI feedback dialog shows more content without scrolling, all modal buttons carry Lucide icons, the action buttons panel uses a two-column labeled grid, and all remaining interactive elements animate smoothly
 **Depends on**: Phase 22
 **Requirements**: POL-01, POL-02, POL-03, POL-04
 **Success Criteria** (what must be TRUE):
+
   1. The AI feedback prompt dialog is noticeably taller — user can read more of the generated prompt before needing to scroll
   2. Every action button inside all modals has a Lucide icon displayed alongside its text label
   3. The action buttons panel renders as a two-column grid with visible text labels and smaller icons than before
   4. Accordion sections, sidebar open/close, and any remaining interactive element without a transition now animate smoothly
+
 **Plans**: TBD
 **UI hint**: yes
 

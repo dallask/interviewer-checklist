@@ -151,7 +151,7 @@ export function buildFlatRows(
         }
       }
 
-      if (filteredQuestions.length > 0) {
+      if (filteredQuestions.length > 0 || topic.questions.length === 0) {
         // hideMarked: skip topics that are fully marked when the filter is active
         if (
           filters.hideMarked === true &&

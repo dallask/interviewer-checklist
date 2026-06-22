@@ -566,7 +566,7 @@ describe('UI-10: ActionsGroup icon-only buttons (D-14, D-15, D-16)', () => {
     }
   });
 
-  it('no button in ActionsGroup renders a full English word as text content', () => {
+  it('every button in ActionsGroup has a short visible text label (POL-03 two-column labeled grid)', () => {
     render(<ActionsGroup />);
 
     const allButtons = Array.from(document.querySelectorAll('button[type="button"]'));
@@ -575,11 +575,11 @@ describe('UI-10: ActionsGroup icon-only buttons (D-14, D-15, D-16)', () => {
       return title !== null && title !== '';
     });
 
-    // Button text content should be emoji/glyph only — not a 3+ letter English word
-    const wordPattern = /^[a-zA-Z]{3,}/;
+    // Phase 23 POL-03: buttons now have short text labels alongside icons.
+    // Each button must have non-empty text content.
     for (const btn of actionButtons) {
       const textContent = btn.textContent?.trim() ?? '';
-      expect(wordPattern.test(textContent)).toBe(false);
+      expect(textContent.length).toBeGreaterThan(0);
     }
   });
 

@@ -13,6 +13,7 @@
     "check": "biome check --write src/",
     "ci": "biome ci src/ && tsc --noEmit",
     "ci:check-dist": "node scripts/check-dist.js",
+    "icons": "node scripts/generate-icons.js",
     "test": "vitest run",
     "test:watch": "vitest"
   },

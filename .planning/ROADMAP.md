@@ -58,7 +58,7 @@ Full archive: [milestones/v1.2-ROADMAP.md](milestones/v1.2-ROADMAP.md)
 **Milestone Goal:** Complete all remaining BACKLOG items — fix lingering section-add and difficulty-border regressions, establish a centered 1200px layout, sort questions by difficulty, enlarge the AI dialog, add icon to the extension, and polish all modal buttons and the action panel.
 
 - [x] **Phase 20: Bug Fixes** — Re-verify and fix section add persistence and difficulty border color regression (completed 2026-06-22)
-- [ ] **Phase 21: Layout & Content Ordering** — Max-width 1200px centered container and difficulty sort within sections
+- [x] **Phase 21: Layout & Content Ordering** — Max-width 1200px centered container and difficulty sort within sections (completed 2026-06-22)
 - [ ] **Phase 22: Extension Icon** — Add icon asset and wire into manifest
 - [ ] **Phase 23: UI Polish** — AI dialog resize, modal button icons, action panel grid, and remaining animations
 
@@ -97,8 +97,10 @@ Full archive: [milestones/v1.2-ROADMAP.md](milestones/v1.2-ROADMAP.md)
 **Plans**: 2 plans
 
 Plans:
-- [ ] 21-01-PLAN.md — Difficulty sort + custom question merge in buildFlatRows (CONT-01)
-- [ ] 21-02-PLAN.md — Centering wrapper in ContentTree virtual rows (LAYOUT-01)
+
+- [x] 21-01-PLAN.md — Difficulty sort + custom question merge in buildFlatRows (CONT-01)
+- [x] 21-02-PLAN.md — Centering wrapper in ContentTree virtual rows (LAYOUT-01)
+
 **UI hint**: yes
 
 ### Phase 22: Extension Icon
@@ -154,6 +156,6 @@ Plans:
 | 18. Icon Library | v1.2 | 3/3 | Complete | 2026-06-19 |
 | 19. Typography & Transitions | v1.2 | 3/3 | Complete | 2026-06-19 |
 | 20. Bug Fixes | v1.3 | 2/2 | Complete   | 2026-06-22 |
-| 21. Layout & Content Ordering | v1.3 | 0/2 | Not started | - |
+| 21. Layout & Content Ordering | v1.3 | 2/2 | Complete   | 2026-06-22 |
 | 22. Extension Icon | v1.3 | 0/TBD | Not started | - |
 | 23. UI Polish | v1.3 | 0/TBD | Not started | - |

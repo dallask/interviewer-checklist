@@ -8,7 +8,7 @@
 
 ### Layout
 
-- [ ] **LAYOUT-01**: Content container has max-width 1200px and is horizontally centered (margin: 0 auto)
+- [x] **LAYOUT-01**: Content container has max-width 1200px and is horizontally centered (margin: 0 auto)
 
 ### Bug Fixes
 
@@ -50,7 +50,7 @@
 |-------------|-------|--------|
 | BUG-01 | Phase 20 | Pending |
 | BUG-02 | Phase 20 | Pending |
-| LAYOUT-01 | Phase 21 | Pending |
+| LAYOUT-01 | Phase 21 | Complete |
 | CONT-01 | Phase 21 | Pending |
 | EXT-01 | Phase 22 | Pending |
 | POL-01 | Phase 23 | Pending |
@@ -59,6 +59,7 @@
 | POL-04 | Phase 23 | Pending |
 
 **Coverage:**
+
 - v1.3 requirements: 9 total
 - Mapped to phases: 9
 - Unmapped: 0 ✓

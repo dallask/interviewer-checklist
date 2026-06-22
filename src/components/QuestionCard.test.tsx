@@ -302,7 +302,7 @@ describe('QuestionCard', () => {
 
   // VIS-01: Left border class-presence tests (one per difficulty level)
   describe('difficulty indicators', () => {
-    it('outer container has border-l-4 and border-green-500 for novice (VIS-01)', () => {
+    it('outer container has border-l-4 and border-l-green-700 for novice (VIS-01)', () => {
       const noviceRow = {
         ...mockRow,
         question: { q: 'What is JSX?', level: 'novice' as const },
@@ -310,17 +310,17 @@ describe('QuestionCard', () => {
       const { container } = render(<QuestionCard row={noviceRow} />);
       const outerDiv = container.firstChild as HTMLElement;
       expect(outerDiv.className).toContain('border-l-4');
-      expect(outerDiv.className).toContain('border-green-500');
+      expect(outerDiv.className).toContain('border-l-green-700');
     });
 
-    it('outer container has border-l-4 and border-blue-500 for intermediate (VIS-01)', () => {
+    it('outer container has border-l-4 and border-l-blue-700 for intermediate (VIS-01)', () => {
       const { container } = render(<QuestionCard row={mockRow} />);
       const outerDiv = container.firstChild as HTMLElement;
       expect(outerDiv.className).toContain('border-l-4');
-      expect(outerDiv.className).toContain('border-blue-500');
+      expect(outerDiv.className).toContain('border-l-blue-700');
     });
 
-    it('outer container has border-l-4 and border-orange-500 for advanced (VIS-01)', () => {
+    it('outer container has border-l-4 and border-l-orange-700 for advanced (VIS-01)', () => {
       const advancedRow = {
         ...mockRow,
         question: { q: 'What is JSX?', level: 'advanced' as const },
@@ -328,10 +328,10 @@ describe('QuestionCard', () => {
       const { container } = render(<QuestionCard row={advancedRow} />);
       const outerDiv = container.firstChild as HTMLElement;
       expect(outerDiv.className).toContain('border-l-4');
-      expect(outerDiv.className).toContain('border-orange-500');
+      expect(outerDiv.className).toContain('border-l-orange-700');
     });
 
-    it('outer container has border-l-4 and border-pink-500 for expert (VIS-01)', () => {
+    it('outer container has border-l-4 and border-l-pink-700 for expert (VIS-01)', () => {
       const expertRow = {
         ...mockRow,
         question: { q: 'What is JSX?', level: 'expert' as const },
@@ -339,7 +339,7 @@ describe('QuestionCard', () => {
       const { container } = render(<QuestionCard row={expertRow} />);
       const outerDiv = container.firstChild as HTMLElement;
       expect(outerDiv.className).toContain('border-l-4');
-      expect(outerDiv.className).toContain('border-pink-500');
+      expect(outerDiv.className).toContain('border-l-pink-700');
     });
 
     // VIS-02: Badge chip class-presence tests (one per difficulty level)

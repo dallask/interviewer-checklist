@@ -1,6 +1,14 @@
 import type { Difficulty } from '../data/bank/types.js';
 import type { CustomQuestion, V4Section, V4Topic } from '../storage/types.js';
 
+// Difficulty sort order: novice → intermediate → advanced → expert (CONT-01, D-06)
+const DIFF_ORDER: Record<Difficulty, number> = {
+  novice: 0,
+  intermediate: 1,
+  advanced: 2,
+  expert: 3,
+};
+
 // ---------------------------------------------------------------------------
 // VirtualRow types
 // ---------------------------------------------------------------------------
@@ -151,6 +159,10 @@ export function buildFlatRows(
         }
       }
 
+      // Sort filteredQuestions in-place by difficulty: novice → intermediate → advanced → expert (CONT-01, D-07)
+      // Array.sort is stable since ECMAScript 2019 — equal-difficulty questions preserve bank order (D-11)
+      filteredQuestions.sort((a, b) => DIFF_ORDER[a.level] - DIFF_ORDER[b.level]);
+
       if (filteredQuestions.length > 0 || topic.questions.length === 0) {
         // hideMarked: skip topics that are fully marked when the filter is active
         if (
@@ -198,36 +210,56 @@ export function buildFlatRows(
       // Topic collapsed: skip questions
       if (!isOpen) continue;
 
-      // Index fix: use originalIndex (pre-computed above) to get the original position
-      // in topic.questions, regardless of which difficulty filter is active (Phase 5).
-      for (const question of topic.filteredQuestions) {
-        rows.push({
-          type: 'question',
-          sectionId: section.id,
-          topicId: topic.id,
-          // Bridge: expose .q for QuestionCard backward compat (Q: question.text → question.q)
-          question: { q: question.text, level: question.level },
-          index: question.originalIndex,
-          questionBankId: question.id,
-          isDefaultQuestion: question.isDefault,
-        });
-      }
-
-      // Append custom questions for this topic — always shown when topic is open,
-      // not subject to difficulty/search filtering (user explicitly added them).
+      // Unified merged sort: default + custom questions emitted in difficulty order (CONT-01, D-08, D-09)
+      // Custom questions are always shown when topic is open, not subject to difficulty/search filtering.
       const customForTopic = (filters.customQuestions ?? []).filter(
         (cq) => cq.topicId === topic.id,
       );
-      for (const cq of customForTopic) {
-        rows.push({
-          type: 'question',
-          sectionId: section.id,
-          topicId: topic.id,
-          question: { q: cq.text, level: cq.level },
-          index: topic.questions.length + customForTopic.indexOf(cq),
-          isCustom: true,
-          customId: cq.id,
-        });
+
+      type MergedQuestion =
+        | { kind: 'default'; id: string; text: string; level: Difficulty; isDefault: boolean; originalIndex: number }
+        | { kind: 'custom'; cq: CustomQuestion };
+
+      const merged: MergedQuestion[] = [
+        ...topic.filteredQuestions.map(
+          (q): MergedQuestion => ({ kind: 'default', ...q }),
+        ),
+        ...customForTopic.map(
+          (cq): MergedQuestion => ({ kind: 'custom', cq }),
+        ),
+      ];
+
+      // Sort merged array by difficulty — stable sort preserves bank order within same level (D-11)
+      merged.sort((a, b) => {
+        const levelA = a.kind === 'default' ? a.level : a.cq.level;
+        const levelB = b.kind === 'default' ? b.level : b.cq.level;
+        return DIFF_ORDER[levelA] - DIFF_ORDER[levelB];
+      });
+
+      for (const entry of merged) {
+        if (entry.kind === 'default') {
+          rows.push({
+            type: 'question',
+            sectionId: section.id,
+            topicId: topic.id,
+            // Bridge: expose .q for QuestionCard backward compat (Q: question.text → question.q)
+            question: { q: entry.text, level: entry.level },
+            index: entry.originalIndex,
+            questionBankId: entry.id,
+            isDefaultQuestion: entry.isDefault,
+          });
+        } else {
+          rows.push({
+            type: 'question',
+            sectionId: section.id,
+            topicId: topic.id,
+            question: { q: entry.cq.text, level: entry.cq.level },
+            // index is cosmetic for custom questions (score key uses customId, D-10)
+            index: topic.questions.length + customForTopic.indexOf(entry.cq),
+            isCustom: true,
+            customId: entry.cq.id,
+          });
+        }
       }
     }
 

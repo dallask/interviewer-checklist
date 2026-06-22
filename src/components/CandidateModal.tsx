@@ -1,4 +1,5 @@
 import { type RefObject, useEffect, useState } from 'react';
+import { Check, RotateCcw, X } from 'lucide-react';
 import type { CandidateDetails } from '../store/app.js';
 import { useAppStore } from '../store/app.js';
 
@@ -223,22 +224,25 @@ export function CandidateModal({ dialogRef }: Props) {
             type="button"
             aria-label="Reset candidate details"
             onClick={handleResetDetails}
-            className="text-[13px] font-normal text-red-600 dark:text-red-400 hover:text-red-800 dark:hover:text-red-300 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none"
+            className="flex items-center gap-2 transition-colors duration-150 text-[13px] font-normal text-red-600 dark:text-red-400 hover:text-red-800 dark:hover:text-red-300 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none"
           >
+            <RotateCcw className="w-4 h-4" aria-hidden="true" />
             Reset details
           </button>
           <div className="flex gap-3">
             <button
               type="button"
               onClick={handleDiscard}
-              className="text-[13px] font-normal px-4 py-2 text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none"
+              className="flex items-center gap-2 transition-colors duration-150 text-[13px] font-normal px-4 py-2 text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none"
             >
+              <X className="w-4 h-4" aria-hidden="true" />
               Discard changes
             </button>
             <button
               type="submit"
-              className="text-[13px] font-normal px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none"
+              className="flex items-center gap-2 transition-colors duration-150 text-[13px] font-normal px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none"
             >
+              <Check className="w-4 h-4" aria-hidden="true" />
               Save details
             </button>
           </div>

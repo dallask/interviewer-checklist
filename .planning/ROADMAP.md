@@ -72,7 +72,10 @@ Full archive: [milestones/v1.2-ROADMAP.md](milestones/v1.2-ROADMAP.md)
   1. User submits the Add Section form and the new section row appears in the content tree without a page reload
   2. Each QuestionCard's left border color visually matches the difficulty label color on that card (Novice = green, Beginner = blue, Intermediate = orange, Expert = pink)
   3. The fix does not regress any of the 2693+ existing tests
-**Plans**: TBD
+**Plans**: 2 plans
+Plans:
+- [ ] 20-01-PLAN.md — Fix empty-topic visibility in buildFlatRows + regression tests (BUG-01)
+- [ ] 20-02-PLAN.md — Fix difficulty border color in QuestionCard BORDER_CLASSES (BUG-02)
 **UI hint**: yes
 
 ### Phase 21: Layout & Content Ordering
@@ -133,7 +136,7 @@ Full archive: [milestones/v1.2-ROADMAP.md](milestones/v1.2-ROADMAP.md)
 | 17. Difficulty Indicators | v1.2 | 1/1 | Complete | 2026-06-19 |
 | 18. Icon Library | v1.2 | 3/3 | Complete | 2026-06-19 |
 | 19. Typography & Transitions | v1.2 | 3/3 | Complete | 2026-06-19 |
-| 20. Bug Fixes | v1.3 | 0/TBD | Not started | - |
+| 20. Bug Fixes | v1.3 | 0/2 | Not started | - |
 | 21. Layout & Content Ordering | v1.3 | 0/TBD | Not started | - |
 | 22. Extension Icon | v1.3 | 0/TBD | Not started | - |
 | 23. UI Polish | v1.3 | 0/TBD | Not started | - |

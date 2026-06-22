@@ -136,7 +136,7 @@ Plans:
 
 Plans:
 
-- [ ] 23-01-PLAN.md — AiPromptModal resize + icon buttons for AiPromptModal, AboutModal, CandidateModal (POL-01, POL-02, POL-04)
+- [x] 23-01-PLAN.md — AiPromptModal resize + icon buttons for AiPromptModal, AboutModal, CandidateModal (POL-01, POL-02, POL-04)
 - [ ] 23-02-PLAN.md — Icon buttons for ResetConfirmDialog, ImportPreviewModal + ActionsGroup two-column grid (POL-02, POL-03, POL-04)
 
 **UI hint**: yes
@@ -168,4 +168,4 @@ Plans:
 | 20. Bug Fixes | v1.3 | 2/2 | Complete   | 2026-06-22 |
 | 21. Layout & Content Ordering | v1.3 | 2/2 | Complete   | 2026-06-22 |
 | 22. Extension Icon | v1.3 | 1/1 | Complete | 2026-06-22 |
-| 23. UI Polish | v1.3 | 0/2 | Not started | - |
+| 23. UI Polish | v1.3 | 1/2 | In Progress|  |

@@ -25,10 +25,10 @@
 
 ### UI Polish
 
-- [ ] **POL-01**: AI feedback prompt dialog is enlarged so more content is visible without scrolling
-- [ ] **POL-02**: All modal action buttons include a Lucide icon alongside their text label
+- [x] **POL-01**: AI feedback prompt dialog is enlarged so more content is visible without scrolling
+- [x] **POL-02**: All modal action buttons include a Lucide icon alongside their text label
 - [ ] **POL-03**: Action buttons panel uses a two-column grid layout; buttons show text labels; icons inside buttons are smaller than current
-- [ ] **POL-04**: Accordion sections, sidebar, and all remaining interactive elements animate smoothly (any gaps left after v1.2 Phase 19 CSS transitions)
+- [x] **POL-04**: Accordion sections, sidebar, and all remaining interactive elements animate smoothly (any gaps left after v1.2 Phase 19 CSS transitions)
 
 ## Future Requirements
 
@@ -53,10 +53,10 @@
 | LAYOUT-01 | Phase 21 | Complete |
 | CONT-01 | Phase 21 | Complete |
 | EXT-01 | Phase 22 | Pending |
-| POL-01 | Phase 23 | Pending |
-| POL-02 | Phase 23 | Pending |
+| POL-01 | Phase 23 | Complete |
+| POL-02 | Phase 23 | Complete |
 | POL-03 | Phase 23 | Pending |
-| POL-04 | Phase 23 | Pending |
+| POL-04 | Phase 23 | Complete |
 
 **Coverage:**
 

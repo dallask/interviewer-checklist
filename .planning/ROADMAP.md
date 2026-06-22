@@ -59,7 +59,7 @@ Full archive: [milestones/v1.2-ROADMAP.md](milestones/v1.2-ROADMAP.md)
 
 - [x] **Phase 20: Bug Fixes** — Re-verify and fix section add persistence and difficulty border color regression (completed 2026-06-22)
 - [x] **Phase 21: Layout & Content Ordering** — Max-width 1200px centered container and difficulty sort within sections (completed 2026-06-22)
-- [ ] **Phase 22: Extension Icon** — Add icon asset and wire into manifest
+- [x] **Phase 22: Extension Icon** — Add icon asset and wire into manifest
 - [ ] **Phase 23: UI Polish** — AI dialog resize, modal button icons, action panel grid, and remaining animations
 
 ## Phase Details
@@ -161,5 +161,5 @@ Plans:
 | 19. Typography & Transitions | v1.2 | 3/3 | Complete | 2026-06-19 |
 | 20. Bug Fixes | v1.3 | 2/2 | Complete   | 2026-06-22 |
 | 21. Layout & Content Ordering | v1.3 | 2/2 | Complete   | 2026-06-22 |
-| 22. Extension Icon | v1.3 | 0/TBD | Not started | - |
+| 22. Extension Icon | v1.3 | 1/1 | Complete | 2026-06-22 |
 | 23. UI Polish | v1.3 | 0/TBD | Not started | - |

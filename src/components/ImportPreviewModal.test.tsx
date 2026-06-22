@@ -116,7 +116,7 @@ describe('ImportPreviewModal', () => {
     expect(newSessionBtn).toHaveAttribute('aria-pressed', 'false');
   });
 
-  it('clicking Confirm calls onConfirm(false) when in new-session mode', async () => {
+  it('clicking Import calls onConfirm(false) when in new-session mode', async () => {
     const dialogRef = makeDialogRef();
     render(
       <ImportPreviewModal
@@ -126,13 +126,13 @@ describe('ImportPreviewModal', () => {
       />,
     );
     dialogRef.current.showModal();
-    const confirmBtn = screen.getByRole('button', { name: /^confirm$/i });
+    const confirmBtn = screen.getByRole('button', { name: /^import$/i });
     fireEvent.click(confirmBtn);
     // Allow async handler to settle
     await vi.waitFor(() => expect(onConfirm).toHaveBeenCalledWith(false));
   });
 
-  it('clicking Confirm calls onConfirm(true) when in overwrite mode', async () => {
+  it('clicking Import calls onConfirm(true) when in overwrite mode', async () => {
     const dialogRef = makeDialogRef();
     render(
       <ImportPreviewModal
@@ -146,12 +146,12 @@ describe('ImportPreviewModal', () => {
     const overwriteBtn = screen.getByRole('button', { name: /overwrite active session/i });
     fireEvent.click(overwriteBtn);
 
-    const confirmBtn = screen.getByRole('button', { name: /^confirm$/i });
+    const confirmBtn = screen.getByRole('button', { name: /^import$/i });
     fireEvent.click(confirmBtn);
     await vi.waitFor(() => expect(onConfirm).toHaveBeenCalledWith(true));
   });
 
-  it('clicking Cancel closes dialog without calling onConfirm', () => {
+  it('clicking Discard import closes dialog without calling onConfirm', () => {
     const dialogRef = makeDialogRef();
     render(
       <ImportPreviewModal
@@ -163,7 +163,7 @@ describe('ImportPreviewModal', () => {
     // Spy AFTER render so dialogRef.current points to the real rendered dialog element
     const closeSpy = vi.spyOn(dialogRef.current, 'close');
     dialogRef.current.showModal();
-    const cancelBtn = screen.getByRole('button', { name: /^cancel$/i });
+    const cancelBtn = screen.getByRole('button', { name: /^discard import$/i });
     fireEvent.click(cancelBtn);
     expect(closeSpy).toHaveBeenCalledTimes(1);
     expect(onConfirm).not.toHaveBeenCalled();

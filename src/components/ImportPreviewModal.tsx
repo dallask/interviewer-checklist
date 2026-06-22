@@ -1,3 +1,4 @@
+import { Download, X } from 'lucide-react';
 import { type RefObject, useEffect, useState } from 'react';
 import type { ImportPreview } from '../utils/yamlImport.js';
 
@@ -155,9 +156,10 @@ export function ImportPreviewModal({ dialogRef, preview, onConfirm }: Props) {
           type="button"
           disabled={isPending}
           onClick={handleCancel}
-          className="text-[13px] font-normal px-4 py-2 text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
+          className="flex items-center gap-2 transition-colors duration-150 text-[13px] font-normal px-4 py-2 text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          Cancel
+          <X className="w-4 h-4" aria-hidden="true" />
+          Discard import
         </button>
         <button
           type="button"
@@ -165,9 +167,10 @@ export function ImportPreviewModal({ dialogRef, preview, onConfirm }: Props) {
           onClick={() => {
             void handleConfirm();
           }}
-          className="text-[13px] font-normal px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
+          className="flex items-center gap-2 transition-colors duration-150 text-[13px] font-normal px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          {isPending ? 'Importing…' : 'Confirm'}
+          <Download className="w-4 h-4" aria-hidden="true" />
+          {isPending ? 'Importing…' : 'Import'}
         </button>
       </div>
     </dialog>

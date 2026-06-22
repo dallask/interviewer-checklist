@@ -1,3 +1,4 @@
+import { Trash2, X } from 'lucide-react';
 import { type RefObject, useEffect } from 'react';
 import { storageAdapter } from '../storage/index.js';
 import { useAppStore } from '../store/app.js';
@@ -85,18 +86,20 @@ export function ResetConfirmDialog({ dialogRef }: Props) {
         <button
           type="button"
           onClick={handleKeep}
-          className="text-[13px] font-normal px-4 py-2 text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none"
+          className="flex items-center gap-2 transition-colors duration-150 text-[13px] font-normal px-4 py-2 text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none"
         >
-          Keep scores
+          <X className="w-4 h-4" aria-hidden="true" />
+          Keep data
         </button>
         <button
           type="button"
           onClick={() => {
             void handleReset();
           }}
-          className="text-[13px] font-normal px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 dark:bg-red-500 dark:hover:bg-red-600 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none"
+          className="flex items-center gap-2 transition-colors duration-150 text-[13px] font-normal px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 dark:bg-red-500 dark:hover:bg-red-600 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none"
         >
-          Reset
+          <Trash2 className="w-4 h-4" aria-hidden="true" />
+          Reset all
         </button>
       </div>
     </dialog>

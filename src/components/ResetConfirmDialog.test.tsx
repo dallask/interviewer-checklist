@@ -62,24 +62,24 @@ describe('ResetConfirmDialog', () => {
     expect(heading?.tagName).toBe('H2');
   });
 
-  it('Keep scores button closes dialog without calling resetAll', () => {
+  it('Keep data button closes dialog without calling resetAll', () => {
     const ref = createRef<HTMLDialogElement>();
     render(<ResetConfirmDialog dialogRef={ref} />);
     ref.current?.showModal();
     expect(ref.current?.open).toBe(true);
 
-    fireEvent.click(screen.getByRole('button', { name: /keep scores/i }));
+    fireEvent.click(screen.getByRole('button', { name: /keep data/i }));
 
     expect(resetAll).not.toHaveBeenCalled();
     expect(ref.current?.open).toBe(false);
   });
 
-  it('Reset button calls storageAdapter.snapshot then resetAll', async () => {
+  it('Reset all button calls storageAdapter.snapshot then resetAll', async () => {
     const ref = createRef<HTMLDialogElement>();
     render(<ResetConfirmDialog dialogRef={ref} />);
     ref.current?.showModal();
 
-    fireEvent.click(screen.getByRole('button', { name: /^reset$/i }));
+    fireEvent.click(screen.getByRole('button', { name: /^reset all$/i }));
 
     // Wait for the async handler
     await vi.waitFor(() => {
@@ -93,16 +93,16 @@ describe('ResetConfirmDialog', () => {
     expect(snapshotOrder).toBeLessThan(resetOrder);
   });
 
-  it('renders Keep scores and Reset buttons', () => {
+  it('renders Keep data and Reset all buttons', () => {
     const ref = createRef<HTMLDialogElement>();
     render(<ResetConfirmDialog dialogRef={ref} />);
     // Dialog must be open for accessibility tree to expose buttons inside it
     ref.current?.showModal();
     expect(
-      screen.getByRole('button', { name: /keep scores/i }),
+      screen.getByRole('button', { name: /keep data/i }),
     ).toBeInTheDocument();
     expect(
-      screen.getByRole('button', { name: /^reset$/i }),
+      screen.getByRole('button', { name: /^reset all$/i }),
     ).toBeInTheDocument();
   });
 });

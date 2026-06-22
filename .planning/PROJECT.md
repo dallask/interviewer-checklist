@@ -1,21 +1,27 @@
 # Interviewer Checklist — Chrome Extension
 
-## Current Milestone: v1.2 UAT Closure & Visual Polish
+## Current Milestone: v1.3 UX Refinement & Layout
 
-**Goal:** Close all remaining UAT gaps from v1.1 — fix two blocking bugs, then layer in the visual enhancements the UAT surfaced (difficulty indicators, icon library, density/transitions).
+**Goal:** Complete all remaining BACKLOG items — fix lingering section-add and difficulty-border regressions, establish a centered 1200px layout, sort questions by difficulty, enlarge the AI dialog, add icon to the extension, and polish all modal buttons and the action panel.
 
 **Target features:**
-- Bug: add section/topic — new items not appearing in tree after submit
-- Bug: note icon — can't collapse textarea when note has text
-- Polish: score dropdown dark mode contrast
-- Visual: QuestionCard difficulty left-border + badge chip
-- Visual: Material-like icon library (replace ad-hoc emoji)
-- Polish: Font 13px + compact density throughout
-- Polish: CSS transitions/animations throughout
+- Layout: max-width 1200px centered content container
+- Bug: section add — form submit does not persist new section (re-verify/fix)
+- Bug: QuestionCard left border color does not match difficulty label (re-verify/fix)
+- Sort: questions ordered by difficulty within each section (Novice → Expert)
+- Extension icon (from BACKLOG/icon.png)
+- AI feedback dialog enlarged to show more content
+- Icons added to all modal buttons
+- Action buttons panel: two-column grid, text labels visible, icons smaller
+- Smooth animations on accordion, sidebar, and all remaining interactive elements
 
 ---
 
 ## Previous Milestones
+
+### v1.2 UAT Closure & Visual Polish (shipped 2026-06-22)
+
+**Goal:** Closed UAT gaps from v1.1 — two virtualizer scroll bugs, note-collapse bug, dark mode contrast — then layered in visual enhancements: difficulty indicators, Lucide icon library, 13px font + compact density, CSS transitions throughout. Full archive: [milestones/v1.2-ROADMAP.md](milestones/v1.2-ROADMAP.md)
 
 ### v1.1 Post-UAT Fix + Polish (shipped 2026-06-18)
 
@@ -87,15 +93,17 @@ A single interviewer/candidate can run an end-to-end weighted scoring session �
 
 ### Active
 
-<!-- v1.2 scope — UAT closure and visual polish -->
+<!-- v1.3 scope — UX refinement, layout, and remaining BACKLOG items -->
 
-- [ ] Add section/topic form submits and new item appears in the tree immediately
-- [ ] Note icon toggles textarea closed even when note text is present
-- [ ] Score dropdown is clearly readable in dark mode
-- [ ] QuestionCard shows a thick left border colored by difficulty + a difficulty badge chip
-- [ ] All icon glyphs use a consistent material-like icon pack (no ad-hoc emoji in UI chrome)
-- [ ] Base font is 13px; interface is more compact throughout
-- [ ] Key interactions use CSS transitions/animations for a smooth feel
+- [ ] Content container has max-width 1200px and is horizontally centered
+- [ ] Section add form persists and new section appears in tree immediately
+- [ ] QuestionCard left border color matches difficulty label color
+- [ ] Questions are sorted by difficulty within each section (Novice → Expert)
+- [ ] Extension has a proper icon (from BACKLOG/icon.png)
+- [ ] AI feedback prompt dialog is larger, showing more content without scrolling
+- [ ] All modal buttons have Lucide icons
+- [ ] Action buttons panel uses a two-column grid with text labels and smaller icons
+- [ ] Accordion, sidebar, and all remaining interactive elements animate smoothly
 
 ### Out of Scope
 
@@ -111,7 +119,7 @@ A single interviewer/candidate can run an end-to-end weighted scoring session �
 
 ## Context
 
-- **Shipped state (v1.1):** ~21,995 LOC TypeScript with 675/675 passing tests. 47 plans executed across 16 phases (v1.0 Phases 1–10 + 7.1; v1.1 Phases 11–15). Stack: React 19 + Vite 8 + CRXJS 2.6 + TypeScript 6 + Biome 2.5 + Vitest 4 + Tailwind 4 + Zustand 5 + js-yaml 4.2 + valibot + @tanstack/react-virtual. valibot added in v1.1 for V4SessionSchema validation; all other dependencies locked since v1.0.
+- **Shipped state (v1.2):** ~22,000+ LOC TypeScript. 4 phases (16–19), 9 plans executed in v1.2. Stack unchanged: React 19 + Vite 8 + CRXJS 2.6 + TypeScript 6 + Biome 2.5 + Vitest 4 + Tailwind 4 + Zustand 5 + js-yaml 4.2 + valibot + @tanstack/react-virtual + Lucide React (added v1.2). Difficulty indicators, Lucide icon library, 13px font, CSS transitions shipped in v1.2. Section add and difficulty border shipped in v1.2 but reported as still broken by user — v1.3 must re-verify and fix.
 - **Known deferred:** Browser-level UAT for Phases 12–15 `human_needed` verifications acknowledged as deferred at v1.1 close — 675/675 unit/integration tests pass. v1.0 deferred items (Phases 5, 6, 7, 8, 9 human_needed; 3 UAT scenarios) remain open. Documented in STATE.md.
 - **CWS manual actions outstanding (v1.0):** publish PRIVACY.md to stable HTTPS URL, capture 1280×800 screenshots, run smoke test per `cws-assets/CWS-SMOKE-TEST.md`, upload `dist.zip` to CWS dashboard with copy from `docs/cws-submission.md`.
 - **Two-audience UX:** interviewers and candidates share the same UI. Multiple named sessions support an interviewer running one per candidate while a candidate has their own prep slot. Fully user-editable bank (v1.1) lets users customize sections, topics, and questions per session and export/import the full bank state via YAML.
@@ -159,4 +167,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-06-18 after milestone v1.2 started*
+*Last updated: 2026-06-22 after milestone v1.3 started*

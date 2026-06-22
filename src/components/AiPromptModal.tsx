@@ -1,4 +1,5 @@
 import { type RefObject, useEffect, useRef, useState } from 'react';
+import { Copy, X } from 'lucide-react';
 
 // AiPromptModal is purely prop-driven — it does NOT import useAppStore.
 // The caller (ActionsGroup) owns the store interaction and prompt generation.
@@ -99,7 +100,7 @@ export function AiPromptModal({ dialogRef, prompt, onClose }: Props) {
     <dialog
       ref={dialogRef}
       aria-labelledby="ai-prompt-title"
-      className="fixed inset-0 m-auto w-full max-w-sm bg-white dark:bg-gray-900 rounded-lg shadow-xl border border-gray-200 dark:border-gray-700 p-6"
+      className="fixed inset-0 m-auto w-full max-w-2xl bg-white dark:bg-gray-900 rounded-lg shadow-xl border border-gray-200 dark:border-gray-700 p-6"
     >
       <h2
         id="ai-prompt-title"
@@ -113,7 +114,7 @@ export function AiPromptModal({ dialogRef, prompt, onClose }: Props) {
         value={editablePrompt}
         onChange={(e) => setEditablePrompt(e.target.value)}
         rows={10}
-        className="w-full h-64 mt-3 mb-3 text-[13px] font-normal p-3 resize-y bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-gray-100 border border-gray-300 dark:border-gray-600 rounded focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none"
+        className="w-full h-80 mt-3 mb-3 text-[13px] font-normal p-3 resize-y bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-gray-100 border border-gray-300 dark:border-gray-600 rounded focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none"
         aria-label="Generated AI prompt — editable"
       />
 
@@ -133,8 +134,9 @@ export function AiPromptModal({ dialogRef, prompt, onClose }: Props) {
         <button
           type="button"
           onClick={onClose}
-          className="text-[13px] font-normal px-4 py-2 text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none"
+          className="flex items-center gap-2 transition-colors duration-150 text-[13px] font-normal px-4 py-2 text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none"
         >
+          <X className="w-4 h-4" aria-hidden="true" />
           Close
         </button>
         <button
@@ -143,8 +145,9 @@ export function AiPromptModal({ dialogRef, prompt, onClose }: Props) {
           onClick={() => {
             void handleCopy();
           }}
-          className="text-[13px] font-normal px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
+          className="flex items-center gap-2 transition-colors duration-150 text-[13px] font-normal px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
         >
+          <Copy className="w-4 h-4" aria-hidden="true" />
           Copy to clipboard
         </button>
       </div>

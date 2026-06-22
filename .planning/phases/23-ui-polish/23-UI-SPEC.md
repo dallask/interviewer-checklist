@@ -33,9 +33,9 @@ Declared values (multiples of 4):
 
 | Token | Value | Usage |
 |-------|-------|-------|
-| xs | 4px | Icon-to-text gap (`gap-1` = 4px) inside modal buttons |
-| sm | 6px | Icon+label gap in modal buttons (`gap-1.5` = 6px) |
-| md | 8px | ActionsGroup button label gap (`gap-0.5` = 2px stacked; `gap-1.5` = 6px inline) |
+| xs | 4px | Icon-to-label gap (`gap-1` = 4px) inside ActionsGroup buttons; icon-to-text gap inside modal buttons |
+| sm | 8px | Icon+label gap in modal buttons (`gap-2` = 8px); ActionsGroup button vertical padding (`py-2` = 8px); ActionsGroup grid gap (`gap-2` = 8px) |
+| md | 8px | Modal button horizontal padding (`px-4` = 16px side, `py-2` = 8px top/bottom) — existing pattern |
 | lg | 16px | Dialog internal padding sections |
 | xl | 24px | Dialog `p-6` = 24px all sides |
 | 2xl | 32px | — |
@@ -43,13 +43,14 @@ Declared values (multiples of 4):
 
 Phase-specific notes:
 - Modal buttons: `px-4 py-2` (16px / 8px) — existing pattern, unchanged
-- ActionsGroup buttons after POL-03: `px-2 py-1.5` (8px / 6px) replacing `p-2` (8px)
-- ActionsGroup grid gap: `gap-1.5` (6px) — unchanged from current
+- ActionsGroup buttons after POL-03: `px-2 py-2` (8px / 8px) replacing `p-2` (8px)
+- ActionsGroup grid gap: `gap-2` (8px)
+- Icon-to-label gap inside ActionsGroup buttons: `gap-1` (4px)
 - Icon size in modal buttons: `w-4 h-4` (16px) — source: CONTEXT.md D-02/D-05
 - Icon size in ActionsGroup buttons: `w-4 h-4` (16px) — reduced from `w-5 h-5` (20px) — source: CONTEXT.md D-08
 
 Exceptions:
-- `min-h-[36px] min-w-[36px]` touch target floor removed from ActionsGroup btnBase — replaced by `px-2 py-1.5` with stacked label; the 2-column grid makes cells wider and touch target is acceptable
+- `min-h-[36px] min-w-[36px]` touch target floor removed from ActionsGroup btnBase — replaced by `px-2 py-2` with stacked label; the 2-column grid makes cells wider and touch target is acceptable
 - Reset button in ActionsGroup retains its own inline className (red text variant), not `btnBase` — layout classes must be duplicated there
 
 ---
@@ -117,8 +118,8 @@ Add `transition-colors duration-150` to every button that has `hover:bg-*` or `h
 | AiPromptModal.tsx | Copy to clipboard button | `transition-colors duration-150` |
 | AboutModal.tsx | Close button | `transition-colors duration-150` |
 | CandidateModal.tsx | Discard / Save / Reset link | `transition-colors duration-150` |
-| ResetConfirmDialog.tsx | Cancel / Reset all | `transition-colors duration-150` |
-| ImportPreviewModal.tsx | Cancel / Import | `transition-colors duration-150` |
+| ResetConfirmDialog.tsx | Keep data / Reset all | `transition-colors duration-150` |
+| ImportPreviewModal.tsx | Discard import / Import | `transition-colors duration-150` |
 
 ---
 
@@ -134,13 +135,15 @@ Add `transition-colors duration-150` to every button that has `hover:bg-*` or `h
 
 Line targets: AiPromptModal.tsx line 102 (max-w-sm), line 116 (h-64).
 
+Visual hierarchy / focal point: AiPromptModal primary focal point is the textarea (dominant size, centered, fills dialog width); secondary focal point is the "Copy to clipboard" button (accent color, right-aligned in footer). The "Close" button is tertiary — neutral color, lower visual weight. ActionsGroup has no single focal point — the 2-column grid layout is visually balanced; no button should receive elevated visual weight over others.
+
 ### POL-02: Modal button icon pattern
 
-Every modal action button gets: `flex items-center gap-1.5` layout, `<Icon className="w-4 h-4" aria-hidden="true" />` before label text, `transition-colors duration-150` added to existing className.
+Every modal action button gets: `flex items-center gap-2` layout, `<Icon className="w-4 h-4" aria-hidden="true" />` before label text, `transition-colors duration-150` added to existing className.
 
 Canonical pattern:
 ```
-className="flex items-center gap-1.5 transition-colors duration-150 text-[13px] font-normal px-4 py-2 text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none"
+className="flex items-center gap-2 transition-colors duration-150 text-[13px] font-normal px-4 py-2 text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none"
 ```
 
 Icon assignments per button:
@@ -153,9 +156,9 @@ Icon assignments per button:
 | CandidateModal.tsx | Discard changes | `X` | Yes — `X` from lucide-react |
 | CandidateModal.tsx | Save details | `Check` | Yes — `Check` from lucide-react |
 | CandidateModal.tsx | Reset details (link-style) | `RotateCcw` | Yes — `RotateCcw` from lucide-react |
-| ResetConfirmDialog.tsx | Cancel | `X` | Yes — `X` from lucide-react |
+| ResetConfirmDialog.tsx | Keep data | `X` | Yes — `X` from lucide-react |
 | ResetConfirmDialog.tsx | Reset all | `Trash2` | Yes — `Trash2` from lucide-react |
-| ImportPreviewModal.tsx | Cancel | `X` | Yes — `X` from lucide-react |
+| ImportPreviewModal.tsx | Discard import | `X` | Yes — `X` from lucide-react |
 | ImportPreviewModal.tsx | Import | `Download` | Yes — `Download` from lucide-react |
 
 Skip: SessionSwitcherModal.tsx — no dialog-level action buttons (source: CONTEXT.md D-04).
@@ -168,17 +171,17 @@ Grid change: `grid-cols-3` → `grid-cols-2` (source: CONTEXT.md D-07).
 
 `btnBase` after update:
 ```
-'flex flex-col items-center gap-0.5 px-2 py-1.5 text-[10px] text-gray-900 dark:text-gray-100 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none transition-colors duration-150'
+'flex flex-col items-center gap-1 px-2 py-2 text-[10px] text-gray-900 dark:text-gray-100 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none transition-colors duration-150'
 ```
 
 `btnActive` after update:
 ```
-'flex flex-col items-center gap-0.5 px-2 py-1.5 text-[10px] rounded focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 transition-colors duration-150'
+'flex flex-col items-center gap-1 px-2 py-2 text-[10px] rounded focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 transition-colors duration-150'
 ```
 
 Reset button inline className after update (retains red color, gains layout + transition):
 ```
-'flex flex-col items-center gap-0.5 px-2 py-1.5 text-[10px] text-red-600 dark:text-red-400 bg-gray-100 dark:bg-gray-700 hover:bg-red-50 dark:hover:bg-red-900/20 rounded focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none transition-colors duration-150'
+'flex flex-col items-center gap-1 px-2 py-2 text-[10px] text-red-600 dark:text-red-400 bg-gray-100 dark:bg-gray-700 hover:bg-red-50 dark:hover:bg-red-900/20 rounded focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none transition-colors duration-150'
 ```
 
 Button label pattern (inside each button):
@@ -216,14 +219,15 @@ Layout note: 9 buttons in 2 columns = 5 rows (4 full + Reset alone in row 5). Ac
 | Save details | "Save details" (CandidateModal) |
 | Discard details | "Discard changes" (CandidateModal) |
 | Reset link | "Reset details" (CandidateModal, link-style) |
-| Cancel destructive | "Cancel" (ResetConfirmDialog, ImportPreviewModal) |
+| Cancel destructive (reset) | "Keep data" (ResetConfirmDialog cancel button) |
+| Cancel destructive (import) | "Discard import" (ImportPreviewModal cancel button) |
 | Confirm destructive | "Reset all" (ResetConfirmDialog) |
 | Copied feedback | "Copied!" (AiPromptModal aria-live, green text, auto-clears 2s) |
 | Clipboard fallback | "Select all and copy manually" (AiPromptModal fallback paragraph) |
 | Import error | "File too large (N bytes; max M)" / "Invalid YAML: {error}" / "Unrecognized YAML format (missing sections or scores)" |
 | Empty state | Not applicable — this phase has no list/data views |
 
-Destructive action confirmation approach: `ResetConfirmDialog` is a modal — user must explicitly click "Reset all" inside the dialog. No inline confirmation needed. Cancel is always available.
+Destructive action confirmation approach: `ResetConfirmDialog` is a modal — user must explicitly click "Reset all" inside the dialog. No inline confirmation needed. "Keep data" is always available as a safe exit. `ImportPreviewModal` uses "Discard import" as the safe exit paired against "Import".
 
 Source: existing code in AiPromptModal.tsx and ActionsGroup.tsx; no copy changes required — all labels already exist, icons are additive.
 

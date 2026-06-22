@@ -40,9 +40,9 @@ Add a Lucide icon before the text label on every action button in every modal. I
 | CandidateModal | Discard changes | `X` |
 | CandidateModal | Save details | `Check` |
 | CandidateModal | Reset details (text-only link-style) | `RotateCcw` |
-| ResetConfirmDialog | Cancel | `X` |
+| ResetConfirmDialog | Keep data | `X` |
 | ResetConfirmDialog | Reset all (destructive) | `Trash2` |
-| ImportPreviewModal | Cancel | `X` |
+| ImportPreviewModal | Discard import | `X` |
 | ImportPreviewModal | Import (confirm) | `Download` |
 
 - **D-04**: The `SessionSwitcherModal.tsx` — no action buttons to add icons to (it has inline session item buttons, not dialog-level action buttons). Skip.
@@ -51,8 +51,8 @@ Add a Lucide icon before the text label on every action button in every modal. I
 
 ### POL-03 — Action Panel Two-Column Grid
 
-- **D-07**: `ActionsGroup.tsx` line 171: Change `grid grid-cols-3 gap-1.5` to `grid grid-cols-2 gap-1.5`.
-- **D-08**: Each button gets a text label beneath the icon. Button layout changes from `p-2` (icon-only) to `flex flex-col items-center gap-0.5 px-2 py-1.5` with:
+- **D-07**: `ActionsGroup.tsx` line 171: Change `grid grid-cols-3 gap-1.5` to `grid grid-cols-2 gap-2`.
+- **D-08**: Each button gets a text label beneath the icon. Button layout changes from `p-2` (icon-only) to `flex flex-col items-center gap-1 px-2 py-2` with:
   - Icon: `w-4 h-4` (down from `w-5 h-5`)
   - Label: `<span className="text-[10px] leading-tight truncate w-full text-center">Label</span>`
 - **D-09**: `btnBase` and `btnActive` constants must be updated to include the layout classes instead of each button duplicating them.

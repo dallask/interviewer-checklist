@@ -4,7 +4,8 @@
 
 - ✅ **v1.0 Chrome Extension Launch** — Phases 1–10 + 7.1 (shipped 2026-06-18) → [archive](milestones/v1.0-ROADMAP.md)
 - ✅ **v1.1 Post-UAT Fix + Polish** — Phases 11–15 (shipped 2026-06-18) → [archive](milestones/v1.1-ROADMAP.md)
-- 🚧 **v1.2 UAT Closure & Visual Polish** — Phases 16–19 (in progress)
+- ✅ **v1.2 UAT Closure & Visual Polish** — Phases 16–19 (shipped 2026-06-22) → [archive](milestones/v1.2-ROADMAP.md)
+- 🚧 **v1.3 UX Refinement & Layout** — Phases 20–23 (in progress)
 
 ## Phases
 
@@ -40,107 +41,72 @@ Full archive: [milestones/v1.1-ROADMAP.md](milestones/v1.1-ROADMAP.md)
 
 </details>
 
-### 🚧 v1.2 UAT Closure & Visual Polish (In Progress)
-
-**Milestone Goal:** Close the remaining UAT gaps from v1.1 — two virtualizer scroll bugs, one note-collapse bug, dark mode contrast — then layer in the visual enhancements (difficulty indicators, icon library, font density, transitions).
+<details>
+<summary>✅ v1.2 UAT Closure & Visual Polish (Phases 16–19) — SHIPPED 2026-06-22</summary>
 
 - [x] **Phase 16: Bug Fixes & Dark Mode Polish** — Fix add-section/topic tree refresh, note-icon collapse, and score dropdown dark mode contrast
 - [x] **Phase 17: Difficulty Indicators** — QuestionCard left border + badge chip colored by difficulty
 - [x] **Phase 18: Icon Library** — Replace all ad-hoc emoji in UI chrome with Lucide React glyphs (completed 2026-06-19)
 - [x] **Phase 19: Typography & Transitions** — 13px base font with compact density + CSS transitions throughout (completed 2026-06-19)
 
+Full archive: [milestones/v1.2-ROADMAP.md](milestones/v1.2-ROADMAP.md)
+
+</details>
+
+### 🚧 v1.3 UX Refinement & Layout (In Progress)
+
+**Milestone Goal:** Complete all remaining BACKLOG items — fix lingering section-add and difficulty-border regressions, establish a centered 1200px layout, sort questions by difficulty, enlarge the AI dialog, add icon to the extension, and polish all modal buttons and the action panel.
+
+- [ ] **Phase 20: Bug Fixes** — Re-verify and fix section add persistence and difficulty border color regression
+- [ ] **Phase 21: Layout & Content Ordering** — Max-width 1200px centered container and difficulty sort within sections
+- [ ] **Phase 22: Extension Icon** — Add icon asset and wire into manifest
+- [ ] **Phase 23: UI Polish** — AI dialog resize, modal button icons, action panel grid, and remaining animations
+
 ## Phase Details
 
-### Phase 16: Bug Fixes & Dark Mode Polish
-
-**Goal**: All remaining UAT-flagged defects are resolved — new sections and topics appear in the tree immediately after submission, the note icon toggles closed regardless of content, and the score dropdown is fully legible in dark mode
-**Depends on**: Phase 15 (v1.1 complete)
-**Requirements**: BUG-01, BUG-02, BUG-03, POL-01
+### Phase 20: Bug Fixes
+**Goal**: All reported regressions are resolved — new sections appear in the tree immediately on submit and QuestionCard left border color matches the difficulty label
+**Depends on**: Phase 19 (v1.2 complete)
+**Requirements**: BUG-01, BUG-02
 **Success Criteria** (what must be TRUE):
-
-  1. User submits the Add Section form and the new section row is visible in the content tree without a page reload
-  2. User submits the Add Topic form and the new topic row is visible under the correct section without a page reload
-  3. User clicks the note icon on a QuestionCard whose textarea contains text and the textarea collapses
-  4. Score dropdown options are readable in dark mode with sufficient contrast (no invisible text or washed-out border)
-  5. All 675+ existing tests continue to pass after the fixes
-
-**Plans**: 2 plansPlans:
-
-- [ ] 16-01-PLAN.md — BUG-03 note textarea className toggle + POL-01 score/difficulty select dark mode
-- [ ] 16-02-PLAN.md — BUG-01/BUG-02 ContentTree scroll-after-add (useEffect + scrollToIndex)
-
-**Cross-cutting constraints:**
-
-- All existing tests continue to pass (667 baseline)
-
+  1. User submits the Add Section form and the new section row appears in the content tree without a page reload
+  2. Each QuestionCard's left border color visually matches the difficulty label color on that card (Novice = green, Beginner = blue, Intermediate = orange, Expert = pink)
+  3. The fix does not regress any of the 2693+ existing tests
+**Plans**: TBD
 **UI hint**: yes
 
-### Phase 17: Difficulty Indicators
-
-**Goal**: Each QuestionCard communicates its difficulty level at a glance via a colored left border and a text badge chip
-**Depends on**: Phase 16
-**Requirements**: VIS-01, VIS-02
+### Phase 21: Layout & Content Ordering
+**Goal**: The content area is horizontally centered at 1200px max-width and questions within every section are displayed in Novice → Expert difficulty order
+**Depends on**: Phase 20
+**Requirements**: LAYOUT-01, CONT-01
 **Success Criteria** (what must be TRUE):
-
-  1. Each QuestionCard has a thick left border whose color matches its difficulty (green = novice, blue = intermediate, orange = advanced, pink = expert)
-  2. Each QuestionCard shows a difficulty badge chip (NOVICE / INTERMEDIATE / ADVANCED / EXPERT) visible on the card row
-  3. Difficulty colors are consistent between the left border and the badge chip on the same card
-  4. All 675+ existing tests continue to pass after the visual changes
-
-**Plans**: 1 plan
-Plans:
-
-- [x] 17-01-PLAN.md — Add BORDER_CLASSES + BADGE_CLASSES maps to QuestionCard, apply left border (VIS-01) and badge chip (VIS-02) in screen and print rows, add class-presence tests
-
+  1. On wide viewports the content tree is visually centered with whitespace on both sides, capping at 1200px
+  2. On narrow viewports the container spans full width without a horizontal scrollbar
+  3. Within any section, questions are ordered Novice first, then Beginner, then Intermediate, then Expert
+  4. Custom questions added by the user appear at their assigned difficulty position within the sort order
+**Plans**: TBD
 **UI hint**: yes
 
-### Phase 18: Icon Library
-
-**Goal**: All UI chrome icons use a consistent material-like glyph set with no ad-hoc emoji remaining in interactive controls or structural UI elements
-**Depends on**: Phase 17
-**Requirements**: VIS-03
+### Phase 22: Extension Icon
+**Goal**: The extension displays a proper icon everywhere Chrome renders extension identity — toolbar button, extensions manager, and chrome://extensions
+**Depends on**: Phase 21
+**Requirements**: EXT-01
 **Success Criteria** (what must be TRUE):
+  1. The Interviewer Checklist icon is visible in the Chrome toolbar (not the default puzzle piece)
+  2. The icon is visible in the Chrome Extensions Manager page
+  3. The manifest references the icon asset correctly at all required sizes
+**Plans**: TBD
 
-  1. Sidebar action buttons, toggle buttons, section icons, and badge icons all render Lucide React SVG glyphs instead of emoji characters
-  2. No emoji characters remain in rendered UI chrome (buttons, labels, interactive affordances)
-  3. Icon sizes, colors, and alignment are visually consistent across all replaced locations
-  4. All 675+ existing tests continue to pass after the icon library migration
-
-**Plans**: 3 plans
-Plans:
-
-- [x] 18-01-PLAN.md — Install lucide-react + replace icons in App.tsx, SidebarHeader.tsx, Sidebar.tsx, SectionFilter.tsx, ActionsGroup.tsx (Action-tier files)
-- [x] 18-02-PLAN.md — Replace icons in remaining 11 Inline-tier files (QuestionCard, SearchGroup, SessionRow, SectionRow, TopicRow, SessionSwitcherModal, StorageToast, UndoToast, UpdateBanner, TopicMarkDisplay, MigrationErrorBanner)
-- [x] 18-03-PLAN.md — Fix SessionRow.test.tsx getByText('✓') assertions + run full acceptance gates (tests, tsc, biome)
-
-**UI hint**: yes
-
-### Phase 19: Typography & Transitions
-
-**Goal**: The interface uses a 13px base font with tightened spacing throughout, and key interactions feel smooth with CSS transitions
-**Depends on**: Phase 18
-**Requirements**: POL-02, POL-03
+### Phase 23: UI Polish
+**Goal**: The AI feedback dialog shows more content without scrolling, all modal buttons carry Lucide icons, the action buttons panel uses a two-column labeled grid, and all remaining interactive elements animate smoothly
+**Depends on**: Phase 22
+**Requirements**: POL-01, POL-02, POL-03, POL-04
 **Success Criteria** (what must be TRUE):
-
-  1. The base font size across the sidebar and content tree reads as 13px (Tailwind `text-[13px]`)
-  2. The interface feels noticeably more compact — reduced padding, tighter line heights — without content being cramped or unreadable
-  3. Sidebar open/close, topic/section expand/collapse, modal open/close, and note-textarea toggle each have a visible CSS transition or animation
-  4. All 675+ existing tests continue to pass after typography and transition changes
-
-**Plans**: 3 plansPlans:
-**Wave 1**
-
-- [x] 19-01-PLAN.md — text-sm → text-[13px] across all 20 component files (D-01) + 7 padding reductions per D-02 table (POL-02)
-- [x] 19-03-PLAN.md — @keyframes fade-in + dialog @starting-style in styles.css + fade-in class on SectionRow/TopicRow/QuestionCard outermost divs (POL-03)
-
-**Wave 2** *(blocked on Wave 1 completion)*
-
-- [x] 19-02-PLAN.md — SidebarGroup grid-rows transition D-03 + QuestionCard/TopicRow textarea grid-rows D-04 + broken test updates (POL-03)
-
-**Cross-cutting constraints:**
-
-- All 2693 existing tests pass
-
+  1. The AI feedback prompt dialog is noticeably taller — user can read more of the generated prompt before needing to scroll
+  2. Every action button inside all modals has a Lucide icon displayed alongside its text label
+  3. The action buttons panel renders as a two-column grid with visible text labels and smaller icons than before
+  4. Accordion sections, sidebar open/close, and any remaining interactive element without a transition now animate smoothly
+**Plans**: TBD
 **UI hint**: yes
 
 ## Progress
@@ -163,7 +129,11 @@ Plans:
 | 13. Filter Overhaul | v1.1 | 1/1 | Complete | 2026-06-18 |
 | 14. Editable Bank & YAML Schema Expansion | v1.1 | 5/5 | Complete | 2026-06-18 |
 | 15. Sidebar Shell Refactor & Compact QuestionCard | v1.1 | 4/4 | Complete | 2026-06-18 |
-| 16. Bug Fixes & Dark Mode Polish | v1.2 | 0/TBD | Not started | - |
+| 16. Bug Fixes & Dark Mode Polish | v1.2 | 2/2 | Complete | 2026-06-22 |
 | 17. Difficulty Indicators | v1.2 | 1/1 | Complete | 2026-06-19 |
-| 18. Icon Library | v1.2 | 3/3 | Complete   | 2026-06-19 |
-| 19. Typography & Transitions | v1.2 | 3/3 | Complete    | 2026-06-19 |
+| 18. Icon Library | v1.2 | 3/3 | Complete | 2026-06-19 |
+| 19. Typography & Transitions | v1.2 | 3/3 | Complete | 2026-06-19 |
+| 20. Bug Fixes | v1.3 | 0/TBD | Not started | - |
+| 21. Layout & Content Ordering | v1.3 | 0/TBD | Not started | - |
+| 22. Extension Icon | v1.3 | 0/TBD | Not started | - |
+| 23. UI Polish | v1.3 | 0/TBD | Not started | - |

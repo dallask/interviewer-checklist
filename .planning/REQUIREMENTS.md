@@ -48,21 +48,21 @@
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| LAYOUT-01 | Phase TBD | Pending |
-| BUG-01 | Phase TBD | Pending |
-| BUG-02 | Phase TBD | Pending |
-| CONT-01 | Phase TBD | Pending |
-| EXT-01 | Phase TBD | Pending |
-| POL-01 | Phase TBD | Pending |
-| POL-02 | Phase TBD | Pending |
-| POL-03 | Phase TBD | Pending |
-| POL-04 | Phase TBD | Pending |
+| BUG-01 | Phase 20 | Pending |
+| BUG-02 | Phase 20 | Pending |
+| LAYOUT-01 | Phase 21 | Pending |
+| CONT-01 | Phase 21 | Pending |
+| EXT-01 | Phase 22 | Pending |
+| POL-01 | Phase 23 | Pending |
+| POL-02 | Phase 23 | Pending |
+| POL-03 | Phase 23 | Pending |
+| POL-04 | Phase 23 | Pending |
 
 **Coverage:**
 - v1.3 requirements: 9 total
-- Mapped to phases: 0 (roadmap pending)
-- Unmapped: 9 ⚠️
+- Mapped to phases: 9
+- Unmapped: 0 ✓
 
 ---
 *Requirements defined: 2026-06-22*
-*Last updated: 2026-06-22 after initial definition*
+*Last updated: 2026-06-22 after roadmap creation*

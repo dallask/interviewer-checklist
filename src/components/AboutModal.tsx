@@ -1,4 +1,5 @@
 import { useEffect, type RefObject } from 'react';
+import { X } from 'lucide-react';
 
 interface AboutModalProps {
   dialogRef: RefObject<HTMLDialogElement | null>;
@@ -99,8 +100,9 @@ export function AboutModal({ dialogRef }: AboutModalProps) {
           type="button"
           aria-label="Close about modal"
           onClick={() => dialogRef.current?.close()}
-          className="text-[13px] font-normal px-4 py-2 text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none"
+          className="flex items-center gap-2 transition-colors duration-150 text-[13px] font-normal px-4 py-2 text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none"
         >
+          <X className="w-4 h-4" aria-hidden="true" />
           Close
         </button>
       </div>

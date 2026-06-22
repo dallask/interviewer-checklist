@@ -156,9 +156,9 @@ export function ActionsGroup() {
   };
 
   const btnBase =
-    'p-2 min-h-[36px] min-w-[36px] text-[13px] text-gray-900 dark:text-gray-100 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none';
+    'flex flex-col items-center gap-1 px-2 py-2 text-[10px] text-gray-900 dark:text-gray-100 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none transition-colors duration-150';
   const btnActive =
-    'p-2 min-h-[36px] min-w-[36px] text-[13px] rounded focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300';
+    'flex flex-col items-center gap-1 px-2 py-2 text-[10px] rounded focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 transition-colors duration-150';
 
   return (
     <div className="flex flex-col gap-2">
@@ -168,7 +168,7 @@ export function ActionsGroup() {
       >
         {activeSessionName}
       </p>
-      <div className="grid grid-cols-3 gap-1.5">
+      <div className="grid grid-cols-2 gap-2">
         <button
           type="button"
           id="open-session-switcher"
@@ -177,7 +177,8 @@ export function ActionsGroup() {
           onClick={() => sessionSwitcherRef.current?.showModal()}
           className={btnBase}
         >
-          <RefreshCw className="w-5 h-5" aria-hidden="true" />
+          <RefreshCw className="w-4 h-4" aria-hidden="true" />
+          <span className="truncate">Sessions</span>
         </button>
         <button
           type="button"
@@ -187,7 +188,8 @@ export function ActionsGroup() {
           onClick={handleOpenAiPrompt}
           className={btnBase}
         >
-          <Bot className="w-5 h-5" aria-hidden="true" />
+          <Bot className="w-4 h-4" aria-hidden="true" />
+          <span className="truncate">AI Prompt</span>
         </button>
         <button
           type="button"
@@ -198,9 +200,15 @@ export function ActionsGroup() {
           className={darkMode ? btnActive : btnBase}
         >
           {darkMode ? (
-            <Sun className="w-5 h-5" aria-hidden="true" />
+            <>
+              <Sun className="w-4 h-4" aria-hidden="true" />
+              <span className="truncate">Light</span>
+            </>
           ) : (
-            <Moon className="w-5 h-5" aria-hidden="true" />
+            <>
+              <Moon className="w-4 h-4" aria-hidden="true" />
+              <span className="truncate">Dark</span>
+            </>
           )}
         </button>
         <button
@@ -210,7 +218,8 @@ export function ActionsGroup() {
           onClick={expandAll}
           className={btnBase}
         >
-          <ChevronsUpDown className="w-5 h-5" aria-hidden="true" />
+          <ChevronsUpDown className="w-4 h-4" aria-hidden="true" />
+          <span className="truncate">Expand</span>
         </button>
         <button
           type="button"
@@ -219,7 +228,8 @@ export function ActionsGroup() {
           onClick={collapseAll}
           className={btnBase}
         >
-          <ChevronsLeftRight className="w-5 h-5" aria-hidden="true" />
+          <ChevronsLeftRight className="w-4 h-4" aria-hidden="true" />
+          <span className="truncate">Collapse</span>
         </button>
         <button
           type="button"
@@ -229,7 +239,8 @@ export function ActionsGroup() {
           onClick={() => setHideMarked(!hideMarked)}
           className={hideMarked ? btnActive : btnBase}
         >
-          <Eye className="w-5 h-5" aria-hidden="true" />
+          <Eye className="w-4 h-4" aria-hidden="true" />
+          <span className="truncate">Hide Done</span>
         </button>
         <input
           ref={importFileInputRef}
@@ -249,7 +260,8 @@ export function ActionsGroup() {
           onClick={handleOpenImportYaml}
           className={btnBase}
         >
-          <Download className="w-5 h-5" aria-hidden="true" />
+          <Download className="w-4 h-4" aria-hidden="true" />
+          <span className="truncate">Import</span>
         </button>
         <button
           type="button"
@@ -258,7 +270,8 @@ export function ActionsGroup() {
           onClick={handleExportYaml}
           className={btnBase}
         >
-          <Upload className="w-5 h-5" aria-hidden="true" />
+          <Upload className="w-4 h-4" aria-hidden="true" />
+          <span className="truncate">Export</span>
         </button>
         <button
           type="button"
@@ -266,9 +279,10 @@ export function ActionsGroup() {
           title="Reset all"
           aria-label="Reset all"
           onClick={() => resetDialogRef.current?.showModal()}
-          className="p-2 min-h-[36px] min-w-[36px] text-[13px] text-red-600 dark:text-red-400 bg-gray-100 dark:bg-gray-700 hover:bg-red-50 dark:hover:bg-red-900/20 rounded focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none"
+          className="flex flex-col items-center gap-1 px-2 py-2 text-[10px] text-red-600 dark:text-red-400 bg-gray-100 dark:bg-gray-700 hover:bg-red-50 dark:hover:bg-red-900/20 rounded focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none transition-colors duration-150"
         >
-          <Trash2 className="w-5 h-5" aria-hidden="true" />
+          <Trash2 className="w-4 h-4" aria-hidden="true" />
+          <span className="truncate">Reset</span>
         </button>
       </div>
       {importError && (

@@ -80,7 +80,7 @@ export function ContentTree({ rows }: Props) {
       {/* Print-only candidate header — hidden on screen (screen users already
           see candidate details via the modal). Appears above the question
           list on the printed page. */}
-      <div aria-hidden="true" className="hidden print:block print:mb-4">
+      <div aria-hidden="true" className="hidden print:block print:mb-4 max-w-[1200px] mx-auto px-4">
         <h1 className="text-xl font-semibold">
           {candidateName || 'Interview Session'}
         </h1>
@@ -112,38 +112,40 @@ export function ContentTree({ rows }: Props) {
                 transform: `translateY(${virtualItem.start}px)`,
               }}
             >
-              {row.type === 'section' && <SectionRow row={row} />}
-              {row.type === 'topic' && <TopicRow row={row} />}
-              {row.type === 'question' && <QuestionCard row={row} />}
-              {row.type === 'add-section-trigger' && (
-                addSectionOpen ? (
-                  <AddSectionForm onDismiss={() => setAddSectionOpen(false)} />
-                ) : (
-                  <button
-                    type="button"
-                    onClick={() => setAddSectionOpen(true)}
-                    className="text-xs text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none px-4 py-1.5 print:hidden"
-                  >
-                    + Add section
-                  </button>
-                )
-              )}
-              {row.type === 'add-topic-trigger' && (
-                addTopicOpenFor === row.sectionId ? (
-                  <AddTopicForm
-                    sectionId={row.sectionId}
-                    onDismiss={() => setAddTopicOpenFor(null)}
-                  />
-                ) : (
-                  <button
-                    type="button"
-                    onClick={() => setAddTopicOpenFor(row.sectionId)}
-                    className="text-xs text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none px-8 py-1.5 print:hidden"
-                  >
-                    + Add topic
-                  </button>
-                )
-              )}
+              <div className="mx-auto w-full max-w-[1200px] px-4">
+                {row.type === 'section' && <SectionRow row={row} />}
+                {row.type === 'topic' && <TopicRow row={row} />}
+                {row.type === 'question' && <QuestionCard row={row} />}
+                {row.type === 'add-section-trigger' && (
+                  addSectionOpen ? (
+                    <AddSectionForm onDismiss={() => setAddSectionOpen(false)} />
+                  ) : (
+                    <button
+                      type="button"
+                      onClick={() => setAddSectionOpen(true)}
+                      className="text-xs text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none px-4 py-1.5 print:hidden"
+                    >
+                      + Add section
+                    </button>
+                  )
+                )}
+                {row.type === 'add-topic-trigger' && (
+                  addTopicOpenFor === row.sectionId ? (
+                    <AddTopicForm
+                      sectionId={row.sectionId}
+                      onDismiss={() => setAddTopicOpenFor(null)}
+                    />
+                  ) : (
+                    <button
+                      type="button"
+                      onClick={() => setAddTopicOpenFor(row.sectionId)}
+                      className="text-xs text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none px-8 py-1.5 print:hidden"
+                    >
+                      + Add topic
+                    </button>
+                  )
+                )}
+              </div>
             </div>
           );
         })}

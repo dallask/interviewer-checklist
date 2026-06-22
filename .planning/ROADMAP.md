@@ -5,7 +5,7 @@
 - ✅ **v1.0 Chrome Extension Launch** — Phases 1–10 + 7.1 (shipped 2026-06-18) → [archive](milestones/v1.0-ROADMAP.md)
 - ✅ **v1.1 Post-UAT Fix + Polish** — Phases 11–15 (shipped 2026-06-18) → [archive](milestones/v1.1-ROADMAP.md)
 - ✅ **v1.2 UAT Closure & Visual Polish** — Phases 16–19 (shipped 2026-06-22) → [archive](milestones/v1.2-ROADMAP.md)
-- 🚧 **v1.3 UX Refinement & Layout** — Phases 20–23 (in progress)
+- ✅ **v1.3 UX Refinement & Layout** — Phases 20–23 (shipped 2026-06-22)
 
 ## Phases
 
@@ -53,7 +53,7 @@ Full archive: [milestones/v1.2-ROADMAP.md](milestones/v1.2-ROADMAP.md)
 
 </details>
 
-### 🚧 v1.3 UX Refinement & Layout (In Progress)
+### ✅ v1.3 UX Refinement & Layout (SHIPPED 2026-06-22)
 
 **Milestone Goal:** Complete all remaining BACKLOG items — fix lingering section-add and difficulty-border regressions, establish a centered 1200px layout, sort questions by difficulty, enlarge the AI dialog, add icon to the extension, and polish all modal buttons and the action panel.
 
